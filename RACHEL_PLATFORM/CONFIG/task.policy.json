@@ -76,11 +76,15 @@
                               }
                 },
     "execution":  {
-                      "enabled":  false,
-                      "reason":  "Execution will be connected in command 2 of stage 5.",
+                      "enabled":  true,
+                      "reason":  "Governed resumable executor is available.",
                       "require_cyber_authorization":  true,
                       "record_events_with_king":  true,
                       "monitor_with_jhon":  true,
-                      "validate_output_with_dany":  true
+                      "validate_output_with_dany":  true,
+                      "resume_after_interruption":  true,
+                      "persist_after_each_step":  true,
+                      "skip_completed_steps":  true,
+                      "continue_after_failure":  false
                   }
 }

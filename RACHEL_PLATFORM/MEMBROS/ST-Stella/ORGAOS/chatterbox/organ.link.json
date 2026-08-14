@@ -1,0 +1,9 @@
+{
+    "schema_version":  "1.0",
+    "member_id":  "stella",
+    "member_name":  "Stella",
+    "organ_id":  "chatterbox",
+    "central_reference":  "RACHEL_PLATFORM/ORGAOS/chatterbox",
+    "local_source":  "fonte",
+    "shared_source":  true
+}

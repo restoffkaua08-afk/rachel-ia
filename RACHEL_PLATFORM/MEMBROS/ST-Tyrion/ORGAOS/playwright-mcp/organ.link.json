@@ -1,0 +1,9 @@
+{
+    "schema_version":  "1.0",
+    "member_id":  "tyrion",
+    "member_name":  "Tyrion",
+    "organ_id":  "playwright-mcp",
+    "central_reference":  "RACHEL_PLATFORM/ORGAOS/playwright-mcp",
+    "local_source":  "fonte",
+    "shared_source":  true
+}

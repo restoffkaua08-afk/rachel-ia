@@ -1,0 +1,9 @@
+{
+    "schema_version":  "1.0",
+    "member_id":  "cyber",
+    "member_name":  "Cyber",
+    "organ_id":  "open-policy-agent",
+    "central_reference":  "RACHEL_PLATFORM/ORGAOS/open-policy-agent",
+    "local_source":  "fonte",
+    "shared_source":  true
+}

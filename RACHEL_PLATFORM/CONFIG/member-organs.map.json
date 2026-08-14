@@ -1,0 +1,259 @@
+{
+    "schema_version":  "1.0",
+    "generated_at":  "2026-08-14T16:53:43.0199211-03:00",
+    "strategy":  "shared-junctions",
+    "total_members":  10,
+    "total_unique_organs":  23,
+    "assignments":  [
+                        {
+                            "member":  "tyrion",
+                            "organ":  "chatterbox",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/chatterbox"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "docling",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/docling"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "dspy",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/dspy"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "huggingface-speech-to-speech",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/huggingface-speech-to-speech"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "letta-code",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/letta-code"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "litgpt",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/litgpt"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "livekit-agents",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/livekit-agents"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "livekit-agent-starter",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/livekit-agent-starter"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "mcp-python-sdk",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/mcp-python-sdk"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "openhands",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/openhands"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "open-policy-agent",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/open-policy-agent"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "openwakeword",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/openwakeword"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "pipecat",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/pipecat"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "piper",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/piper"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "playwright-mcp",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/playwright-mcp"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "presidio",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/presidio"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "privategpt",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/privategpt"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "promptfoo",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/promptfoo"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "qdrant",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/qdrant"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "silero-vad",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/silero-vad"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "smart-turn",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/smart-turn"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "tauri",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/tauri"
+                        },
+                        {
+                            "member":  "tyrion",
+                            "organ":  "whispercpp",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Tyrion/ORGAOS/whispercpp"
+                        },
+                        {
+                            "member":  "ned",
+                            "organ":  "dspy",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Ned/ORGAOS/dspy"
+                        },
+                        {
+                            "member":  "ned",
+                            "organ":  "litgpt",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Ned/ORGAOS/litgpt"
+                        },
+                        {
+                            "member":  "ned",
+                            "organ":  "letta-code",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Ned/ORGAOS/letta-code"
+                        },
+                        {
+                            "member":  "bran",
+                            "organ":  "qdrant",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Bran/ORGAOS/qdrant"
+                        },
+                        {
+                            "member":  "bran",
+                            "organ":  "privategpt",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Bran/ORGAOS/privategpt"
+                        },
+                        {
+                            "member":  "visao",
+                            "organ":  "docling",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Visao/ORGAOS/docling"
+                        },
+                        {
+                            "member":  "visao",
+                            "organ":  "presidio",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Visao/ORGAOS/presidio"
+                        },
+                        {
+                            "member":  "stella",
+                            "organ":  "whispercpp",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Stella/ORGAOS/whispercpp"
+                        },
+                        {
+                            "member":  "stella",
+                            "organ":  "silero-vad",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Stella/ORGAOS/silero-vad"
+                        },
+                        {
+                            "member":  "stella",
+                            "organ":  "smart-turn",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Stella/ORGAOS/smart-turn"
+                        },
+                        {
+                            "member":  "stella",
+                            "organ":  "openwakeword",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Stella/ORGAOS/openwakeword"
+                        },
+                        {
+                            "member":  "stella",
+                            "organ":  "pipecat",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Stella/ORGAOS/pipecat"
+                        },
+                        {
+                            "member":  "stella",
+                            "organ":  "chatterbox",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Stella/ORGAOS/chatterbox"
+                        },
+                        {
+                            "member":  "stella",
+                            "organ":  "piper",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Stella/ORGAOS/piper"
+                        },
+                        {
+                            "member":  "stella",
+                            "organ":  "huggingface-speech-to-speech",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Stella/ORGAOS/huggingface-speech-to-speech"
+                        },
+                        {
+                            "member":  "stella",
+                            "organ":  "livekit-agents",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Stella/ORGAOS/livekit-agents"
+                        },
+                        {
+                            "member":  "stella",
+                            "organ":  "livekit-agent-starter",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Stella/ORGAOS/livekit-agent-starter"
+                        },
+                        {
+                            "member":  "arya",
+                            "organ":  "openhands",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Arya/ORGAOS/openhands"
+                        },
+                        {
+                            "member":  "arya",
+                            "organ":  "mcp-python-sdk",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Arya/ORGAOS/mcp-python-sdk"
+                        },
+                        {
+                            "member":  "arya",
+                            "organ":  "playwright-mcp",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Arya/ORGAOS/playwright-mcp"
+                        },
+                        {
+                            "member":  "cyber",
+                            "organ":  "open-policy-agent",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Cyber/ORGAOS/open-policy-agent"
+                        },
+                        {
+                            "member":  "cyber",
+                            "organ":  "presidio",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Cyber/ORGAOS/presidio"
+                        },
+                        {
+                            "member":  "dany",
+                            "organ":  "promptfoo",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Dany/ORGAOS/promptfoo"
+                        },
+                        {
+                            "member":  "dany",
+                            "organ":  "dspy",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-Dany/ORGAOS/dspy"
+                        },
+                        {
+                            "member":  "king",
+                            "organ":  "mcp-python-sdk",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-King/ORGAOS/mcp-python-sdk"
+                        },
+                        {
+                            "member":  "king",
+                            "organ":  "pipecat",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-King/ORGAOS/pipecat"
+                        },
+                        {
+                            "member":  "king",
+                            "organ":  "livekit-agents",
+                            "path":  "RACHEL_PLATFORM/MEMBROS/ST-King/ORGAOS/livekit-agents"
+                        }
+                    ]
+}

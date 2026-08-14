@@ -13,10 +13,12 @@ $documentRuntime = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\document_runtime
 $webRuntime = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\web_runtime.py"
 $searchRuntime = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\search_runtime.py"
 $researchRuntime = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\research_runtime.py"
+$taskRuntime = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\task_runtime.py"
 if (-not (Test-Path -LiteralPath $python)) { throw "Runtime Python ausente." }
 if ($args.Count -eq 0) { throw "Informe um comando." }
 $webDomains = @("web")
 $searchDomains = @("search")
+$taskDomains = @("task")
 $researchDomains = @("research")
 $documentDomains = @("document")
 $branDomains = @("bran")
@@ -26,7 +28,10 @@ $aryaDomains = @("arya")
 $cognitiveDomains = @("cognitive", "evaluate")
 $knowledgeDomains = @("memory", "vision")
 $runtimeDomains = @("runtime", "event", "policy", "organ-health", "route")
-if ($webDomains -contains [string]$args[0]) {
+if ($taskDomains -contains [string]$args[0]) {
+    & $python $taskRuntime @($args | Select-Object -Skip 1)
+}
+elseif ($webDomains -contains [string]$args[0]) {
     & $python $webRuntime @($args | Select-Object -Skip 1)
 }
 elseif ($searchDomains -contains [string]$args[0]) {

@@ -42,6 +42,21 @@ MEMORY_CANDIDATE_PATTERNS = (
 )
 
 
+TASK_REQUEST_PATTERN = re.compile(
+    r"^(?:rachel[, ]+)?(?:planeje|crie um plano para|"
+    r"monte um plano para|elabore um plano para)\s+(.+)$",
+    re.I | re.S,
+)
+
+
+def extract_task_goal(content: str) -> str | None:
+    match = TASK_REQUEST_PATTERN.match(content.strip())
+    if match is None:
+        return None
+    goal = " ".join(match.group(1).strip().split())
+    return goal or None
+
+
 def should_propose_memory(content: str) -> bool:
     text = " ".join(content.strip().split())
     if len(text) < 8 or len(text) > 4_000:
@@ -223,6 +238,9 @@ class NedCognitiveBridge:
         status["capabilities"]["governed_memory"] = True
         status["capabilities"]["web_research"] = True
         status["capabilities"]["citations"] = True
+        status["capabilities"]["task_planning"] = True
+        status["capabilities"]["resumable_execution"] = True
+        status["capabilities"]["governed_actions"] = True
         status["tool_count"] = len(self.tools.list_tools())
         status["memory"] = self.memory.status()
         status["member"] = "ned"
@@ -279,6 +297,31 @@ class NedCognitiveBridge:
         conversation_id: str | None = None,
         approved: bool = False,
     ) -> dict[str, Any]:
+        task_goal = extract_task_goal(content)
+
+        if task_goal is not None:
+            from task_runtime import TaskOrchestrator
+
+            task_plan = TaskOrchestrator(
+                coordinator=self.tools,
+                model=self.container.chat.model,
+            ).create_plan(task_goal)
+
+            return {
+                "state": task_plan["state"],
+                "message": {
+                    "role": "assistant",
+                    "content": (
+                        "Criei um plano validado para o objetivo solicitado. "
+                        "As etapas de risco permanecem bloqueadas ate receberem "
+                        "autorizacao explicita."
+                    ),
+                },
+                "task_plan": task_plan,
+                "tool_plan": None,
+                "tool_result": None,
+            }
+
         plan = self.planner.plan(content)
         if plan.action != "tool" or plan.tool is None:
             response = self.chat(content, conversation_id)

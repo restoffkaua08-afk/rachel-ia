@@ -1,0 +1,47 @@
+﻿[
+    {
+        "nome":  "LitGPT",
+        "funcao":  "Modelo, arquitetura Transformer, treinamento e inferencia",
+        "repositorio":  "https://github.com/Lightning-AI/litgpt.git",
+        "commit":  "7bf2960dfb26bae8e815c9a16a22732974824ac1",
+        "branch":  "main",
+        "data_coleta":  "2026-08-14T12:50:36.6400780-03:00",
+        "caminho":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LitGPT"
+    },
+    {
+        "nome":  "PrivateGPT",
+        "funcao":  "Backend inteligente, RAG, arquivos, ferramentas e pesquisa",
+        "repositorio":  "https://github.com/zylon-ai/private-gpt.git",
+        "commit":  "4a030776a31a901ad80b1bf4d7faa2c1a367efbb",
+        "branch":  "main",
+        "data_coleta":  "2026-08-14T12:50:36.7664469-03:00",
+        "caminho":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\PrivateGPT"
+    },
+    {
+        "nome":  "DSPy",
+        "funcao":  "Raciocinio, avaliacao, otimizacao e agentes",
+        "repositorio":  "https://github.com/stanfordnlp/dspy.git",
+        "commit":  "ab8a7658d8a8667d28443f4433ab380acb8582d5",
+        "branch":  "main",
+        "data_coleta":  "2026-08-14T12:50:36.8831866-03:00",
+        "caminho":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\DSPy"
+    },
+    {
+        "nome":  "OpenHands",
+        "funcao":  "Desenvolvimento, terminal, arquivos e execucao de tarefas",
+        "repositorio":  "https://github.com/OpenHands/OpenHands.git",
+        "commit":  "f6097bda536eda214ec9a8d1542f5245dd99dbac",
+        "branch":  "main",
+        "data_coleta":  "2026-08-14T12:50:36.9941934-03:00",
+        "caminho":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\OpenHands"
+    },
+    {
+        "nome":  "Docling",
+        "funcao":  "PDF, documentos, OCR, tabelas e extracao estruturada",
+        "repositorio":  "https://github.com/docling-project/docling.git",
+        "commit":  "61d76f1ff3f8428065465889f7b4577da7df704c",
+        "branch":  "main",
+        "data_coleta":  "2026-08-14T12:50:37.1092526-03:00",
+        "caminho":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Docling"
+    }
+]

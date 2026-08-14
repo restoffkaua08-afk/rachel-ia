@@ -1,0 +1,146 @@
+﻿{
+    "projeto":  "Rachel IA",
+    "grupo":  "Competências complementares",
+    "status":  "validado",
+    "total_fontes_esperadas":  9,
+    "total_fontes_validadas":  9,
+    "fontes":  [
+                   {
+                       "nome":  "Letta-Code",
+                       "modulo":  "MEMORIA",
+                       "funcao":  "Memória persistente, contexto versionado e reflexão",
+                       "repositorio":  "https://github.com/letta-ai/letta-code.git",
+                       "branch":  "main",
+                       "commit":  "300f923f16cc8eee50656d7da732902c1dea2b65",
+                       "arquivos":  1982,
+                       "tamanho_mb":  82.87,
+                       "licencas_copiadas":  [
+                                                 "LICENSE"
+                                             ],
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:21:40-03:00"
+                   },
+                   {
+                       "nome":  "Qdrant",
+                       "modulo":  "CONHECIMENTO",
+                       "funcao":  "Banco vetorial e pesquisa semântica",
+                       "repositorio":  "https://github.com/qdrant/qdrant.git",
+                       "branch":  "master",
+                       "commit":  "74f3e85b9473c62560006c043e13737ce6b48412",
+                       "arquivos":  2279,
+                       "tamanho_mb":  42.89,
+                       "licencas_copiadas":  [
+                                                 "LICENSE"
+                                             ],
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:21:41-03:00"
+                   },
+                   {
+                       "nome":  "Promptfoo",
+                       "modulo":  "AVALIACAO",
+                       "funcao":  "Avaliações, testes de qualidade e red teaming",
+                       "repositorio":  "https://github.com/promptfoo/promptfoo.git",
+                       "branch":  "main",
+                       "commit":  "af026d02115c31dad4bebe0484ab5b6a3a62f6e2",
+                       "arquivos":  5543,
+                       "tamanho_mb":  401.9,
+                       "licencas_copiadas":  [
+                                                 "LICENSE"
+                                             ],
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:21:42-03:00"
+                   },
+                   {
+                       "nome":  "Presidio",
+                       "modulo":  "PRIVACIDADE",
+                       "funcao":  "Detecção e anonimização de dados sensíveis",
+                       "repositorio":  "https://github.com/data-privacy-stack/presidio.git",
+                       "branch":  "main",
+                       "commit":  "760d6c83ae89274a268e01aef3e6da7910664a83",
+                       "arquivos":  934,
+                       "tamanho_mb":  229.84,
+                       "licencas_copiadas":  [
+                                                 "LICENSE",
+                                                 "NOTICE"
+                                             ],
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:21:42-03:00"
+                   },
+                   {
+                       "nome":  "Open-Policy-Agent",
+                       "modulo":  "PERMISSOES",
+                       "funcao":  "Políticas de autorização e controle de ações",
+                       "repositorio":  "https://github.com/open-policy-agent/opa.git",
+                       "branch":  "main",
+                       "commit":  "16b5a013726fff3c2197f98ac4afcd6d2218588a",
+                       "arquivos":  7915,
+                       "tamanho_mb":  107.08,
+                       "licencas_copiadas":  [
+                                                 "LICENSE"
+                                             ],
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:21:43-03:00"
+                   },
+                   {
+                       "nome":  "MCP-Python-SDK",
+                       "modulo":  "FERRAMENTAS",
+                       "funcao":  "Integração padronizada de ferramentas",
+                       "repositorio":  "https://github.com/modelcontextprotocol/python-sdk.git",
+                       "branch":  "main",
+                       "commit":  "52ad0a8876f97f631b6e7cb973a786b253088a4d",
+                       "arquivos":  1679,
+                       "tamanho_mb":  18.73,
+                       "licencas_copiadas":  [
+                                                 "LICENSE"
+                                             ],
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:21:43-03:00"
+                   },
+                   {
+                       "nome":  "Playwright-MCP",
+                       "modulo":  "NAVEGADOR",
+                       "funcao":  "Navegação e testes automatizados no navegador",
+                       "repositorio":  "https://github.com/microsoft/playwright-mcp.git",
+                       "branch":  "main",
+                       "commit":  "7e0457a7cbf88823bf0146d12c46ae12c6818247",
+                       "arquivos":  63,
+                       "tamanho_mb":  0.29,
+                       "licencas_copiadas":  [
+                                                 "LICENSE"
+                                             ],
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:21:43-03:00"
+                   },
+                   {
+                       "nome":  "Tauri",
+                       "modulo":  "DESKTOP",
+                       "funcao":  "Aplicativo desktop nativo e multiplataforma",
+                       "repositorio":  "https://github.com/tauri-apps/tauri.git",
+                       "branch":  "dev",
+                       "commit":  "df26e1b8ccb0b9e9c4aa4c705a635f59b4a5110a",
+                       "arquivos":  1150,
+                       "tamanho_mb":  34.62,
+                       "licencas_copiadas":  [
+                                                 "LICENSE.spdx"
+                                             ],
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:21:44-03:00"
+                   },
+                   {
+                       "nome":  "OpenWakeWord",
+                       "modulo":  "VOZ",
+                       "funcao":  "Ativação local por palavra ou frase",
+                       "repositorio":  "https://github.com/dscripka/openWakeWord.git",
+                       "branch":  "main",
+                       "commit":  "368c03716d1e92591906a84949bc477f3a834455",
+                       "arquivos":  98,
+                       "tamanho_mb":  7.01,
+                       "licencas_copiadas":  [
+                                                 "LICENSE"
+                                             ],
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:21:44-03:00"
+                   }
+               ],
+    "validado_em":  "2026-08-14T13:21:44-03:00"
+}

@@ -1,0 +1,69 @@
+[submodule "FONTES/REPOSITORIOS/Chatterbox"]
+	path = FONTES/REPOSITORIOS/Chatterbox
+	url = https://github.com/resemble-ai/chatterbox.git
+[submodule "FONTES/REPOSITORIOS/Docling"]
+	path = FONTES/REPOSITORIOS/Docling
+	url = https://github.com/docling-project/docling.git
+[submodule "FONTES/REPOSITORIOS/DSPy"]
+	path = FONTES/REPOSITORIOS/DSPy
+	url = https://github.com/stanfordnlp/dspy.git
+[submodule "FONTES/REPOSITORIOS/HuggingFace-Speech-to-Speech"]
+	path = FONTES/REPOSITORIOS/HuggingFace-Speech-to-Speech
+	url = https://github.com/huggingface/speech-to-speech.git
+[submodule "FONTES/REPOSITORIOS/Letta-Code"]
+	path = FONTES/REPOSITORIOS/Letta-Code
+	url = https://github.com/letta-ai/letta-code.git
+[submodule "FONTES/REPOSITORIOS/LitGPT"]
+	path = FONTES/REPOSITORIOS/LitGPT
+	url = https://github.com/Lightning-AI/litgpt.git
+[submodule "FONTES/REPOSITORIOS/LiveKit-Agents"]
+	path = FONTES/REPOSITORIOS/LiveKit-Agents
+	url = https://github.com/livekit/agents.git
+[submodule "FONTES/REPOSITORIOS/LiveKit-Agent-Starter"]
+	path = FONTES/REPOSITORIOS/LiveKit-Agent-Starter
+	url = https://github.com/livekit-examples/agent-starter-python.git
+[submodule "FONTES/REPOSITORIOS/MCP-Python-SDK"]
+	path = FONTES/REPOSITORIOS/MCP-Python-SDK
+	url = https://github.com/modelcontextprotocol/python-sdk.git
+[submodule "FONTES/REPOSITORIOS/OpenHands"]
+	path = FONTES/REPOSITORIOS/OpenHands
+	url = https://github.com/OpenHands/OpenHands.git
+[submodule "FONTES/REPOSITORIOS/Open-Policy-Agent"]
+	path = FONTES/REPOSITORIOS/Open-Policy-Agent
+	url = https://github.com/open-policy-agent/opa.git
+[submodule "FONTES/REPOSITORIOS/OpenWakeWord"]
+	path = FONTES/REPOSITORIOS/OpenWakeWord
+	url = https://github.com/dscripka/openWakeWord.git
+[submodule "FONTES/REPOSITORIOS/Pipecat"]
+	path = FONTES/REPOSITORIOS/Pipecat
+	url = https://github.com/pipecat-ai/pipecat.git
+[submodule "FONTES/REPOSITORIOS/Piper"]
+	path = FONTES/REPOSITORIOS/Piper
+	url = https://github.com/OHF-Voice/piper1-gpl.git
+[submodule "FONTES/REPOSITORIOS/Playwright-MCP"]
+	path = FONTES/REPOSITORIOS/Playwright-MCP
+	url = https://github.com/microsoft/playwright-mcp.git
+[submodule "FONTES/REPOSITORIOS/Presidio"]
+	path = FONTES/REPOSITORIOS/Presidio
+	url = https://github.com/data-privacy-stack/presidio.git
+[submodule "FONTES/REPOSITORIOS/PrivateGPT"]
+	path = FONTES/REPOSITORIOS/PrivateGPT
+	url = https://github.com/zylon-ai/private-gpt.git
+[submodule "FONTES/REPOSITORIOS/Promptfoo"]
+	path = FONTES/REPOSITORIOS/Promptfoo
+	url = https://github.com/promptfoo/promptfoo.git
+[submodule "FONTES/REPOSITORIOS/Qdrant"]
+	path = FONTES/REPOSITORIOS/Qdrant
+	url = https://github.com/qdrant/qdrant.git
+[submodule "FONTES/REPOSITORIOS/Silero-VAD"]
+	path = FONTES/REPOSITORIOS/Silero-VAD
+	url = https://github.com/snakers4/silero-vad.git
+[submodule "FONTES/REPOSITORIOS/Smart-Turn"]
+	path = FONTES/REPOSITORIOS/Smart-Turn
+	url = https://github.com/pipecat-ai/smart-turn.git
+[submodule "FONTES/REPOSITORIOS/Tauri"]
+	path = FONTES/REPOSITORIOS/Tauri
+	url = https://github.com/tauri-apps/tauri.git
+[submodule "FONTES/REPOSITORIOS/WhisperCPP"]
+	path = FONTES/REPOSITORIOS/WhisperCPP
+	url = https://github.com/ggml-org/whisper.cpp.git

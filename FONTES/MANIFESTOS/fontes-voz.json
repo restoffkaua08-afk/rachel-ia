@@ -1,0 +1,100 @@
+﻿{
+    "projeto":  "Rachel IA",
+    "modulo":  "Sistema de conversa por voz",
+    "status":  "fontes validadas",
+    "total_fontes_esperadas":  9,
+    "total_fontes_validadas":  9,
+    "fontes":  [
+                   {
+                       "nome":  "Pipecat",
+                       "funcao":  "Orquestração da conversa contínua",
+                       "repositorio":  "https://github.com/pipecat-ai/pipecat.git",
+                       "branch":  "main",
+                       "commit":  "b9c08bfc37fe63737957c5bcf9461efe13cf3295",
+                       "arquivos":  1601,
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:12:44-03:00"
+                   },
+                   {
+                       "nome":  "Smart-Turn",
+                       "funcao":  "Detecção semântica do final dos turnos",
+                       "repositorio":  "https://github.com/pipecat-ai/smart-turn.git",
+                       "branch":  "main",
+                       "commit":  "4786657e242dfe77dd138699ac564ee074a2a543",
+                       "arquivos":  49,
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:12:44-03:00"
+                   },
+                   {
+                       "nome":  "WhisperCPP",
+                       "funcao":  "Reconhecimento local de fala",
+                       "repositorio":  "https://github.com/ggml-org/whisper.cpp.git",
+                       "branch":  "master",
+                       "commit":  "592feef04a1802b18cbeffd0fd0eb5d02570c2ec",
+                       "arquivos":  2084,
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:12:44-03:00"
+                   },
+                   {
+                       "nome":  "Silero-VAD",
+                       "funcao":  "Detecção de voz e silêncio",
+                       "repositorio":  "https://github.com/snakers4/silero-vad.git",
+                       "branch":  "master",
+                       "commit":  "76e3dc408eb2a5c655c34e230d2d5459b4439daa",
+                       "arquivos":  140,
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:12:45-03:00"
+                   },
+                   {
+                       "nome":  "Chatterbox",
+                       "funcao":  "Síntese de voz natural e expressiva",
+                       "repositorio":  "https://github.com/resemble-ai/chatterbox.git",
+                       "branch":  "master",
+                       "commit":  "5de7a54aa4e5e2baadb0182dde554908b48b85c2",
+                       "arquivos":  95,
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:12:45-03:00"
+                   },
+                   {
+                       "nome":  "Piper",
+                       "funcao":  "Síntese de voz local no modo rápido",
+                       "repositorio":  "https://github.com/OHF-Voice/piper1-gpl.git",
+                       "branch":  "main",
+                       "commit":  "711b7b452dc3b1023d1f92f5edce7444cee90273",
+                       "arquivos":  168,
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:12:45-03:00"
+                   },
+                   {
+                       "nome":  "LiveKit-Agents",
+                       "funcao":  "Sessões de voz em tempo real",
+                       "repositorio":  "https://github.com/livekit/agents.git",
+                       "branch":  "main",
+                       "commit":  "06c71f9c718e24a151630447755a9fa86851b389",
+                       "arquivos":  1360,
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:12:45-03:00"
+                   },
+                   {
+                       "nome":  "LiveKit-Agent-Starter",
+                       "funcao":  "Exemplo funcional de agente de voz",
+                       "repositorio":  "https://github.com/livekit-examples/agent-starter-python.git",
+                       "branch":  "main",
+                       "commit":  "ddc18eb8519cbfdb17d56c679f363a6507f600ec",
+                       "arquivos":  52,
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:12:46-03:00"
+                   },
+                   {
+                       "nome":  "HuggingFace-Speech-to-Speech",
+                       "funcao":  "Referência de pipeline local completo",
+                       "repositorio":  "https://github.com/huggingface/speech-to-speech.git",
+                       "branch":  "main",
+                       "commit":  "5a0c79f538488dd508e5353ba58f37a101aaf9cb",
+                       "arquivos":  241,
+                       "validado":  true,
+                       "validado_em":  "2026-08-14T13:12:46-03:00"
+                   }
+               ],
+    "validado_em":  "2026-08-14T13:12:46-03:00"
+}

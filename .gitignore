@@ -1,0 +1,131 @@
+﻿# Segredos e ambientes
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+credentials*
+secrets*
+token*
+*_token.*
+service-account*
+service_account*
+
+# Python
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+
+# Node e frontend
+node_modules/
+.next/
+.nuxt/
+.svelte-kit/
+coverage/
+.npm/
+.pnpm-store/
+.yarn/cache/
+
+# Rust e compilação
+target/
+bin/
+obj/
+
+# IDE e sistema operacional
+.vscode/
+.idea/
+.vs/
+.DS_Store
+Thumbs.db
+desktop.ini
+*.user
+*.suo
+
+# Modelos e pesos
+MODELS/*
+!MODELS/.gitkeep
+RACHEL_MODEL/MODELS/*
+!RACHEL_MODEL/MODELS/.gitkeep
+RACHEL_VOICE/MODELS/*
+!RACHEL_VOICE/MODELS/.gitkeep
+RACHEL_VOICE/WAKE_WORD/MODELS/*
+!RACHEL_VOICE/WAKE_WORD/MODELS/.gitkeep
+*.gguf
+*.ggml
+*.bin
+*.onnx
+*.safetensors
+*.ckpt
+*.pth
+*.pt
+
+# Dados privados e bancos
+DATA/*
+!DATA/.gitkeep
+RACHEL_MEMORY/DATA/*
+!RACHEL_MEMORY/DATA/.gitkeep
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+*.parquet
+
+# Conversas, memória e conhecimento pessoal
+RACHEL_MEMORY/VERSIONS/*
+!RACHEL_MEMORY/VERSIONS/.gitkeep
+RACHEL_KNOWLEDGE/INDEXES/*
+!RACHEL_KNOWLEDGE/INDEXES/.gitkeep
+RACHEL_KNOWLEDGE/VECTOR_STORE/*
+!RACHEL_KNOWLEDGE/VECTOR_STORE/.gitkeep
+
+# Áudio e capturas
+RACHEL_VOICE/AUDIO/*
+!RACHEL_VOICE/AUDIO/.gitkeep
+*.wav
+*.mp3
+*.flac
+*.m4a
+*.webm
+
+# Arquivos temporários
+CACHE/
+**/CACHE/*
+**/cache/*
+**/logs/*
+LOGS/*
+BACKUPS/*
+TEMP/
+TMP/
+*.tmp
+*.temp
+*.log
+
+# Downloads e sessões do navegador
+RACHEL_BROWSER/DOWNLOADS/*
+!RACHEL_BROWSER/DOWNLOADS/.gitkeep
+RACHEL_BROWSER/SESSIONS/*
+!RACHEL_BROWSER/SESSIONS/.gitkeep
+
+# Relatórios locais
+RACHEL_EVALUATION/REPORTS/*
+!RACHEL_EVALUATION/REPORTS/.gitkeep
+
+# Arquivos compactados
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz

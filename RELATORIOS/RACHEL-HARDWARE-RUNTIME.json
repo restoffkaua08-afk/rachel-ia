@@ -1,0 +1,113 @@
+{
+    "schema":  "rachel-hardware-runtime-v1",
+    "criado_em":  "2026-08-14T18:23:44.7192010Z",
+    "computador":  {
+                       "fabricante":  "HP",
+                       "modelo":  "HP 250 15.6 inch G9 Notebook PC",
+                       "memoria_total_gb":  7.68
+                   },
+    "sistema":  {
+                    "nome":  "Microsoft Windows 11 Home Single Language",
+                    "versao":  "10.0.26200",
+                    "arquitetura":  "64 bits",
+                    "memoria_livre":  0.79
+                },
+    "processadores":  [
+                          {
+                              "nome":  "12th Gen Intel(R) Core(TM) i3-1215U",
+                              "nucleos":  6,
+                              "processadores_logicos":  8,
+                              "clock_maximo_mhz":  1200
+                          }
+                      ],
+    "gpus":  [
+                 {
+                     "nome":  "Intel(R) UHD Graphics",
+                     "driver":  "32.0.101.5763",
+                     "memoria_gb":  3.84
+                 }
+             ],
+    "discos":  [
+                   {
+                       "unidade":  "C:",
+                       "total_gb":  237.23,
+                       "livre_gb":  55.11
+                   }
+               ],
+    "ferramentas":  {
+                        "git":  {
+                                    "instalado":  true,
+                                    "caminho":  "C:\\Program Files\\Git\\cmd\\git.exe",
+                                    "versao":  "git version 2.53.0.windows.3"
+                                },
+                        "gh":  {
+                                   "instalado":  true,
+                                   "caminho":  "C:\\Program Files\\GitHub CLI\\gh.exe",
+                                   "versao":  "gh version 2.97.0 (2026-07-31) https://github.com/cli/cli/releases/tag/v2.97.0"
+                               },
+                        "python":  {
+                                       "instalado":  true,
+                                       "caminho":  "C:\\Users\\Kauã\\AppData\\Local\\Programs\\Python\\Python312\\python.exe",
+                                       "versao":  "Python 3.12.10"
+                                   },
+                        "uv":  {
+                                   "instalado":  true,
+                                   "caminho":  "C:\\Users\\Kauã\\.local\\bin\\uv.exe",
+                                   "versao":  "uv 0.11.7 (9d177269e 2026-04-15 x86_64-pc-windows-msvc)"
+                               },
+                        "node":  {
+                                     "instalado":  true,
+                                     "caminho":  "C:\\Program Files\\nodejs\\node.exe",
+                                     "versao":  "v25.9.0"
+                                 },
+                        "npm":  {
+                                    "instalado":  true,
+                                    "caminho":  "C:\\Program Files\\nodejs\\npm.ps1",
+                                    "versao":  "11.12.1"
+                                },
+                        "rust":  {
+                                     "instalado":  false,
+                                     "caminho":  null,
+                                     "versao":  null
+                                 },
+                        "cargo":  {
+                                      "instalado":  false,
+                                      "caminho":  null,
+                                      "versao":  null
+                                  },
+                        "cmake":  {
+                                      "instalado":  false,
+                                      "caminho":  null,
+                                      "versao":  null
+                                  },
+                        "docker":  {
+                                       "instalado":  false,
+                                       "caminho":  null,
+                                       "versao":  null
+                                   },
+                        "dotnet":  {
+                                       "instalado":  true,
+                                       "caminho":  "C:\\Program Files\\dotnet\\dotnet.exe",
+                                       "versao":  "10.0.202"
+                                   },
+                        "java":  {
+                                     "instalado":  true,
+                                     "caminho":  "C:\\Program Files\\Common Files\\Oracle\\Java\\javapath\\java.exe",
+                                     "versao":  "java 21.0.10 2026-01-20 LTS Java(TM) SE Runtime Environment (build 21.0.10+8-LTS-217) Java HotSpot(TM) 64-Bit Server VM (build 21.0.10+8-LTS-217, mixed mode, sharing)"
+                                 },
+                        "ffmpeg":  {
+                                       "instalado":  false,
+                                       "caminho":  null,
+                                       "versao":  null
+                                   },
+                        "nvidia":  {
+                                       "instalado":  false,
+                                       "caminho":  null,
+                                       "versao":  null
+                                   }
+                    },
+    "fontes":  {
+                   "caminho":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS",
+                   "total":  23
+               }
+}

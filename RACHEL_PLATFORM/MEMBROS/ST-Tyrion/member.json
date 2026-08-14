@@ -1,0 +1,15 @@
+{
+    "schema_version":  "1.0",
+    "id":  "tyrion",
+    "nome":  "Tyrion",
+    "setor":  "ST-Tyrion",
+    "cargo":  "Supervisor dos órgãos",
+    "responsabilidade":  "Iniciar, parar, conectar, reiniciar e monitorar os órgãos da Rachel.",
+    "orgaos":  [
+                   "todos"
+               ],
+    "estado":  "registrado",
+    "executavel":  false,
+    "health":  "pending",
+    "requer_autorizacao":  false
+}

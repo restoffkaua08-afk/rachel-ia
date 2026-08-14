@@ -1,0 +1,16 @@
+{
+    "schema_version":  "1.0",
+    "id":  "visao",
+    "nome":  "Visão",
+    "setor":  "ST-Visao",
+    "cargo":  "Percepção multimodal",
+    "responsabilidade":  "Interpretar documentos, PDFs, imagens, código e outros arquivos.",
+    "orgaos":  [
+                   "docling",
+                   "presidio"
+               ],
+    "estado":  "registrado",
+    "executavel":  false,
+    "health":  "pending",
+    "requer_autorizacao":  false
+}

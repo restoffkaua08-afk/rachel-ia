@@ -1,0 +1,17 @@
+{
+    "schema_version":  "1.0",
+    "id":  "ned",
+    "nome":  "Ned",
+    "setor":  "ST-Ned",
+    "cargo":  "Diretor cognitivo",
+    "responsabilidade":  "Raciocínio, planejamento, decisões, revisão e seleção de modelos.",
+    "orgaos":  [
+                   "dspy",
+                   "litgpt",
+                   "letta-code"
+               ],
+    "estado":  "registrado",
+    "executavel":  false,
+    "health":  "pending",
+    "requer_autorizacao":  false
+}

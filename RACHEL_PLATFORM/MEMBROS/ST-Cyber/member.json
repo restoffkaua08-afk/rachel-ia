@@ -1,0 +1,16 @@
+{
+    "schema_version":  "1.0",
+    "id":  "cyber",
+    "nome":  "Cyber",
+    "setor":  "ST-Cyber",
+    "cargo":  "Segurança e permissões",
+    "responsabilidade":  "Políticas, privacidade, riscos, dados sensíveis e autorizações.",
+    "orgaos":  [
+                   "open-policy-agent",
+                   "presidio"
+               ],
+    "estado":  "registrado",
+    "executavel":  false,
+    "health":  "pending",
+    "requer_autorizacao":  true
+}

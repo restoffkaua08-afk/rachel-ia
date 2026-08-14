@@ -1,0 +1,17 @@
+{
+    "schema_version":  "1.0",
+    "id":  "arya",
+    "nome":  "Arya",
+    "setor":  "ST-Arya",
+    "cargo":  "Engenharia e execução",
+    "responsabilidade":  "Código, terminal, arquivos, navegador, ferramentas e automações.",
+    "orgaos":  [
+                   "openhands",
+                   "mcp-python-sdk",
+                   "playwright-mcp"
+               ],
+    "estado":  "registrado",
+    "executavel":  false,
+    "health":  "pending",
+    "requer_autorizacao":  true
+}

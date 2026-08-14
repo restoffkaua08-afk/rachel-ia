@@ -1,0 +1,15 @@
+{
+    "schema_version":  "1.0",
+    "id":  "jhon",
+    "nome":  "Jhon",
+    "setor":  "ST-Jhon",
+    "cargo":  "Observabilidade e diagnóstico",
+    "responsabilidade":  "Logs, erros, métricas, recursos, desempenho e saúde da plataforma.",
+    "orgaos":  [
+                   "supervisor-interno"
+               ],
+    "estado":  "registrado",
+    "executavel":  false,
+    "health":  "pending",
+    "requer_autorizacao":  false
+}

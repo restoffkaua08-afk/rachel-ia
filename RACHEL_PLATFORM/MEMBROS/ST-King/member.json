@@ -1,0 +1,17 @@
+{
+    "schema_version":  "1.0",
+    "id":  "king",
+    "nome":  "King",
+    "setor":  "ST-King",
+    "cargo":  "Comunicação interna",
+    "responsabilidade":  "Eventos, mensagens e comunicação entre núcleo, interface e membros.",
+    "orgaos":  [
+                   "mcp-python-sdk",
+                   "pipecat",
+                   "livekit-agents"
+               ],
+    "estado":  "registrado",
+    "executavel":  false,
+    "health":  "pending",
+    "requer_autorizacao":  false
+}

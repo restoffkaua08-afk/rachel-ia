@@ -1,0 +1,16 @@
+{
+    "schema_version":  "1.0",
+    "id":  "dany",
+    "nome":  "Dany",
+    "setor":  "ST-Dany",
+    "cargo":  "Treinamento e qualidade",
+    "responsabilidade":  "Testes, avaliações, feedback, comparação e melhoria controlada.",
+    "orgaos":  [
+                   "promptfoo",
+                   "dspy"
+               ],
+    "estado":  "registrado",
+    "executavel":  false,
+    "health":  "pending",
+    "requer_autorizacao":  false
+}

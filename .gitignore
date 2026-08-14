@@ -38,7 +38,7 @@ coverage/
 .pnpm-store/
 .yarn/cache/
 
-# Rust e compilação
+# Rust e compilaÃ§Ã£o
 target/
 bin/
 obj/
@@ -83,7 +83,7 @@ RACHEL_MEMORY/DATA/*
 *.sqlite3
 *.parquet
 
-# Conversas, memória e conhecimento pessoal
+# Conversas, memÃ³ria e conhecimento pessoal
 RACHEL_MEMORY/VERSIONS/*
 !RACHEL_MEMORY/VERSIONS/.gitkeep
 RACHEL_KNOWLEDGE/INDEXES/*
@@ -91,7 +91,7 @@ RACHEL_KNOWLEDGE/INDEXES/*
 RACHEL_KNOWLEDGE/VECTOR_STORE/*
 !RACHEL_KNOWLEDGE/VECTOR_STORE/.gitkeep
 
-# Áudio e capturas
+# Ãudio e capturas
 RACHEL_VOICE/AUDIO/*
 !RACHEL_VOICE/AUDIO/.gitkeep
 *.wav
@@ -100,7 +100,7 @@ RACHEL_VOICE/AUDIO/*
 *.m4a
 *.webm
 
-# Arquivos temporários
+# Arquivos temporÃ¡rios
 CACHE/
 **/CACHE/*
 **/cache/*
@@ -113,13 +113,13 @@ TMP/
 *.temp
 *.log
 
-# Downloads e sessões do navegador
+# Downloads e sessÃµes do navegador
 RACHEL_BROWSER/DOWNLOADS/*
 !RACHEL_BROWSER/DOWNLOADS/.gitkeep
 RACHEL_BROWSER/SESSIONS/*
 !RACHEL_BROWSER/SESSIONS/.gitkeep
 
-# Relatórios locais
+# RelatÃ³rios locais
 RACHEL_EVALUATION/REPORTS/*
 !RACHEL_EVALUATION/REPORTS/.gitkeep
 
@@ -139,3 +139,7 @@ RACHEL_PLATFORM/LOGS/*
 RACHEL_PLATFORM/STATE/*.json
 RACHEL_PLATFORM/MODELS/
 RACHEL_PLATFORM/CACHE/
+
+RACHEL_PLATFORM/TOOLS/*.exe
+RACHEL_PLATFORM/TOOLS/*.dll
+RACHEL_PLATFORM/TOOLS/*.zip

@@ -1,0 +1,16 @@
+{
+    "schema_version":  "1.0",
+    "id":  "bran",
+    "nome":  "Bran",
+    "setor":  "ST-Bran",
+    "cargo":  "Guardião da memória",
+    "responsabilidade":  "Memória de curto e longo prazo, conhecimento e recuperação semântica.",
+    "orgaos":  [
+                   "qdrant",
+                   "privategpt"
+               ],
+    "estado":  "registrado",
+    "executavel":  false,
+    "health":  "pending",
+    "requer_autorizacao":  false
+}

@@ -1,0 +1,128 @@
+{
+    "schema_version":  "1.0",
+    "sistema":  "Rachel IA",
+    "lider":  "Rachel",
+    "total_membros":  10,
+    "convencao_pastas":  "ST-Nome",
+    "membros":  [
+                    {
+                        "id":  "tyrion",
+                        "nome":  "Tyrion",
+                        "pasta":  "ST-Tyrion",
+                        "cargo":  "Supervisor dos órgãos",
+                        "responsabilidade":  "Iniciar, parar, conectar, reiniciar e monitorar os órgãos da Rachel.",
+                        "orgaos":  [
+                                       "todos"
+                                   ]
+                    },
+                    {
+                        "id":  "ned",
+                        "nome":  "Ned",
+                        "pasta":  "ST-Ned",
+                        "cargo":  "Diretor cognitivo",
+                        "responsabilidade":  "Raciocínio, planejamento, decisões, revisão e seleção de modelos.",
+                        "orgaos":  [
+                                       "dspy",
+                                       "litgpt",
+                                       "letta-code"
+                                   ]
+                    },
+                    {
+                        "id":  "bran",
+                        "nome":  "Bran",
+                        "pasta":  "ST-Bran",
+                        "cargo":  "Guardião da memória",
+                        "responsabilidade":  "Memória de curto e longo prazo, conhecimento e recuperação semântica.",
+                        "orgaos":  [
+                                       "qdrant",
+                                       "privategpt"
+                                   ]
+                    },
+                    {
+                        "id":  "visao",
+                        "nome":  "Visão",
+                        "pasta":  "ST-Visao",
+                        "cargo":  "Percepção multimodal",
+                        "responsabilidade":  "Interpretar documentos, PDFs, imagens, código e outros arquivos.",
+                        "orgaos":  [
+                                       "docling",
+                                       "presidio"
+                                   ]
+                    },
+                    {
+                        "id":  "stella",
+                        "nome":  "Stella",
+                        "pasta":  "ST-Stella",
+                        "cargo":  "Voz e audição",
+                        "responsabilidade":  "Ativação por voz, transcrição, detecção de turnos e síntese de fala.",
+                        "orgaos":  [
+                                       "whispercpp",
+                                       "silero-vad",
+                                       "smart-turn",
+                                       "openwakeword",
+                                       "pipecat",
+                                       "chatterbox",
+                                       "piper",
+                                       "huggingface-speech-to-speech",
+                                       "livekit-agents",
+                                       "livekit-agent-starter"
+                                   ]
+                    },
+                    {
+                        "id":  "arya",
+                        "nome":  "Arya",
+                        "pasta":  "ST-Arya",
+                        "cargo":  "Engenharia e execução",
+                        "responsabilidade":  "Código, terminal, arquivos, navegador, ferramentas e automações.",
+                        "orgaos":  [
+                                       "openhands",
+                                       "mcp-python-sdk",
+                                       "playwright-mcp"
+                                   ]
+                    },
+                    {
+                        "id":  "cyber",
+                        "nome":  "Cyber",
+                        "pasta":  "ST-Cyber",
+                        "cargo":  "Segurança e permissões",
+                        "responsabilidade":  "Políticas, privacidade, riscos, dados sensíveis e autorizações.",
+                        "orgaos":  [
+                                       "open-policy-agent",
+                                       "presidio"
+                                   ]
+                    },
+                    {
+                        "id":  "jhon",
+                        "nome":  "Jhon",
+                        "pasta":  "ST-Jhon",
+                        "cargo":  "Observabilidade e diagnóstico",
+                        "responsabilidade":  "Logs, erros, métricas, recursos, desempenho e saúde da plataforma.",
+                        "orgaos":  [
+                                       "supervisor-interno"
+                                   ]
+                    },
+                    {
+                        "id":  "dany",
+                        "nome":  "Dany",
+                        "pasta":  "ST-Dany",
+                        "cargo":  "Treinamento e qualidade",
+                        "responsabilidade":  "Testes, avaliações, feedback, comparação e melhoria controlada.",
+                        "orgaos":  [
+                                       "promptfoo",
+                                       "dspy"
+                                   ]
+                    },
+                    {
+                        "id":  "king",
+                        "nome":  "King",
+                        "pasta":  "ST-King",
+                        "cargo":  "Comunicação interna",
+                        "responsabilidade":  "Eventos, mensagens e comunicação entre núcleo, interface e membros.",
+                        "orgaos":  [
+                                       "mcp-python-sdk",
+                                       "pipecat",
+                                       "livekit-agents"
+                                   ]
+                    }
+                ]
+}

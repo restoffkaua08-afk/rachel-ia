@@ -1,0 +1,24 @@
+{
+    "schema_version":  "1.0",
+    "id":  "stella",
+    "nome":  "Stella",
+    "setor":  "ST-Stella",
+    "cargo":  "Voz e audição",
+    "responsabilidade":  "Ativação por voz, transcrição, detecção de turnos e síntese de fala.",
+    "orgaos":  [
+                   "whispercpp",
+                   "silero-vad",
+                   "smart-turn",
+                   "openwakeword",
+                   "pipecat",
+                   "chatterbox",
+                   "piper",
+                   "huggingface-speech-to-speech",
+                   "livekit-agents",
+                   "livekit-agent-starter"
+               ],
+    "estado":  "registrado",
+    "executavel":  false,
+    "health":  "pending",
+    "requer_autorizacao":  false
+}

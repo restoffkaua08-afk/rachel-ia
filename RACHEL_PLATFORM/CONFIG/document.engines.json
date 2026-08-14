@@ -1,0 +1,50 @@
+{
+  "schema_version": "1.0",
+  "default_text_engine": "stdlib",
+  "engines": {
+    "stdlib": {
+      "enabled": true,
+      "runtime": "current",
+      "extensions": [
+        ".txt",
+        ".md",
+        ".json",
+        ".csv",
+        ".py",
+        ".js",
+        ".ts",
+        ".tsx",
+        ".jsx",
+        ".html",
+        ".css",
+        ".sql",
+        ".ps1",
+        ".toml",
+        ".yaml",
+        ".yml",
+        ".xml"
+      ]
+    },
+    "docling": {
+      "enabled": true,
+      "runtime": "isolated",
+      "python": "AMBIENTES/docling/Scripts/python.exe",
+      "adapter": "RACHEL_PLATFORM/RUNTIME/SRC/docling_adapter.py",
+      "extensions": [
+        ".pdf",
+        ".docx",
+        ".pptx",
+        ".xlsx",
+        ".html",
+        ".htm",
+        ".png",
+        ".jpg",
+        ".jpeg",
+        ".tiff",
+        ".tif",
+        ".bmp",
+        ".webp"
+      ]
+    }
+  }
+}

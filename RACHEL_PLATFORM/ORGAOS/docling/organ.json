@@ -101,13 +101,13 @@
                            "arquivos":  4
                        }
                    ],
-    "status":  "conectado",
+    "status":  "operacional",
     "integracao":  {
                        "obrigatoria":  true,
-                       "adaptador_criado":  false,
-                       "dependencias_auditadas":  false,
-                       "ambiente_preparado":  false,
-                       "testes_executados":  false,
+                       "adaptador_criado":  true,
+                       "dependencias_auditadas":  true,
+                       "ambiente_preparado":  true,
+                       "testes_executados":  true,
                        "conectado_ao_cerebro":  false,
                        "habilitado":  true
                    }

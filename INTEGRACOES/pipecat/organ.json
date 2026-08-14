@@ -1,0 +1,116 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "Pipecat",
+    "alias":  "rachel.pipecat",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Pipecat",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\pipecat",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\pipecat",
+    "repositorio_git":  true,
+    "commit":  "b9c08bfc37fe63737957c5bcf9461efe13cf3295",
+    "origem_git":  "https://github.com/pipecat-ai/pipecat.git",
+    "total_arquivos":  1572,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Pipecat\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Pipecat\\examples\\multi-worker\\ui-worker\\async-tasks\\client\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Pipecat\\examples\\multi-worker\\ui-worker\\deixis\\client\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Pipecat\\examples\\multi-worker\\ui-worker\\document-review\\client\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Pipecat\\examples\\multi-worker\\ui-worker\\form-fill\\client\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Pipecat\\examples\\multi-worker\\ui-worker\\hello-snapshot\\client\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Pipecat\\examples\\multi-worker\\ui-worker\\shopping-list\\client\\package.json"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Pipecat\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  1204
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  138
+                       },
+                       {
+                           "extensao":  ".yaml",
+                           "arquivos":  46
+                       },
+                       {
+                           "extensao":  ".jinja2",
+                           "arquivos":  38
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  22
+                       },
+                       {
+                           "extensao":  ".wav",
+                           "arquivos":  16
+                       },
+                       {
+                           "extensao":  ".js",
+                           "arquivos":  14
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  12
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  11
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  10
+                       },
+                       {
+                           "extensao":  ".css",
+                           "arquivos":  9
+                       },
+                       {
+                           "extensao":  ".html",
+                           "arquivos":  8
+                       },
+                       {
+                           "extensao":  ".tsx",
+                           "arquivos":  7
+                       },
+                       {
+                           "extensao":  ".sh",
+                           "arquivos":  6
+                       },
+                       {
+                           "extensao":  ".example",
+                           "arquivos":  5
+                       },
+                       {
+                           "extensao":  ".ts",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".jpg",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".svg",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".mjs",
+                           "arquivos":  2
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

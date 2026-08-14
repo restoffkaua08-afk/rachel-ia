@@ -1,0 +1,62 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "Chatterbox",
+    "alias":  "rachel.chatterbox",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Chatterbox",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\chatterbox",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\chatterbox",
+    "repositorio_git":  true,
+    "commit":  "5de7a54aa4e5e2baadb0182dde554908b48b85c2",
+    "origem_git":  "https://github.com/resemble-ai/chatterbox.git",
+    "total_arquivos":  66,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Chatterbox\\pyproject.toml"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Chatterbox\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  59
+                       },
+                       {
+                           "extensao":  ".toml",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".jpg",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  1
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

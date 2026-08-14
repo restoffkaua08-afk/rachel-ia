@@ -1,0 +1,148 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "Qdrant",
+    "alias":  "rachel.qdrant",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\qdrant",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\qdrant",
+    "repositorio_git":  true,
+    "commit":  "74f3e85b9473c62560006c043e13737ce6b48412",
+    "origem_git":  "https://github.com/qdrant/qdrant.git",
+    "total_arquivos":  2235,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\edge\\python\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\tests\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\tools\\schema2openapi\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\api\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\blobstore\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\bm25\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\collection\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\common\\cancel\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\common\\common\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\common\\dataset\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\common\\io_bridge\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\common\\io_bridge_object_store\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\common\\io_bridge_uio_grpc\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\common\\issues\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\edge\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\edge\\ffi\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\edge\\ffi\\bindgen\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\edge\\publish\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\edge\\publish\\examples\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\edge\\python\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\edge\\python\\codegen\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\edge\\tools\\shard_query\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\edge\\tools\\shard_update\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\gpu\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\macros\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\posting_list\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\quantization\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\segment\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\shard\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\sparse\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\storage\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\trififo\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\uio-grpc-client\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\lib\\wal\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\tests\\consensus_tests\\docker-compose.yaml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\tools\\compose\\docker-compose.yaml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\tools\\schema2openapi\\Dockerfile"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Qdrant\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".rs",
+                           "arquivos":  1711
+                       },
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  225
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  60
+                       },
+                       {
+                           "extensao":  ".toml",
+                           "arquivos":  40
+                       },
+                       {
+                           "extensao":  ".sh",
+                           "arquivos":  33
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  26
+                       },
+                       {
+                           "extensao":  ".yaml",
+                           "arquivos":  24
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  24
+                       },
+                       {
+                           "extensao":  ".comp",
+                           "arquivos":  22
+                       },
+                       {
+                           "extensao":  ".proto",
+                           "arquivos":  18
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  8
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  6
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  6
+                       },
+                       {
+                           "extensao":  ".c",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".svg",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".pem",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".lock",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".nix",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".js",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".cfg",
+                           "arquivos":  2
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

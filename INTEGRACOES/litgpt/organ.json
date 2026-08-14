@@ -1,0 +1,75 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "LitGPT",
+    "alias":  "rachel.litgpt",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LitGPT",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\litgpt",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\litgpt",
+    "repositorio_git":  true,
+    "commit":  "7bf2960dfb26bae8e815c9a16a22732974824ac1",
+    "origem_git":  "https://github.com/Lightning-AI/litgpt.git",
+    "total_arquivos":  252,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LitGPT\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LitGPT\\.devcontainer\\Dockerfile"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LitGPT\\LICENSE.md"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  137
+                       },
+                       {
+                           "extensao":  ".yaml",
+                           "arquivos":  49
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  31
+                       },
+                       {
+                           "extensao":  ".jpg",
+                           "arquivos":  9
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  6
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  6
+                       },
+                       {
+                           "extensao":  ".webp",
+                           "arquivos":  6
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  5
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".cff",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".toml",
+                           "arquivos":  1
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

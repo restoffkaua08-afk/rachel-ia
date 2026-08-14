@@ -1,0 +1,113 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "OpenHands",
+    "alias":  "rachel.openhands",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\OpenHands",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\openhands",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\openhands",
+    "repositorio_git":  true,
+    "commit":  "f6097bda536eda214ec9a8d1542f5245dd99dbac",
+    "origem_git":  "https://github.com/OpenHands/OpenHands.git",
+    "total_arquivos":  1993,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\OpenHands\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\OpenHands\\electron\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\OpenHands\\examples\\acp-docker\\docker-compose.yml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\OpenHands\\docker\\Dockerfile"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\OpenHands\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".tsx",
+                           "arquivos":  854
+                       },
+                       {
+                           "extensao":  ".ts",
+                           "arquivos":  846
+                       },
+                       {
+                           "extensao":  ".svg",
+                           "arquivos":  143
+                       },
+                       {
+                           "extensao":  ".mjs",
+                           "arquivos":  31
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  25
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  23
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  12
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  8
+                       },
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  8
+                       },
+                       {
+                           "extensao":  ".yaml",
+                           "arquivos":  7
+                       },
+                       {
+                           "extensao":  ".mts",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".sh",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".cjs",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".js",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".ico",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".txt",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".css",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".sample",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".dockerignore",
+                           "arquivos":  1
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

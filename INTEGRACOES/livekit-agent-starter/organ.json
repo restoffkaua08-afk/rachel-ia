@@ -1,0 +1,71 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "LiveKit-Agent-Starter",
+    "alias":  "rachel.livekit-agent-starter",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agent-Starter",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\livekit-agent-starter",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\livekit-agent-starter",
+    "repositorio_git":  true,
+    "commit":  "ddc18eb8519cbfdb17d56c679f363a6507f600ec",
+    "origem_git":  "https://github.com/livekit-examples/agent-starter-python.git",
+    "total_arquivos":  23,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agent-Starter\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agent-Starter\\Dockerfile"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agent-Starter\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  8
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".example",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".dockerignore",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".toml",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".yaml",
+                           "arquivos":  1
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

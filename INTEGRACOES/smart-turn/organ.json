@@ -1,0 +1,58 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "Smart-Turn",
+    "alias":  "rachel.smart-turn",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Smart-Turn",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\smart-turn",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\smart-turn",
+    "repositorio_git":  true,
+    "commit":  "4786657e242dfe77dd138699ac564ee074a2a543",
+    "origem_git":  "https://github.com/pipecat-ai/smart-turn.git",
+    "total_arquivos":  20,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Smart-Turn\\requirements.txt"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Smart-Turn\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  11
+                       },
+                       {
+                           "extensao":  ".txt",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".gitattributes",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  1
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

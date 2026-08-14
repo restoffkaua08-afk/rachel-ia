@@ -1,0 +1,70 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "OpenWakeWord",
+    "alias":  "rachel.openwakeword",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\OpenWakeWord",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\openwakeword",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\openwakeword",
+    "repositorio_git":  true,
+    "commit":  "368c03716d1e92591906a84949bc477f3a834455",
+    "origem_git":  "https://github.com/dscripka/openWakeWord.git",
+    "total_arquivos":  69,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\OpenWakeWord\\pyproject.toml"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\OpenWakeWord\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".wav",
+                           "arquivos":  26
+                       },
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  18
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  11
+                       },
+                       {
+                           "extensao":  ".ipynb",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".toml",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".html",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  1
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

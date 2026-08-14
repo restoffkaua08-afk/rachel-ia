@@ -1,0 +1,207 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "LiveKit-Agents",
+    "alias":  "rachel.livekit-agents",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\livekit-agents",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\livekit-agents",
+    "repositorio_git":  true,
+    "commit":  "06c71f9c718e24a151630447755a9fa86851b389",
+    "origem_git":  "https://github.com/livekit/agents.git",
+    "total_arquivos":  1315,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\avatar\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\drive_thru\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\expressive_agent\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\frontdesk\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\healthcare\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\homepage\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\hotel_receptionist\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\inference\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\survey\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\voice_agents\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-agents\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-blockguard\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-durable\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-anam\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-anthropic\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-assemblyai\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-asyncai\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-avatario\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-avatartalk\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-aws\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-azure\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-baseten\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-bey\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-bithuman\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-bland\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-browser\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-cambai\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-cartesia\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-cerebras\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-clova\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-deepgram\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-did\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-elevenlabs\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-fal\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-fireworksai\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-fishaudio\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-gladia\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-gnani\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-google\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-gradium\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-groq\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-hamming\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-hedra\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-hume\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-inworld\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-keyframe\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-krisp\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-langchain\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-lemonslice\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-liveavatar\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-lmnt\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-minimal\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-minimax\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-mistralai\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-murf\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-neuphonic\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-nltk\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-nvidia\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-openai\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-perplexity\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-phonic\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-protoface\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-resemble\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-respeecher\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-rime\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-rtzr\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-runway\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-sarvam\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-silero\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-simli\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-simplismart\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-slng\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-smallestai\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-soniox\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-spatius\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-speechify\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-speechmatics\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-spitch\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-tavus\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-telnyx\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-trugen\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-turn-detector\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-ultravox\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-upliftai\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-plugins-xai\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\livekit-plugins\\livekit-durable\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\tests\\docker-compose.yml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\avatar\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\drive_thru\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\expressive_agent\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\frontdesk\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\healthcare\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\homepage\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\hotel_receptionist\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\inference\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\examples\\survey\\Dockerfile"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\LICENSE",
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\LiveKit-Agents\\NOTICE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  938
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  128
+                       },
+                       {
+                           "extensao":  ".toml",
+                           "arquivos":  86
+                       },
+                       {
+                           "extensao":  ".typed",
+                           "arquivos":  73
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  17
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  15
+                       },
+                       {
+                           "extensao":  ".dockerignore",
+                           "arquivos":  8
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  8
+                       },
+                       {
+                           "extensao":  ".ogg",
+                           "arquivos":  7
+                       },
+                       {
+                           "extensao":  ".yaml",
+                           "arquivos":  6
+                       },
+                       {
+                           "extensao":  ".txt",
+                           "arquivos":  5
+                       },
+                       {
+                           "extensao":  ".gitattributes",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".wav",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".c",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".mp3",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".onnx",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".opus",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".toxiproxy",
+                           "arquivos":  1
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

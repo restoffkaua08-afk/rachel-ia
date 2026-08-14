@@ -1,0 +1,115 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "HuggingFace-Speech-to-Speech",
+    "alias":  "rachel.huggingface-speech-to-speech",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\HuggingFace-Speech-to-Speech",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\huggingface-speech-to-speech",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\huggingface-speech-to-speech",
+    "repositorio_git":  true,
+    "commit":  "5a0c79f538488dd508e5353ba58f37a101aaf9cb",
+    "origem_git":  "https://github.com/huggingface/speech-to-speech.git",
+    "total_arquivos":  212,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\HuggingFace-Speech-to-Speech\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\HuggingFace-Speech-to-Speech\\demo\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\HuggingFace-Speech-to-Speech\\demo\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\HuggingFace-Speech-to-Speech\\docker-compose.yml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\HuggingFace-Speech-to-Speech\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\HuggingFace-Speech-to-Speech\\demo\\Dockerfile"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\HuggingFace-Speech-to-Speech\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  158
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  12
+                       },
+                       {
+                           "extensao":  ".js",
+                           "arquivos":  10
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  5
+                       },
+                       {
+                           "extensao":  ".mjs",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".dockerignore",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".gif",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".html",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".wav",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".txt",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".css",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".in",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".DS_Store",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".arm64",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".svg",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".npmrc",
+                           "arquivos":  1
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

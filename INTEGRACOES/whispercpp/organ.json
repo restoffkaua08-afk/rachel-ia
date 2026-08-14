@@ -1,0 +1,175 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "WhisperCPP",
+    "alias":  "rachel.whispercpp",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\whispercpp",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\whispercpp",
+    "repositorio_git":  true,
+    "commit":  "592feef04a1802b18cbeffd0fd0eb5d02570c2ec",
+    "origem_git":  "https://github.com/ggml-org/whisper.cpp.git",
+    "total_arquivos":  2055,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\tests\\earnings21\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\tests\\librispeech\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\bindings\\javascript\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\addon.node\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\wchess\\wchess.wasm\\chessboardjs-1.0.0\\js\\chessboard-1.0.0\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\bindings\\go\\go.mod",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\bindings\\java\\build.gradle",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\whisper.android\\build.gradle",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\whisper.android\\app\\build.gradle",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\whisper.android\\lib\\build.gradle",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\whisper.android.java\\build.gradle",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\whisper.android.java\\app\\build.gradle",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\bindings\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\bindings\\javascript\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\addon.node\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\bench\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\bench.wasm\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\cli\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\command\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\command.wasm\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\deprecation-warning\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\lsp\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\parakeet-cli\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\parakeet-quantize\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\quantize\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\server\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\stream\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\stream.wasm\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\sycl\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\talk-llama\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\vad-speech-segments\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\wchess\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\wchess\\libwchess\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\wchess\\wchess.cmd\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\wchess\\wchess.wasm\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\whisper.android\\lib\\src\\main\\jni\\whisper\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\whisper.android.java\\app\\src\\main\\jni\\whisper\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\examples\\whisper.wasm\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-blas\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-cann\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-cpu\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-cuda\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-et\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-et\\et-kernels\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-hexagon\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-hexagon\\htp\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-hip\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-metal\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-musa\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-opencl\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-openvino\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-rpc\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-sycl\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-virtgpu\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-virtgpu\\backend\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-vulkan\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-vulkan\\vulkan-shaders\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-webgpu\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-zdnn\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\ggml\\src\\ggml-zendnn\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\src\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\tests\\CMakeLists.txt"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\WhisperCPP\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".cpp",
+                           "arquivos":  437
+                       },
+                       {
+                           "extensao":  ".h",
+                           "arquivos":  217
+                       },
+                       {
+                           "extensao":  ".cu",
+                           "arquivos":  187
+                       },
+                       {
+                           "extensao":  ".cl",
+                           "arquivos":  167
+                       },
+                       {
+                           "extensao":  ".comp",
+                           "arquivos":  143
+                       },
+                       {
+                           "extensao":  ".c",
+                           "arquivos":  114
+                       },
+                       {
+                           "extensao":  ".cuh",
+                           "arquivos":  86
+                       },
+                       {
+                           "extensao":  ".hpp",
+                           "arquivos":  70
+                       },
+                       {
+                           "extensao":  ".txt",
+                           "arquivos":  69
+                       },
+                       {
+                           "extensao":  ".java",
+                           "arquivos":  45
+                       },
+                       {
+                           "extensao":  ".wgsl",
+                           "arquivos":  43
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  42
+                       },
+                       {
+                           "extensao":  ".sh",
+                           "arquivos":  33
+                       },
+                       {
+                           "extensao":  ".rb",
+                           "arquivos":  33
+                       },
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  31
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  27
+                       },
+                       {
+                           "extensao":  ".glsl",
+                           "arquivos":  26
+                       },
+                       {
+                           "extensao":  ".xml",
+                           "arquivos":  25
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  23
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  22
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

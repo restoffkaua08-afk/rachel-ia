@@ -1,0 +1,71 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "Playwright-MCP",
+    "alias":  "rachel.playwright-mcp",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Playwright-MCP",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\playwright-mcp",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\playwright-mcp",
+    "repositorio_git":  true,
+    "commit":  "7e0457a7cbf88823bf0146d12c46ae12c6818247",
+    "origem_git":  "https://github.com/microsoft/playwright-mcp.git",
+    "total_arquivos":  34,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Playwright-MCP\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Playwright-MCP\\Dockerfile"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Playwright-MCP\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".ts",
+                           "arquivos":  10
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  6
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".js",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".pem",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".cnf",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".npmignore",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  1
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

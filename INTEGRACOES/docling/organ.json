@@ -1,0 +1,114 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "Docling",
+    "alias":  "rachel.docling",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Docling",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\docling",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\docling",
+    "repositorio_git":  true,
+    "commit":  "61d76f1ff3f8428065465889f7b4577da7df704c",
+    "origem_git":  "https://github.com/docling-project/docling.git",
+    "total_arquivos":  1638,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Docling\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Docling\\packages\\docling\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Docling\\packages\\docling-client\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Docling\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Docling\\.actor\\Dockerfile"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Docling\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  428
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  340
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  265
+                       },
+                       {
+                           "extensao":  ".itxt",
+                           "arquivos":  130
+                       },
+                       {
+                           "extensao":  ".pdf",
+                           "arquivos":  75
+                       },
+                       {
+                           "extensao":  ".txt",
+                           "arquivos":  70
+                       },
+                       {
+                           "extensao":  ".html",
+                           "arquivos":  44
+                       },
+                       {
+                           "extensao":  ".docx",
+                           "arquivos":  32
+                       },
+                       {
+                           "extensao":  ".ipynb",
+                           "arquivos":  24
+                       },
+                       {
+                           "extensao":  ".tex",
+                           "arquivos":  24
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  23
+                       },
+                       {
+                           "extensao":  ".xml",
+                           "arquivos":  21
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  19
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  12
+                       },
+                       {
+                           "extensao":  ".pptx",
+                           "arquivos":  10
+                       },
+                       {
+                           "extensao":  ".xlsx",
+                           "arquivos":  10
+                       },
+                       {
+                           "extensao":  ".csv",
+                           "arquivos":  9
+                       },
+                       {
+                           "extensao":  ".bbl",
+                           "arquivos":  6
+                       },
+                       {
+                           "extensao":  ".asciidoc",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".sty",
+                           "arquivos":  4
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

@@ -1,0 +1,131 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "Presidio",
+    "alias":  "rachel.presidio",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\presidio",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\presidio",
+    "repositorio_git":  true,
+    "commit":  "760d6c83ae89274a268e01aef3e6da7910664a83",
+    "origem_git":  "https://github.com/data-privacy-stack/presidio.git",
+    "total_arquivos":  905,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\presidio\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\presidio-analyzer\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\presidio-anonymizer\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\presidio-cli\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\presidio-image-redactor\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\presidio-structured\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\docs\\samples\\deployments\\openai-anonymaztion-and-deanonymaztion-best-practices\\src\\api\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\docs\\samples\\deployments\\openai-anonymaztion-and-deanonymaztion-best-practices\\src\\client_app\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\docs\\samples\\deployments\\redacting-telemetry\\app\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\docs\\samples\\python\\streamlit\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\e2e-tests\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\docker-compose.yml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\docs\\samples\\deployments\\redacting-telemetry\\docker-compose.yml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\docs\\samples\\deployments\\openai-anonymaztion-and-deanonymaztion-best-practices\\src\\api\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\docs\\samples\\deployments\\openai-anonymaztion-and-deanonymaztion-best-practices\\src\\client_app\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\docs\\samples\\deployments\\redacting-telemetry\\app\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\docs\\samples\\python\\streamlit\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\presidio-analyzer\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\presidio-anonymizer\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\presidio-image-redactor\\Dockerfile"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\LICENSE",
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Presidio\\NOTICE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  501
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  103
+                       },
+                       {
+                           "extensao":  ".yaml",
+                           "arquivos":  68
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  53
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  25
+                       },
+                       {
+                           "extensao":  ".ipynb",
+                           "arquivos":  19
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  15
+                       },
+                       {
+                           "extensao":  ".dcm",
+                           "arquivos":  14
+                       },
+                       {
+                           "extensao":  ".txt",
+                           "arquivos":  13
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  13
+                       },
+                       {
+                           "extensao":  ".sh",
+                           "arquivos":  10
+                       },
+                       {
+                           "extensao":  ".toml",
+                           "arquivos":  7
+                       },
+                       {
+                           "extensao":  ".lock",
+                           "arquivos":  5
+                       },
+                       {
+                           "extensao":  ".bicep",
+                           "arquivos":  5
+                       },
+                       {
+                           "extensao":  ".npy",
+                           "arquivos":  5
+                       },
+                       {
+                           "extensao":  ".dockerignore",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".ini",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".gif",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".typed",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  3
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

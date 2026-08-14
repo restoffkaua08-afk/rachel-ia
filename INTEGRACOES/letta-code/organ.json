@@ -1,0 +1,110 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "Letta-Code",
+    "alias":  "rachel.letta-code",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Letta-Code",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\letta-code",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\letta-code",
+    "repositorio_git":  true,
+    "commit":  "300f923f16cc8eee50656d7da732902c1dea2b65",
+    "origem_git":  "https://github.com/letta-ai/letta-code.git",
+    "total_arquivos":  1944,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Letta-Code\\package.json"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Letta-Code\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".ts",
+                           "arquivos":  1556
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  124
+                       },
+                       {
+                           "extensao":  ".tsx",
+                           "arquivos":  118
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  58
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  16
+                       },
+                       {
+                           "extensao":  ".mdx",
+                           "arquivos":  16
+                       },
+                       {
+                           "extensao":  ".js",
+                           "arquivos":  13
+                       },
+                       {
+                           "extensao":  ".cjs",
+                           "arquivos":  8
+                       },
+                       {
+                           "extensao":  ".sh",
+                           "arquivos":  6
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  5
+                       },
+                       {
+                           "extensao":  ".txt",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".nix",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".lock",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".mjs",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".editorconfig",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".gitattributes",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".toml",
+                           "arquivos":  1
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

@@ -1,0 +1,115 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "Piper",
+    "alias":  "rachel.piper",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Piper",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\piper",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\piper",
+    "repositorio_git":  true,
+    "commit":  "711b7b452dc3b1023d1f92f5edce7444cee90273",
+    "origem_git":  "https://github.com/OHF-Voice/piper1-gpl.git",
+    "total_arquivos":  139,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Piper\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Piper\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Piper\\libpiper\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Piper\\libpiper\\src\\main\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Piper\\libpiper\\tests\\CMakeLists.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Piper\\Dockerfile"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Piper\\COPYING"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  45
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  19
+                       },
+                       {
+                           "extensao":  ".cpp",
+                           "arquivos":  12
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  11
+                       },
+                       {
+                           "extensao":  ".hpp",
+                           "arquivos":  6
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".txt",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".h",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".onnx",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".ini",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".clang-tidy",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".cfg",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".sh",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".cmake",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".c",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".pyx",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".html",
+                           "arquivos":  1
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

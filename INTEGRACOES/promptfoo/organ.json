@@ -1,0 +1,156 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "Promptfoo",
+    "alias":  "rachel.promptfoo",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\promptfoo",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\promptfoo",
+    "repositorio_git":  true,
+    "commit":  "af026d02115c31dad4bebe0484ab5b6a3a62f6e2",
+    "origem_git":  "https://github.com/promptfoo/promptfoo.git",
+    "total_arquivos":  5500,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\redteam-api-top-10\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\eval-bert-score\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\eval-f-score\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\eval-image-classification\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\eval-rag-full\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\integration-browser\\headless\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\integration-crewai\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\integration-docker\\code-generation-sandbox\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\integration-google-adk\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\integration-langchain\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\integration-opentelemetry\\python\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\integration-pydantic-ai\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\integration-strands-agents\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\openai-agents\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\provider-python\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\redteam-langchain\\requirements.txt",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\code-scan-action\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\claude-agent-sdk\\advanced\\workspace\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\claude-agent-sdk\\working-dir\\sample-project\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\config-node-package\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\config-node-package-typescript\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\config-stateful-session-management\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\config-ts\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\config-websockets\\basic\\test-server\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\config-websockets\\streaming\\server\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\integration-jest\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\integration-opentelemetry\\javascript\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\integration-vercel\\ai-sdk\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\openai-agents-advanced\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\openai-agents-basic\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\provider-http\\auth-signature\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\provider-http\\auth-signature-jks\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\provider-http\\auth-signature-pfx\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\redteam-chatbot\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\redteam-indirect-web-pwn\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\redteam-mcp-agent\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\redteam-medical-agent\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\redteam-tracing-example\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\simple-mcp\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\site\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\src\\app\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\examples\\provider-golang\\go.mod",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\src\\golang\\go.mod",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\test\\smoke\\fixtures\\providers\\go.mod",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\.devcontainer\\docker-compose.yml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\Dockerfile"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Promptfoo\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".ts",
+                           "arquivos":  2020
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  842
+                       },
+                       {
+                           "extensao":  ".tsx",
+                           "arquivos":  640
+                       },
+                       {
+                           "extensao":  ".yaml",
+                           "arquivos":  632
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  367
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  166
+                       },
+                       {
+                           "extensao":  ".jpg",
+                           "arquivos":  110
+                       },
+                       {
+                           "extensao":  ".js",
+                           "arquivos":  106
+                       },
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  103
+                       },
+                       {
+                           "extensao":  ".svg",
+                           "arquivos":  89
+                       },
+                       {
+                           "extensao":  ".txt",
+                           "arquivos":  85
+                       },
+                       {
+                           "extensao":  ".css",
+                           "arquivos":  76
+                       },
+                       {
+                           "extensao":  ".mjs",
+                           "arquivos":  31
+                       },
+                       {
+                           "extensao":  ".sql",
+                           "arquivos":  27
+                       },
+                       {
+                           "extensao":  ".csv",
+                           "arquivos":  21
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  19
+                       },
+                       {
+                           "extensao":  ".jpeg",
+                           "arquivos":  18
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  18
+                       },
+                       {
+                           "extensao":  ".cjs",
+                           "arquivos":  14
+                       },
+                       {
+                           "extensao":  ".gif",
+                           "arquivos":  10
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

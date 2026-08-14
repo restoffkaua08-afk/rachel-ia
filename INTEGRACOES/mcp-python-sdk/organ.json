@@ -1,0 +1,127 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "MCP-Python-SDK",
+    "alias":  "rachel.mcp-python-sdk",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\mcp-python-sdk",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\mcp-python-sdk",
+    "repositorio_git":  true,
+    "commit":  "52ad0a8876f97f631b6e7cb973a786b253088a4d",
+    "origem_git":  "https://github.com/modelcontextprotocol/python-sdk.git",
+    "total_arquivos":  1650,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\clients\\simple-auth-client\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\clients\\simple-chatbot\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\clients\\sse-polling-client\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\servers\\everything-server\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\servers\\simple-auth\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\servers\\simple-pagination\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\servers\\simple-prompt\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\servers\\simple-resource\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\servers\\simple-streamablehttp\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\servers\\simple-streamablehttp-stateless\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\servers\\simple-tool\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\servers\\sse-polling-demo\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\servers\\structured-output-lowlevel\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\snippets\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\src\\mcp-types\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\examples\\clients\\simple-chatbot\\mcp_simple_chatbot\\requirements.txt"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\MCP-Python-SDK\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  827
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  741
+                       },
+                       {
+                           "extensao":  ".toml",
+                           "arquivos":  18
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  16
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  15
+                       },
+                       {
+                           "extensao":  ".yaml",
+                           "arquivos":  6
+                       },
+                       {
+                           "extensao":  ".sh",
+                           "arquivos":  5
+                       },
+                       {
+                           "extensao":  ".python-version",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".typed",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".svg",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".gitattributes",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".txt",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".db",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".git-blame-ignore-revs",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".example",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".css",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".lock",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".js",
+                           "arquivos":  1
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

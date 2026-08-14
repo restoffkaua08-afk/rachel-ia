@@ -1,0 +1,114 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "Silero-VAD",
+    "alias":  "rachel.silero-vad",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Silero-VAD",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\silero-vad",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\silero-vad",
+    "repositorio_git":  true,
+    "commit":  "76e3dc408eb2a5c655c34e230d2d5459b4439daa",
+    "origem_git":  "https://github.com/snakers4/silero-vad.git",
+    "total_arquivos":  111,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Silero-VAD\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Silero-VAD\\examples\\rust-example\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Silero-VAD\\examples\\rust-wav-processing-with-wavekat-vad\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Silero-VAD\\examples\\go\\go.mod",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Silero-VAD\\examples\\java-example\\pom.xml"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Silero-VAD\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  19
+                       },
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  16
+                       },
+                       {
+                           "extensao":  ".h",
+                           "arquivos":  7
+                       },
+                       {
+                           "extensao":  ".java",
+                           "arquivos":  7
+                       },
+                       {
+                           "extensao":  ".cc",
+                           "arquivos":  6
+                       },
+                       {
+                           "extensao":  ".wav",
+                           "arquivos":  5
+                       },
+                       {
+                           "extensao":  ".onnx",
+                           "arquivos":  5
+                       },
+                       {
+                           "extensao":  ".rs",
+                           "arquivos":  5
+                       },
+                       {
+                           "extensao":  ".ipynb",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".cs",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".lock",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".toml",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".yaml",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".feather",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".mp3",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".opus",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".safetensors",
+                           "arquivos":  1
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

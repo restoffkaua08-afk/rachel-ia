@@ -1,0 +1,111 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "PrivateGPT",
+    "alias":  "rachel.privategpt",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\PrivateGPT",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\privategpt",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\privategpt",
+    "repositorio_git":  true,
+    "commit":  "4a030776a31a901ad80b1bf4d7faa2c1a367efbb",
+    "origem_git":  "https://github.com/zylon-ai/private-gpt.git",
+    "total_arquivos":  1012,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\PrivateGPT\\pyproject.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\PrivateGPT\\Dockerfile"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\PrivateGPT\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".py",
+                           "arquivos":  838
+                       },
+                       {
+                           "extensao":  ".mdx",
+                           "arquivos":  39
+                       },
+                       {
+                           "extensao":  ".j2",
+                           "arquivos":  30
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  18
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  15
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  14
+                       },
+                       {
+                           "extensao":  ".pdf",
+                           "arquivos":  9
+                       },
+                       {
+                           "extensao":  ".html",
+                           "arquivos":  6
+                       },
+                       {
+                           "extensao":  ".txt",
+                           "arquivos":  6
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  5
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".csv",
+                           "arquivos":  4
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".yaml",
+                           "arquivos":  3
+                       },
+                       {
+                           "extensao":  ".docx",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".ico",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".svg",
+                           "arquivos":  2
+                       },
+                       {
+                           "extensao":  ".cff",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".xlsx",
+                           "arquivos":  1
+                       },
+                       {
+                           "extensao":  ".ppt",
+                           "arquivos":  1
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

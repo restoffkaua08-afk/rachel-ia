@@ -1,0 +1,158 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "Tauri",
+    "alias":  "rachel.tauri",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\tauri",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\tauri",
+    "repositorio_git":  true,
+    "commit":  "df26e1b8ccb0b9e9c4aa4c705a635f59b4a5110a",
+    "origem_git":  "https://github.com/tauri-apps/tauri.git",
+    "total_arquivos":  1110,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-cli\\templates\\plugin\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-cli\\templates\\plugin\\__example-api\\tauri-app\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-cli\\templates\\plugin\\__example-basic\\vanilla\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-schema-worker\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\examples\\api\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\examples\\file-associations\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\examples\\resources\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\packages\\api\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\packages\\cli\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\packages\\cli\\npm\\darwin-arm64\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\packages\\cli\\npm\\darwin-x64\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\packages\\cli\\npm\\linux-arm-gnueabihf\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\packages\\cli\\npm\\linux-arm64-gnu\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\packages\\cli\\npm\\linux-arm64-musl\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\packages\\cli\\npm\\linux-riscv64-gnu\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\packages\\cli\\npm\\linux-x64-gnu\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\packages\\cli\\npm\\linux-x64-musl\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\packages\\cli\\npm\\win32-arm64-msvc\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\packages\\cli\\npm\\win32-ia32-msvc\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\packages\\cli\\npm\\win32-x64-msvc\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\packages\\cli\\__tests__\\fixtures\\empty\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\bench\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\bench\\tests\\cpu_intensive\\src-tauri\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\bench\\tests\\files_transfer\\src-tauri\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\bench\\tests\\helloworld\\src-tauri\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-build\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-bundler\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-cli\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-codegen\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-driver\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-macos-sign\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-macros\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-plugin\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-runtime\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-runtime-wry\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-schema-generator\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-schema-worker\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tauri-utils\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tests\\acl\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\crates\\tests\\restart\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\examples\\api\\src-tauri\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\examples\\api\\src-tauri\\tauri-plugin-sample\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\examples\\file-associations\\src-tauri\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\examples\\resources\\src-tauri\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\packages\\cli\\Cargo.toml",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\.devcontainer\\Dockerfile"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Tauri\\LICENSE.spdx"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".rs",
+                           "arquivos":  324
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  144
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  87
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  78
+                       },
+                       {
+                           "extensao":  ".toml",
+                           "arquivos":  64
+                       },
+                       {
+                           "extensao":  ".js",
+                           "arquivos":  38
+                       },
+                       {
+                           "extensao":  ".kt",
+                           "arquivos":  37
+                       },
+                       {
+                           "extensao":  ".gitignore",
+                           "arquivos":  30
+                       },
+                       {
+                           "extensao":  ".yml",
+                           "arquivos":  30
+                       },
+                       {
+                           "extensao":  ".ts",
+                           "arquivos":  29
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  26
+                       },
+                       {
+                           "extensao":  ".nsh",
+                           "arquivos":  25
+                       },
+                       {
+                           "extensao":  ".html",
+                           "arquivos":  19
+                       },
+                       {
+                           "extensao":  ".swift",
+                           "arquivos":  17
+                       },
+                       {
+                           "extensao":  ".xml",
+                           "arquivos":  16
+                       },
+                       {
+                           "extensao":  ".sh",
+                           "arquivos":  15
+                       },
+                       {
+                           "extensao":  ".0",
+                           "arquivos":  13
+                       },
+                       {
+                           "extensao":  ".snap",
+                           "arquivos":  12
+                       },
+                       {
+                           "extensao":  ".svelte",
+                           "arquivos":  12
+                       },
+                       {
+                           "extensao":  ".ico",
+                           "arquivos":  7
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

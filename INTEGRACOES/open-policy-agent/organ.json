@@ -1,0 +1,115 @@
+{
+    "schema":  "rachel-organ-v1",
+    "nome_original":  "Open-Policy-Agent",
+    "alias":  "rachel.open-policy-agent",
+    "caminho_fonte":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Open-Policy-Agent",
+    "caminho_integracao":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\INTEGRACOES\\open-policy-agent",
+    "ambiente_isolado":  "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\open-policy-agent",
+    "repositorio_git":  true,
+    "commit":  "16b5a013726fff3c2197f98ac4afcd6d2218588a",
+    "origem_git":  "https://github.com/open-policy-agent/opa.git",
+    "total_arquivos":  7840,
+    "manifestos":  [
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Open-Policy-Agent\\docs\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Open-Policy-Agent\\e2e\\api\\compile\\prisma\\package.json",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Open-Policy-Agent\\go.mod",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Open-Policy-Agent\\e2e\\go.mod",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Open-Policy-Agent\\Dockerfile",
+                       "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Open-Policy-Agent\\wasm\\Dockerfile"
+                   ],
+    "licencas":  [
+                     "C:\\Users\\Kauã\\Desktop\\Rachel IA\\FONTES\\REPOSITORIOS\\Open-Policy-Agent\\LICENSE"
+                 ],
+    "linguagens":  [
+                       {
+                           "extensao":  ".yaml",
+                           "arquivos":  2378
+                       },
+                       {
+                           "extensao":  ".stmt",
+                           "arquivos":  1914
+                       },
+                       {
+                           "extensao":  ".go",
+                           "arquivos":  1085
+                       },
+                       {
+                           "extensao":  ".json",
+                           "arquivos":  684
+                       },
+                       {
+                           "extensao":  ".md",
+                           "arquivos":  554
+                       },
+                       {
+                           "extensao":  ".png",
+                           "arquivos":  220
+                       },
+                       {
+                           "extensao":  ".rego",
+                           "arquivos":  219
+                       },
+                       {
+                           "extensao":  ".formatted",
+                           "arquivos":  118
+                       },
+                       {
+                           "extensao":  ".txt",
+                           "arquivos":  81
+                       },
+                       {
+                           "extensao":  ".h",
+                           "arquivos":  80
+                       },
+                       {
+                           "extensao":  ".webp",
+                           "arquivos":  63
+                       },
+                       {
+                           "extensao":  ".svg",
+                           "arquivos":  55
+                       },
+                       {
+                           "extensao":  ".jsx",
+                           "arquivos":  54
+                       },
+                       {
+                           "extensao":  ".c",
+                           "arquivos":  48
+                       },
+                       {
+                           "extensao":  ".mdx",
+                           "arquivos":  45
+                       },
+                       {
+                           "extensao":  ".css",
+                           "arquivos":  31
+                       },
+                       {
+                           "extensao":  ".js",
+                           "arquivos":  27
+                       },
+                       {
+                           "extensao":  ".cc",
+                           "arquivos":  27
+                       },
+                       {
+                           "extensao":  ".pem",
+                           "arquivos":  24
+                       },
+                       {
+                           "extensao":  "[sem extensão]",
+                           "arquivos":  18
+                       }
+                   ],
+    "status":  "catalogado",
+    "integracao":  {
+                       "obrigatoria":  true,
+                       "adaptador_criado":  false,
+                       "dependencias_auditadas":  false,
+                       "ambiente_preparado":  false,
+                       "testes_executados":  false,
+                       "conectado_ao_cerebro":  false,
+                       "habilitado":  false
+                   }
+}

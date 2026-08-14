@@ -129,3 +129,6 @@ RACHEL_EVALUATION/REPORTS/*
 *.rar
 *.tar
 *.tar.gz
+
+# Fontes conectadas por junction
+RACHEL_PLATFORM/ORGAOS/*/fonte/

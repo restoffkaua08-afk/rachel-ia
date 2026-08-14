@@ -9,8 +9,8 @@
                    "promptfoo",
                    "dspy"
                ],
-    "estado":  "registrado",
-    "executavel":  false,
-    "health":  "pending",
+    "estado":  "operacional",
+    "executavel":  true,
+    "health":  "available",
     "requer_autorizacao":  false
 }

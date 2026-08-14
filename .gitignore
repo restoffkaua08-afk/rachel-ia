@@ -151,3 +151,6 @@ RACHEL_PLATFORM/LOGS/*.jsonl
 
 RACHEL_PLATFORM/STATE/bran-memory.db
 RACHEL_PLATFORM/STATE/bran-memory.db-*
+
+RACHEL_PLATFORM/STATE/core/
+RACHEL_CORE/src/*.egg-info/

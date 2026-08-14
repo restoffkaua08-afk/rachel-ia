@@ -19,6 +19,9 @@ from arya_runtime import run as arya_run, safe_cwd
 from bran_cognitive import CognitiveMemory
 from cognitive_runtime import DanyEvaluator
 from knowledge_runtime import BranMemory, VisaoIngestor, status as knowledge_status
+from research_runtime import ResearchEngine
+from search_runtime import SearchEngine
+from web_runtime import WebClient, evidence_summary
 from team_runtime import CyberPolicy, JhonLogger, KingEventBus, TyrionSupervisor, doctor
 
 
@@ -120,6 +123,44 @@ class ToolCoordinator:
         }
 
     def _execute(self, name: str, args: dict[str, Any], approved: bool) -> Any:
+        if name == "web.fetch":
+            evidence = WebClient().fetch(
+                _require_text(args, "url", 4_000)
+            )
+            include_content = args.get(
+                "include_content",
+                True,
+            )
+            if not isinstance(include_content, bool):
+                raise ToolError(
+                    "'include_content' must be a boolean"
+                )
+            return evidence_summary(
+                evidence,
+                include_content=include_content,
+            )
+        if name == "web.search":
+            return SearchEngine().search(
+                _require_text(args, "query", 500),
+                _bounded_int(
+                    args,
+                    "limit",
+                    8,
+                    1,
+                    20,
+                ),
+            )
+        if name == "web.research":
+            return ResearchEngine().research(
+                _require_text(args, "query", 500),
+                _bounded_int(
+                    args,
+                    "max_sources",
+                    3,
+                    1,
+                    5,
+                ),
+            )
         if name == "runtime.doctor":
             return doctor()
         if name == "tyrion.health":

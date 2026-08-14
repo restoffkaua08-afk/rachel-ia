@@ -1,51 +1,59 @@
 {
-  "schema_version": "1.0",
-  "maximum_query_characters": 500,
-  "default_result_limit": 8,
-  "maximum_result_limit": 20,
-  "providers": [
-    {
-      "id": "bing-rss",
-      "enabled": true,
-      "priority": 1
-    },
-    {
-      "id": "wikipedia-opensearch",
-      "enabled": true,
-      "priority": 2
-    }
-  ],
-  "authority_rules": {
-    "primary": [
-      ".gov",
-      ".gov.br",
-      ".edu",
-      ".edu.br",
-      "docs.python.org",
-      "developer.mozilla.org",
-      "learn.microsoft.com",
-      "docs.github.com"
-    ],
-    "technical": [
-      "github.com",
-      "npmjs.com",
-      "pypi.org",
-      "w3.org",
-      "ietf.org",
-      "arxiv.org"
-    ],
-    "encyclopedic": [
-      "wikipedia.org"
-    ]
-  },
-  "ranking_weights": {
-    "provider": 0.2,
-    "authority": 0.35,
-    "query_coverage": 0.3,
-    "position": 0.15
-  },
-  "deduplicate_by_canonical_url": true,
-  "require_url": true,
-  "require_title": true,
-  "require_citations": true
+    "schema_version":  "1.0",
+    "maximum_query_characters":  500,
+    "default_result_limit":  8,
+    "maximum_result_limit":  20,
+    "providers":  [
+                      {
+                          "id":  "bing-rss",
+                          "enabled":  true,
+                          "priority":  1
+                      },
+                      {
+                          "id":  "wikipedia-opensearch",
+                          "enabled":  true,
+                          "priority":  2
+                      }
+                  ],
+    "authority_rules":  {
+                            "primary":  [
+                                            ".edu",
+                                            ".edu.br",
+                                            ".gov",
+                                            ".gov.br",
+                                            "developer.mozilla.org",
+                                            "docs.github.com",
+                                            "docs.python.org",
+                                            "learn.microsoft.com",
+                                            "microsoft.com",
+                                            "nextjs.org",
+                                            "nodejs.org",
+                                            "openai.com",
+                                            "python.org",
+                                            "react.dev",
+                                            "supabase.com",
+                                            "vercel.com"
+                                        ],
+                            "technical":  [
+                                              "github.com",
+                                              "npmjs.com",
+                                              "pypi.org",
+                                              "w3.org",
+                                              "ietf.org",
+                                              "arxiv.org"
+                                          ],
+                            "encyclopedic":  [
+                                                 "wikipedia.org"
+                                             ]
+                        },
+    "ranking_weights":  {
+                            "provider":  0.2,
+                            "authority":  0.35,
+                            "query_coverage":  0.3,
+                            "position":  0.15
+                        },
+    "deduplicate_by_canonical_url":  true,
+    "require_url":  true,
+    "require_title":  true,
+    "require_citations":  true
 }

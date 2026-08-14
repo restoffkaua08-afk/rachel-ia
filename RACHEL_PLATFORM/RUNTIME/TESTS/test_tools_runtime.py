@@ -16,6 +16,29 @@ class ToolsRuntimeTests(unittest.TestCase):
         members = {item["member"] for item in self.tools.list_tools()}
         self.assertTrue({"ned", "bran", "visao", "arya", "cyber", "dany", "jhon", "tyrion", "king"} - {"ned"} <= members)
         self.assertGreaterEqual(len(self.tools.list_tools()), 11)
+    def test_web_tools_are_registered(self):
+        names = {
+            item["name"]
+            for item in self.tools.list_tools()
+        }
+        self.assertTrue(
+            {
+                "web.fetch",
+                "web.search",
+                "web.research",
+            } <= names
+        )
+
+    def test_web_research_requires_approval(self):
+        result = self.tools.invoke(
+            "web.research",
+            {"query": "Python documentation"},
+        )
+        self.assertEqual(
+            result["state"],
+            "approval_required",
+        )
+
     def test_read_tool_executes_without_approval(self):
         result = self.tools.invoke("dany.evaluate", {"content": "conteudo valido"})
         self.assertEqual(result["state"], "completed")

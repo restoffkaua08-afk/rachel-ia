@@ -47,6 +47,14 @@ class CognitiveTests(unittest.TestCase):
             )
         )
 
+    def test_research_request_routes_to_web(self):
+        plan = NedToolPlanner.heuristic_plan(
+            "Pesquise documentação oficial do Python"
+        )
+        self.assertIsNotNone(plan)
+        self.assertEqual(plan.tool, "web.research")
+        self.assertIn("Python", plan.arguments["query"])
+
     def test_document_request_routes_to_visao(self):
         plan = NedToolPlanner.heuristic_plan(
             r"Analise o arquivo C:\Projetos\relatorio.pdf"

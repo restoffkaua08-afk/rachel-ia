@@ -96,6 +96,24 @@ class NedToolPlanner:
             return ToolPlan("tool", "visao.status", {}, "Consultar capacidades reais da Visão.", "deterministic")
         if any(term in text for term in ("eventos recentes", "histórico de eventos", "historico de eventos")):
             return ToolPlan("tool", "king.recent", {"limit": 10}, "Consultar eventos do King.", "deterministic")
+        research_request = re.match(
+            r"^(?:rachel[, ]+)?(?:pesquise|procure|investigue|"
+            r"busque\s+na\s+internet|busque\s+na\s+web)\s+"
+            r"(?:sobre\s+)?(.+)$",
+            content.strip(),
+            re.I | re.S,
+        )
+        if research_request:
+            return ToolPlan(
+                "tool",
+                "web.research",
+                {
+                    "query": research_request.group(1).strip(),
+                    "max_sources": 3,
+                },
+                "Pesquisar fontes públicas e produzir evidências.",
+                "deterministic",
+            )
         document_request = re.match(
             r"^(?:rachel[, ]+)?(?:leia|analise|importe|processe)\s+"
             r"(?:o\s+)?(?:arquivo|documento)?\s*[\"']?(.+?\."
@@ -203,6 +221,8 @@ class NedCognitiveBridge:
         status["capabilities"]["tools"] = True
         status["capabilities"]["knowledge"] = True
         status["capabilities"]["governed_memory"] = True
+        status["capabilities"]["web_research"] = True
+        status["capabilities"]["citations"] = True
         status["tool_count"] = len(self.tools.list_tools())
         status["memory"] = self.memory.status()
         status["member"] = "ned"

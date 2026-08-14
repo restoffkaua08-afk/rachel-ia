@@ -1,0 +1,7 @@
+{
+  "schema_version": "1.0",
+  "default": "deny",
+  "low_risk": ["read", "inspect", "list", "status", "search"],
+  "approval_required": ["write", "create", "edit", "install", "execute", "external"],
+  "explicit_approval_required": ["delete", "admin", "credentials", "publish", "payment"]
+}

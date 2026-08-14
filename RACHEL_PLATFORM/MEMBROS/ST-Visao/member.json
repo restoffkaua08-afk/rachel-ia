@@ -9,8 +9,8 @@
                    "docling",
                    "presidio"
                ],
-    "estado":  "registrado",
-    "executavel":  false,
-    "health":  "pending",
+    "estado":  "operacional-base",
+    "executavel":  true,
+    "health":  "available",
     "requer_autorizacao":  false
 }

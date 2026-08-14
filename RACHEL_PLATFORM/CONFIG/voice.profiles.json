@@ -17,19 +17,47 @@
     "maximum_utterance_seconds": 45
   },
   "profiles": {
-    "natural": {"rate": 0, "volume": 100, "instruction": "Fale de forma natural, inteligente, clara e confiante."},
-    "tecnica": {"rate": -1, "volume": 100, "instruction": "Explique termos tecnicos com clareza e pausas adequadas."},
-    "objetiva": {"rate": 1, "volume": 100, "instruction": "Use respostas curtas, diretas e informativas."},
-    "apresentacao": {"rate": 0, "volume": 100, "instruction": "Use diccao clara, ritmo seguro e estrutura de apresentacao."},
-    "leitura": {"rate": -2, "volume": 100, "instruction": "Leia com ritmo confortavel e pausas entre ideias."}
+    "natural": {
+      "rate": 0,
+      "volume": 100,
+      "instruction": "Fale de forma natural, inteligente, clara e confiante."
+    },
+    "tecnica": {
+      "rate": -1,
+      "volume": 100,
+      "instruction": "Explique termos tecnicos com clareza e pausas adequadas."
+    },
+    "objetiva": {
+      "rate": 1,
+      "volume": 100,
+      "instruction": "Use respostas curtas, diretas e informativas."
+    },
+    "apresentacao": {
+      "rate": 0,
+      "volume": 100,
+      "instruction": "Use diccao clara, ritmo seguro e estrutura de apresentacao."
+    },
+    "leitura": {
+      "rate": -2,
+      "volume": 100,
+      "instruction": "Leia com ritmo confortavel e pausas entre ideias."
+    }
   },
   "tts": {
     "provider": "windows-sapi",
-    "voice": null,
+    "voice": "Microsoft Maria Desktop",
     "language_preference": "pt-BR",
-    "future_providers": ["chatterbox", "piper"]
+    "future_providers": [
+      "chatterbox",
+      "piper"
+    ]
   },
   "commands": {
-    "stop": ["encerrar conversa", "parar conversa", "desativar stella", "tchau rachel"]
+    "stop": [
+      "encerrar conversa",
+      "parar conversa",
+      "desativar stella",
+      "tchau rachel"
+    ]
   }
 }

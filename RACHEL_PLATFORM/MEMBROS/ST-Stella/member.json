@@ -17,8 +17,8 @@
                    "livekit-agents",
                    "livekit-agent-starter"
                ],
-    "estado":  "registrado",
-    "executavel":  false,
-    "health":  "pending",
+    "estado":  "operacional-voz-base",
+    "executavel":  true,
+    "health":  "available",
     "requer_autorizacao":  false
 }

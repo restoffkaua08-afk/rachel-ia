@@ -1,0 +1,17 @@
+{
+  "schema_version": "1.0",
+  "default_policy": "deny",
+  "tools": [
+    {"name": "runtime.doctor", "member": "jhon", "effect": "status", "description": "Verifica a integridade geral da Rachel.", "parameters": {}},
+    {"name": "tyrion.health", "member": "tyrion", "effect": "status", "description": "Consulta a saÃºde dos Ã³rgÃ£os.", "parameters": {"organ_id": "string|null"}},
+    {"name": "bran.search", "member": "bran", "effect": "search", "description": "Pesquisa memÃ³rias autorizadas.", "parameters": {"query": "string", "limit": "integer"}},
+    {"name": "bran.remember", "member": "bran", "effect": "write", "description": "Registra uma memÃ³ria aprovada.", "parameters": {"content": "string", "source": "string", "kind": "string"}},
+    {"name": "visao.status", "member": "visao", "effect": "status", "description": "Consulta capacidades de percepÃ§Ã£o e documentos.", "parameters": {}},
+    {"name": "visao.ingest", "member": "visao", "effect": "write", "description": "Ingere um arquivo autorizado na memÃ³ria.", "parameters": {"path": "string"}},
+    {"name": "arya.list", "member": "arya", "effect": "list", "description": "Lista uma pasta permitida.", "parameters": {"path": "string"}},
+    {"name": "arya.run", "member": "arya", "effect": "execute", "description": "Executa um processo sem shell apÃ³s autorizaÃ§Ã£o.", "parameters": {"command": "string", "arguments": "array", "cwd": "string|null"}},
+    {"name": "king.recent", "member": "king", "effect": "read", "description": "Consulta eventos recentes da equipe.", "parameters": {"limit": "integer"}},
+    {"name": "dany.evaluate", "member": "dany", "effect": "inspect", "description": "Avalia deterministicamente a qualidade bÃ¡sica de um conteÃºdo.", "parameters": {"content": "string"}},
+    {"name": "cyber.check", "member": "cyber", "effect": "inspect", "description": "Simula uma decisÃ£o de seguranÃ§a.", "parameters": {"effect": "string", "approved": "boolean"}}
+  ]
+}

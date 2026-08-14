@@ -18,9 +18,9 @@ class StellaTests(unittest.TestCase):
         self.assertNotIn("##", result)
         self.assertNotIn("https://", result)
         self.assertIn("codigo", result)
-    def test_rachel_has_english_pronunciation(self):
+    def test_rachel_name_is_preserved_for_voice_switching(self):
         result = speech_text("Rachel está operacional.")
-        self.assertIn("Rêitchel", result)
+        self.assertIn("Rachel", result)
         self.assertNotIn("Raquel", result)
 
     def test_capture_has_safety_limits(self):

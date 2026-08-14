@@ -38,18 +38,6 @@ def speech_text(text: str) -> str:
     text = re.sub(r"\[(.*?)\]\([^)]*\)", r"\1", text)
     text = re.sub(r"\s+", " ", text).strip()
 
-    pronunciations = {
-        r"\bRachel\b": "Rêitchel",
-        r"\bRACHEL\b": "Rêitchel",
-        r"\bGitHub\b": "Guít Rãb",
-        r"\bREADME\b": "Rídmi",
-        r"\bAPI\b": "A P I",
-        r"\bIA\b": "I A",
-    }
-
-    for pattern, pronunciation in pronunciations.items():
-        text = re.sub(pattern, pronunciation, text)
-
     return text[:6000]
 
 
@@ -107,7 +95,32 @@ $s.Volume = {int(profile['volume'])}
 $voice = '{escaped_voice}'
 if ($voice) {{ $s.SelectVoice($voice) }}
 $text = [System.IO.File]::ReadAllText('{escaped_path}', [System.Text.Encoding]::UTF8)
-$s.Speak($text)
+
+$builder = New-Object System.Speech.Synthesis.PromptBuilder(
+    [System.Globalization.CultureInfo]::GetCultureInfo('pt-BR')
+)
+
+$parts = [System.Text.RegularExpressions.Regex]::Split(
+    $text,
+    '(?i)(Rachel)'
+)
+
+foreach ($part in $parts) {{
+    if ([string]::IsNullOrWhiteSpace($part)) {{
+        continue
+    }}
+
+    if ($part -match '^(?i:Rachel)$') {{
+        $builder.StartVoice('Microsoft Zira Desktop')
+        $builder.AppendText('Rachel')
+        $builder.EndVoice()
+    }}
+    else {{
+        $builder.AppendText($part)
+    }}
+}}
+
+$s.Speak($builder)
 $s.Dispose()
 '''
         result = subprocess.run(encoded_powershell(script), capture_output=True, timeout=180)

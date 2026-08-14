@@ -10,8 +10,8 @@
                    "mcp-python-sdk",
                    "playwright-mcp"
                ],
-    "estado":  "registrado",
-    "executavel":  false,
-    "health":  "pending",
+    "estado":  "operacional-controlado",
+    "executavel":  true,
+    "health":  "available",
     "requer_autorizacao":  true
 }

@@ -1,0 +1,11 @@
+{
+  "schema_version": "2.0",
+  "default_consent": "explicit",
+  "maximum_characters": 20000,
+  "allowed_categories": ["preference", "fact", "project", "decision", "correction", "instruction", "note"],
+  "minimum_confidence": 0.0,
+  "maximum_confidence": 1.0,
+  "sensitive_data": "deny",
+  "duplicate_strategy": "update_metadata",
+  "user_controls": ["search", "export", "archive", "delete"]
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": "1.0",
+  "maximum_file_bytes": 26214400,
+  "maximum_extracted_characters": 2000000,
+  "chunk_characters": 4000,
+  "chunk_overlap_characters": 400,
+  "allowed_extensions": [
+    ".txt",
+    ".md",
+    ".json",
+    ".csv",
+    ".py",
+    ".js",
+    ".ts",
+    ".tsx",
+    ".jsx",
+    ".html",
+    ".css",
+    ".sql",
+    ".ps1",
+    ".toml",
+    ".yaml",
+    ".yml",
+    ".xml"
+  ],
+  "structured_extensions": [
+    ".json",
+    ".csv"
+  ],
+  "deny_hidden_files": false,
+  "preserve_source_path": true,
+  "calculate_sha256": true
+}

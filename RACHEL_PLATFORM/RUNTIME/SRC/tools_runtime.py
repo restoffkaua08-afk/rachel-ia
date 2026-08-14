@@ -16,6 +16,7 @@ PLATFORM = ROOT / "RACHEL_PLATFORM"
 CONFIG = PLATFORM / "CONFIG"
 
 from arya_runtime import run as arya_run, safe_cwd
+from bran_cognitive import CognitiveMemory
 from cognitive_runtime import DanyEvaluator
 from knowledge_runtime import BranMemory, VisaoIngestor, status as knowledge_status
 from team_runtime import CyberPolicy, JhonLogger, KingEventBus, TyrionSupervisor, doctor
@@ -62,11 +63,12 @@ def _bounded_int(arguments: dict[str, Any], key: str, default: int, minimum: int
 
 
 class ToolCoordinator:
-    def __init__(self) -> None:
+    def __init__(self, memory: CognitiveMemory | None = None) -> None:
         self.registry = _load_registry()
         self.cyber = CyberPolicy()
         self.king = KingEventBus()
         self.jhon = JhonLogger()
+        self.bran = memory or CognitiveMemory()
 
     def list_tools(self) -> list[dict[str, Any]]:
         return [asdict(spec) for spec in self.registry.values()]
@@ -126,12 +128,24 @@ class ToolCoordinator:
                 raise ToolError("'organ_id' must be a string or null")
             return TyrionSupervisor().health(organ_id)
         if name == "bran.search":
-            return BranMemory().search(_require_text(args, "query", 5_000), _bounded_int(args, "limit", 10, 1, 100))
+            return self.bran.search(
+                _require_text(args, "query", 5_000),
+                _bounded_int(args, "limit", 10, 1, 100),
+            )
         if name == "bran.remember":
-            return BranMemory().remember(
+            category = str(
+                args.get("category", args.get("kind", "note"))
+            )[:100]
+            return self.bran.remember(
                 _require_text(args, "content"),
+                approved=True,
                 source=str(args.get("source", "user-approved"))[:200],
-                kind=str(args.get("kind", "note"))[:100],
+                category=category,
+                metadata={
+                    "requested_by": "ned",
+                    "authorized_by": "cyber",
+                    "transport": "tool",
+                },
             )
         if name == "visao.status":
             return knowledge_status()["visao"]

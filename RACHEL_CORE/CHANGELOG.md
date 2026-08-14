@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.1 — 2026-08-14
+
+- substituição da imagem rotacionada por um núcleo integralmente renderizado em Canvas;
+- cinco órbitas tridimensionais independentes com perspectiva e deformação;
+- partículas luminosas vinculadas às linhas de energia;
+- centro energético procedural com pulsação reativa;
+- aceleração real da animação durante o processamento da Rachel.
+
 ## 0.2.0 — 2026-08-14
 
 - identidade visual do núcleo luminoso integrada ao pacote;

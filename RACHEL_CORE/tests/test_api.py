@@ -62,7 +62,8 @@ class ApiTests(unittest.TestCase):
         with urlopen(request, timeout=3) as response:
             content = response.read().decode("utf-8")
         self.assertIn("Rachel IA", content)
-        self.assertIn("rachel-heart.png", content)
+        self.assertIn('id="coreCanvas"', content)
+        self.assertNotIn('<img src="/assets/rachel-heart.png"', content)
         self.assertIn('id="particles"', content)
         self.assertIn("/v1/chat", content)
 

@@ -37,6 +37,19 @@ def speech_text(text: str) -> str:
     text = re.sub(r"[#>*_~|]", " ", text)
     text = re.sub(r"\[(.*?)\]\([^)]*\)", r"\1", text)
     text = re.sub(r"\s+", " ", text).strip()
+
+    pronunciations = {
+        r"\bRachel\b": "Rêitchel",
+        r"\bRACHEL\b": "Rêitchel",
+        r"\bGitHub\b": "Guít Rãb",
+        r"\bREADME\b": "Rídmi",
+        r"\bAPI\b": "A P I",
+        r"\bIA\b": "I A",
+    }
+
+    for pattern, pronunciation in pronunciations.items():
+        text = re.sub(pattern, pronunciation, text)
+
     return text[:6000]
 
 

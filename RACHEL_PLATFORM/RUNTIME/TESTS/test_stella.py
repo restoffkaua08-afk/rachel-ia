@@ -18,6 +18,11 @@ class StellaTests(unittest.TestCase):
         self.assertNotIn("##", result)
         self.assertNotIn("https://", result)
         self.assertIn("codigo", result)
+    def test_rachel_has_english_pronunciation(self):
+        result = speech_text("Rachel está operacional.")
+        self.assertIn("Rêitchel", result)
+        self.assertNotIn("Raquel", result)
+
     def test_capture_has_safety_limits(self):
         capture = load_config()["capture"]
         self.assertLessEqual(capture["maximum_utterance_seconds"], 60)

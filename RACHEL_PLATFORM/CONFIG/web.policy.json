@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0",
+  "allowed_schemes": [
+    "http",
+    "https"
+  ],
+  "blocked_hosts": [
+    "localhost",
+    "localhost.localdomain"
+  ],
+  "blocked_networks": [
+    "0.0.0.0/8",
+    "10.0.0.0/8",
+    "100.64.0.0/10",
+    "127.0.0.0/8",
+    "169.254.0.0/16",
+    "172.16.0.0/12",
+    "192.0.0.0/24",
+    "192.168.0.0/16",
+    "198.18.0.0/15",
+    "224.0.0.0/4",
+    "240.0.0.0/4",
+    "::1/128",
+    "fc00::/7",
+    "fe80::/10"
+  ],
+  "maximum_response_bytes": 5242880,
+  "maximum_text_characters": 250000,
+  "timeout_seconds": 25,
+  "maximum_redirects": 5,
+  "cache_ttl_seconds": 1800,
+  "allowed_content_types": [
+    "text/html",
+    "text/plain",
+    "application/json",
+    "application/xml",
+    "text/xml"
+  ],
+  "user_agent": "RachelIA/0.4 (+local research assistant)",
+  "require_citations": true,
+  "preserve_retrieval_time": true,
+  "respect_no_store": true
+}

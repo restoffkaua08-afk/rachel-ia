@@ -1,0 +1,14 @@
+{
+  "schema_version": "1.0",
+  "capabilities": {
+    "reasoning": ["dspy", "litgpt", "letta-code"],
+    "documents": ["docling", "privategpt", "presidio", "qdrant"],
+    "coding": ["openhands", "mcp-python-sdk", "playwright-mcp"],
+    "voice": ["openwakeword", "silero-vad", "smart-turn", "whispercpp", "pipecat", "chatterbox", "piper", "huggingface-speech-to-speech", "livekit-agents"],
+    "policy": ["open-policy-agent", "presidio"],
+    "evaluation": ["promptfoo", "dspy"],
+    "desktop": ["tauri"],
+    "vector_memory": ["qdrant"],
+    "training": ["litgpt", "dspy"]
+  }
+}

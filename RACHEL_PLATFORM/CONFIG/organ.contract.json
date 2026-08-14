@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "required_fields": ["id", "name", "role", "mode", "source", "health"],
+  "modes": ["library", "process", "service", "cli", "reference"],
+  "states": ["registered", "available", "configured", "running", "degraded", "failed", "disabled"],
+  "rules": {
+    "isolated_dependencies": true,
+    "explicit_activation": true,
+    "health_check_required": true,
+    "audit_events_required": true,
+    "secrets_outside_git": true
+  }
+}

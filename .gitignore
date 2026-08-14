@@ -1,4 +1,4 @@
-﻿# Segredos e ambientes
+# Segredos e ambientes
 .env
 .env.*
 !.env.example
@@ -132,3 +132,10 @@ RACHEL_EVALUATION/REPORTS/*
 
 # Fontes conectadas por junction
 RACHEL_PLATFORM/ORGAOS/*/fonte/
+
+AMBIENTES/
+RACHEL_PLATFORM/LOGS/*
+!RACHEL_PLATFORM/LOGS/.gitkeep
+RACHEL_PLATFORM/STATE/*.json
+RACHEL_PLATFORM/MODELS/
+RACHEL_PLATFORM/CACHE/

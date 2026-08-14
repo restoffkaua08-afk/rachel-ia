@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "default": "notebook",
+  "profiles": {
+    "notebook": {
+      "description": "Validacao funcional local com ativacao sob demanda.",
+      "max_parallel_organs": 2,
+      "model_policy": "small_or_remote",
+      "enabled_capabilities": ["core", "documents", "memory", "tools", "voice-lite", "evaluation"]
+    },
+    "workstation": {
+      "description": "Execucao completa para Ryzen 7 e RX 7600.",
+      "max_parallel_organs": 6,
+      "model_policy": "local_accelerated_with_fallback",
+      "enabled_capabilities": ["core", "documents", "memory", "tools", "voice", "desktop", "evaluation", "training"]
+    }
+  }
+}

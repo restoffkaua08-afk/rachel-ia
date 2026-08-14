@@ -73,6 +73,13 @@ class DocumentRuntimeTests(unittest.TestCase):
             all(len(chunk.sha256) == 64 for chunk in chunks)
         )
 
+    def test_policy_accepts_docling_extensions(self):
+        policy = DocumentPolicy()
+        self.assertIn(".pdf", policy.allowed_extensions)
+        self.assertIn(".docx", policy.allowed_extensions)
+        self.assertIn(".pptx", policy.allowed_extensions)
+        self.assertIn(".xlsx", policy.allowed_extensions)
+
     def test_rejects_unsupported_extension(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "program.exe"

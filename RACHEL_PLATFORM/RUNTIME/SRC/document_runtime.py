@@ -6,6 +6,7 @@ import hashlib
 import json
 import mimetypes
 import re
+import subprocess
 import sys
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -211,13 +212,98 @@ class DocumentExtractor:
             for row in rows
         )
 
+    def _extract_docling(
+        self,
+        path: Path,
+    ) -> tuple[str, dict[str, Any]]:
+        registry = json.loads(
+            (CONFIG / "document.engines.json").read_text(
+                encoding="utf-8-sig"
+            )
+        )
+        engine = registry["engines"]["docling"]
+        python_path = (ROOT / engine["python"]).resolve()
+        adapter_path = (ROOT / engine["adapter"]).resolve()
+
+        if not python_path.exists():
+            raise DocumentError(
+                f"Docling Python is unavailable: {python_path}"
+            )
+        if not adapter_path.exists():
+            raise DocumentError(
+                f"Docling adapter is unavailable: {adapter_path}"
+            )
+
+        process = subprocess.run(
+            [
+                str(python_path),
+                str(adapter_path),
+                "extract",
+                str(path),
+                "--maximum-characters",
+                str(self.policy.maximum_extracted_characters),
+            ],
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+            errors="replace",
+            timeout=600,
+            check=False,
+        )
+
+        if process.returncode != 0:
+            message = (
+                process.stderr.strip()
+                or process.stdout.strip()
+            )
+            raise DocumentError(
+                f"Docling extraction failed: {message}"
+            )
+
+        try:
+            payload = json.loads(process.stdout)
+        except json.JSONDecodeError as error:
+            raise DocumentError(
+                "Docling returned invalid JSON"
+            ) from error
+
+        content = payload.get("content")
+        metadata = payload.get("metadata")
+
+        if not isinstance(content, str) or not content.strip():
+            raise DocumentError(
+                "Docling returned no document content"
+            )
+        if not isinstance(metadata, dict):
+            raise DocumentError(
+                "Docling returned invalid metadata"
+            )
+
+        return content, metadata
+
     def extract(self, path: Path) -> DocumentResult:
         metadata = self.validate(path)
         resolved = Path(metadata["path"])
         suffix = metadata["extension"]
         raw = resolved.read_bytes()
 
-        if suffix == ".json":
+        registry = json.loads(
+            (CONFIG / "document.engines.json").read_text(
+                encoding="utf-8-sig"
+            )
+        )
+        docling_extensions = {
+            item.casefold()
+            for item in registry["engines"]["docling"]["extensions"]
+        }
+        external_metadata: dict[str, Any] = {}
+
+        if suffix in docling_extensions:
+            content, external_metadata = self._extract_docling(
+                resolved
+            )
+            engine = "docling"
+        elif suffix == ".json":
             content = self._extract_json(resolved)
             engine = "stdlib-json"
         elif suffix == ".csv":
@@ -243,6 +329,7 @@ class DocumentExtractor:
             self.policy.chunk_overlap_characters,
         )
 
+        metadata.update(external_metadata)
         metadata.update(
             {
                 "sha256": calculate_sha256(raw),

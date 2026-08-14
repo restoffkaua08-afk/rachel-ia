@@ -151,7 +151,7 @@ class ToolCoordinator:
             return knowledge_status()["visao"]
         if name == "visao.ingest":
             path = safe_cwd(_require_text(args, "path", 2_000))
-            return VisaoIngestor(BranMemory()).ingest(path)
+            return VisaoIngestor(self.bran).ingest(path)
         if name == "arya.list":
             folder = safe_cwd(str(args.get("path", ".")))
             return [item.name for item in sorted(folder.iterdir())]

@@ -47,6 +47,16 @@ class CognitiveTests(unittest.TestCase):
             )
         )
 
+    def test_document_request_routes_to_visao(self):
+        plan = NedToolPlanner.heuristic_plan(
+            r"Analise o arquivo C:\Projetos\relatorio.pdf"
+        )
+        self.assertIsNotNone(plan)
+        self.assertEqual(plan.tool, "visao.ingest")
+        self.assertTrue(
+            plan.arguments["path"].endswith("relatorio.pdf")
+        )
+
     def test_memory_write_routes_to_bran(self):
         plan = NedToolPlanner.heuristic_plan("Lembre que eu prefiro relatórios técnicos")
         self.assertIsNotNone(plan)

@@ -96,6 +96,22 @@ class NedToolPlanner:
             return ToolPlan("tool", "visao.status", {}, "Consultar capacidades reais da Visão.", "deterministic")
         if any(term in text for term in ("eventos recentes", "histórico de eventos", "historico de eventos")):
             return ToolPlan("tool", "king.recent", {"limit": 10}, "Consultar eventos do King.", "deterministic")
+        document_request = re.match(
+            r"^(?:rachel[, ]+)?(?:leia|analise|importe|processe)\s+"
+            r"(?:o\s+)?(?:arquivo|documento)?\s*[\"']?(.+?\."
+            r"(?:pdf|docx|pptx|xlsx|txt|md|json|csv|html|png|jpg|jpeg))"
+            r"[\"']?$",
+            content.strip(),
+            re.I | re.S,
+        )
+        if document_request:
+            return ToolPlan(
+                "tool",
+                "visao.ingest",
+                {"path": document_request.group(1).strip()},
+                "Interpretar e indexar documento autorizado.",
+                "deterministic",
+            )
         remember = re.match(r"^(?:rachel[, ]+)?(?:lembre|memorize|guarde)\s+(?:que\s+)?(.+)$", content.strip(), re.I | re.S)
         if remember:
             return ToolPlan(

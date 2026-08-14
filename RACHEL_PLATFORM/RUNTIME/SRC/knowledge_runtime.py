@@ -11,6 +11,9 @@ import time
 from pathlib import Path
 from typing import Any
 
+from bran_cognitive import CognitiveMemory
+from document_runtime import DocumentExtractor
+
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
@@ -109,38 +112,74 @@ class BranMemory:
 
 
 class VisaoIngestor:
-    TEXT_SUFFIXES = {".txt", ".md", ".py", ".js", ".ts", ".tsx", ".jsx", ".html", ".css", ".sql", ".ps1", ".toml", ".yaml", ".yml", ".xml"}
-
-    def __init__(self, memory: BranMemory) -> None:
+    def __init__(
+        self,
+        memory: CognitiveMemory,
+        extractor: DocumentExtractor | None = None,
+    ) -> None:
         self.memory = memory
+        self.extractor = extractor or DocumentExtractor()
 
-    def extract(self, path: Path) -> tuple[str, dict[str, Any]]:
-        if not path.exists() or not path.is_file():
-            raise FileNotFoundError(path)
-        suffix = path.suffix.casefold()
-        metadata = {"path": str(path.resolve()), "suffix": suffix, "size": path.stat().st_size}
-        if suffix in self.TEXT_SUFFIXES:
-            return path.read_text(encoding="utf-8-sig", errors="replace"), metadata
-        if suffix == ".json":
-            payload = json.loads(path.read_text(encoding="utf-8-sig"))
-            return json.dumps(payload, ensure_ascii=False, indent=2), metadata
-        if suffix == ".csv":
-            with path.open("r", encoding="utf-8-sig", errors="replace", newline="") as stream:
-                rows = list(csv.reader(stream))
-            return "\n".join(" | ".join(row) for row in rows), metadata
-        if suffix == ".pdf" and importlib.util.find_spec("docling"):
-            from docling.document_converter import DocumentConverter
-            result = DocumentConverter().convert(str(path))
-            return result.document.export_to_markdown(), {**metadata, "engine": "docling"}
-        if suffix == ".pdf":
-            raise RuntimeError("PDF requires the Docling adapter environment")
-        raise ValueError(f"Unsupported file type: {suffix}")
+    def extract(
+        self,
+        path: Path,
+    ) -> tuple[str, dict[str, Any]]:
+        result = self.extractor.extract(path)
+        return result.content, result.metadata
 
     def ingest(self, path: Path) -> dict[str, Any]:
-        content, metadata = self.extract(path)
-        record = self.memory.remember(content, source=str(path.resolve()), kind="document", metadata=metadata)
-        return {"memory_id": record["id"], "characters": len(content), "metadata": metadata}
+        result = self.extractor.extract(path)
+        stored: list[str] = []
+        denied: list[dict[str, Any]] = []
 
+        for chunk in result.chunks:
+            memory_result = self.memory.remember(
+                chunk.content,
+                approved=True,
+                source=str(path.expanduser().resolve()),
+                category="note",
+                confidence=1.0,
+                importance=3,
+                metadata={
+                    **result.metadata,
+                    "kind": "document_chunk",
+                    "chunk_index": chunk.index,
+                    "chunk_sha256": chunk.sha256,
+                    "start_character": chunk.start_character,
+                    "end_character": chunk.end_character,
+                },
+            )
+
+            if memory_result.get("state") == "stored":
+                stored.append(
+                    memory_result["memory"]["id"]
+                )
+            else:
+                denied.append(
+                    {
+                        "chunk_index": chunk.index,
+                        "state": memory_result.get("state"),
+                        "reason": memory_result.get("reason"),
+                    }
+                )
+
+        if stored and not denied:
+            state = "stored"
+        elif stored:
+            state = "partially_stored"
+        else:
+            state = "denied"
+
+        return {
+            "state": state,
+            "document": result.metadata,
+            "characters": len(result.content),
+            "chunks_total": len(result.chunks),
+            "chunks_stored": len(stored),
+            "chunks_denied": len(denied),
+            "memory_ids": stored,
+            "denied": denied,
+        }
 
 def status() -> dict[str, Any]:
     return {
@@ -173,6 +212,7 @@ def main() -> int:
     vision_sub = vision.add_subparsers(dest="action", required=True)
     ingest = vision_sub.add_parser("ingest")
     ingest.add_argument("path")
+    ingest.add_argument("--approved", action="store_true")
     vision_sub.add_parser("status")
     args = parser.parse_args()
     bran = BranMemory()
@@ -186,8 +226,24 @@ def main() -> int:
         print(json.dumps(status()["bran"], ensure_ascii=False, indent=2))
         return 0
     if args.domain == "vision" and args.action == "ingest":
+        if not args.approved:
+            print(
+                json.dumps(
+                    {
+                        "state": "approval_required",
+                        "reason": (
+                            "Document ingestion modifies Bran memory."
+                        ),
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            )
+            return 3
         try:
-            result = VisaoIngestor(bran).ingest(Path(args.path))
+            result = VisaoIngestor(
+                CognitiveMemory()
+            ).ingest(Path(args.path))
         except (OSError, ValueError, RuntimeError) as error:
             print(str(error), file=sys.stderr)
             return 2

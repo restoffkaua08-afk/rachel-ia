@@ -26,6 +26,7 @@ from project_workspace import ProjectWorkspace
 from project_generator import ProjectGenerator
 from project_quality import ProjectQuality
 from team_runtime import CyberPolicy, JhonLogger, KingEventBus, TyrionSupervisor, doctor
+from security_runtime import ApprovalError, ApprovalStore
 
 
 class ToolError(RuntimeError):
@@ -75,6 +76,7 @@ class ToolCoordinator:
         self.king = KingEventBus()
         self.jhon = JhonLogger()
         self.bran = memory or CognitiveMemory()
+        self.approvals = ApprovalStore()
 
     def list_tools(self) -> list[dict[str, Any]]:
         return [asdict(spec) for spec in self.registry.values()]
@@ -85,13 +87,17 @@ class ToolCoordinator:
             raise ToolError(f"Unknown tool: {name}")
         return asdict(spec)
 
-    def invoke(self, name: str, arguments: dict[str, Any] | None = None, approved: bool = False) -> dict[str, Any]:
+    def invoke(self, name: str, arguments: dict[str, Any] | None = None, approved: bool = False, approval_id: str | None = None) -> dict[str, Any]:
         spec = self.registry.get(name)
         if spec is None:
             raise ToolError(f"Unknown tool: {name}")
         args = arguments or {}
         if not isinstance(args, dict):
             raise ToolError("Tool arguments must be a JSON object")
+        consumed_approval = None
+        if approval_id:
+            consumed_approval = self.approvals.consume(approval_id, name, spec.effect, args)
+            approved = True
         decision = self.cyber.check(spec.effect, approved)
         request_event = self.king.publish(
             "tool.requested", {"tool": name, "member": spec.member, "effect": spec.effect},
@@ -100,10 +106,15 @@ class ToolCoordinator:
         self.jhon.write("info", "tools", "tool.requested", tool=name, member=spec.member, approved=approved)
         if not decision.allowed:
             self.jhon.write("warning", "cyber", "tool.blocked", tool=name, risk=decision.risk)
+            approval = None
+            if decision.approval_required:
+                approval = self.approvals.request(name, spec.effect, decision.risk, args, decision.reason)
+                self.king.publish("approval.requested", {"approval_id": approval["id"], "tool": name, "risk": decision.risk}, sender="cyber", recipient="user")
             return {
                 "state": "approval_required" if decision.approval_required else "denied",
                 "tool": name, "member": spec.member, "arguments": args,
-                "policy": asdict(decision), "request_event_id": request_event["id"],
+                "policy": asdict(decision), "approval": approval,
+                "request_event_id": request_event["id"],
             }
         try:
             result = self._execute(name, args, approved)
@@ -123,6 +134,7 @@ class ToolCoordinator:
             "state": "completed", "tool": name, "member": spec.member,
             "result": result, "policy": asdict(decision),
             "request_event_id": request_event["id"], "completion_event_id": completion["id"],
+            "approval": consumed_approval,
         }
 
     def _execute(self, name: str, args: dict[str, Any], approved: bool) -> Any:
@@ -267,6 +279,7 @@ def main() -> int:
     invoke_parser.add_argument("--arguments")
     invoke_parser.add_argument("--arguments-base64")
     invoke_parser.add_argument("--approved", action="store_true")
+    invoke_parser.add_argument("--approval-id")
     args = parser.parse_args()
     coordinator = ToolCoordinator()
     try:
@@ -288,8 +301,9 @@ def main() -> int:
                 args.name,
                 parse_arguments(raw_arguments),
                 args.approved,
+                args.approval_id,
             )
-    except (OSError, ValueError, ToolError) as error:
+    except (OSError, ValueError, ToolError, ApprovalError) as error:
         print(f"{type(error).__name__}: {error}", file=sys.stderr)
         return 2
     print(json.dumps(result, ensure_ascii=False, indent=2))

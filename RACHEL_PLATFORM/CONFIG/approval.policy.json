@@ -1,0 +1,10 @@
+{
+    "schema_version":  "1.0",
+    "default_ttl_seconds":  300,
+    "maximum_ttl_seconds":  1800,
+    "single_use":  true,
+    "bind_tool":  true,
+    "bind_arguments":  true,
+    "store_argument_values":  false,
+    "cleanup_expired_after_days":  30
+}

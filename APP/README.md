@@ -1,7 +1,30 @@
-# Tauri + React + Typescript
+# RACHEL IA Desktop
 
-This template should help get you started developing with Tauri, React and Typescript in Vite.
+Aplicativo desktop local da RACHEL IA construido com Tauri 2, React e TypeScript.
 
-## Recommended IDE Setup
+## Integracoes atuais
 
-- [VS Code](https://code.visualstudio.com/) + [Tauri](https://marketplace.visualstudio.com/items?itemName=tauri-apps.tauri-vscode) + [rust-analyzer](https://marketplace.visualstudio.com/items?itemName=rust-lang.rust-analyzer)
+- Ned: cognicao, roteamento e assist
+- Cyber: painel de riscos e autorizacoes explicitas
+- Bran: memoria governada e pesquisa
+- Stella: diagnostico de voz
+- Tyrion: saude dos orgaos
+- Bridge Rust -> Python controlado
+- CSP ativa
+- Sem shell arbitrario exposto ao frontend
+
+## Desenvolvimento
+
+pnpm install
+pnpm tauri dev
+
+## Build
+
+pnpm tauri build
+
+O instalador Windows e produzido pelo bundle NSIS configurado no projeto.
+
+## Estado de empacotamento
+
+Esta versao usa o runtime local da RACHEL nesta estacao de desenvolvimento.
+O empacotamento standalone do backend Python, modelos e orgaos sera tratado separadamente.

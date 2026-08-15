@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    rachel_desktop_scaffold_lib::run()
+    rachel_ia_lib::run()
 }

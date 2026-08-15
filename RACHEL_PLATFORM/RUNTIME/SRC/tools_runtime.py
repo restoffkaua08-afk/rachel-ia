@@ -70,13 +70,17 @@ def _bounded_int(arguments: dict[str, Any], key: str, default: int, minimum: int
 
 
 class ToolCoordinator:
-    def __init__(self, memory: CognitiveMemory | None = None) -> None:
+    def __init__(
+        self,
+        memory: CognitiveMemory | None = None,
+        approvals: ApprovalStore | None = None,
+    ) -> None:
         self.registry = _load_registry()
         self.cyber = CyberPolicy()
         self.king = KingEventBus()
         self.jhon = JhonLogger()
         self.bran = memory or CognitiveMemory()
-        self.approvals = ApprovalStore()
+        self.approvals = approvals or ApprovalStore()
 
     def list_tools(self) -> list[dict[str, Any]]:
         return [asdict(spec) for spec in self.registry.values()]
@@ -87,7 +91,7 @@ class ToolCoordinator:
             raise ToolError(f"Unknown tool: {name}")
         return asdict(spec)
 
-    def invoke(self, name: str, arguments: dict[str, Any] | None = None, approved: bool = False, approval_id: str | None = None) -> dict[str, Any]:
+    def invoke(self, name: str, arguments: dict[str, Any] | None = None, approval_id: str | None = None) -> dict[str, Any]:
         spec = self.registry.get(name)
         if spec is None:
             raise ToolError(f"Unknown tool: {name}")
@@ -95,15 +99,24 @@ class ToolCoordinator:
         if not isinstance(args, dict):
             raise ToolError("Tool arguments must be a JSON object")
         consumed_approval = None
+        authorized = False
         if approval_id:
-            consumed_approval = self.approvals.consume(approval_id, name, spec.effect, args)
-            approved = True
-        decision = self.cyber.check(spec.effect, approved)
+            consumed_approval = self.approvals.consume(
+                approval_id,
+                name,
+                spec.effect,
+                args,
+            )
+            authorized = True
+        decision = self.cyber.check(
+            spec.effect,
+            authorized,
+        )
         request_event = self.king.publish(
             "tool.requested", {"tool": name, "member": spec.member, "effect": spec.effect},
             sender="ned", recipient=spec.member,
         )
-        self.jhon.write("info", "tools", "tool.requested", tool=name, member=spec.member, approved=approved)
+        self.jhon.write("info", "tools", "tool.requested", tool=name, member=spec.member, authorized=authorized)
         if not decision.allowed:
             self.jhon.write("warning", "cyber", "tool.blocked", tool=name, risk=decision.risk)
             approval = None
@@ -112,12 +125,12 @@ class ToolCoordinator:
                 self.king.publish("approval.requested", {"approval_id": approval["id"], "tool": name, "risk": decision.risk}, sender="cyber", recipient="user")
             return {
                 "state": "approval_required" if decision.approval_required else "denied",
-                "tool": name, "member": spec.member, "arguments": args,
+                "tool": name, "member": spec.member,
                 "policy": asdict(decision), "approval": approval,
                 "request_event_id": request_event["id"],
             }
         try:
-            result = self._execute(name, args, approved)
+            result = self._execute(name, args, authorized)
         except Exception as error:
             self.jhon.write("error", spec.member, "tool.failed", tool=name, error_type=type(error).__name__)
             self.king.publish(
@@ -137,22 +150,22 @@ class ToolCoordinator:
             "approval": consumed_approval,
         }
 
-    def _execute(self, name: str, args: dict[str, Any], approved: bool) -> Any:
+    def _execute(self, name: str, args: dict[str, Any], authorized: bool) -> Any:
         if name == "arya.project.review":
             result = ProjectQuality().review(_require_text(args, "project", 80))
             result["dany"] = asdict(DanyEvaluator().evaluate(json.dumps(result, ensure_ascii=False)))
             return result
         if name == "arya.project.report":
-            return ProjectQuality().write_report(_require_text(args, "project", 80), approved)
+            return ProjectQuality().write_report(_require_text(args, "project", 80), authorized)
         if name == "arya.project.status":
             return ProjectWorkspace().status()
         if name == "arya.project.create":
-            return ProjectWorkspace().create_project(_require_text(args, "project", 80), approved)
+            return ProjectWorkspace().create_project(_require_text(args, "project", 80), authorized)
         if name == "arya.project.write":
             files = args.get("files")
             if not isinstance(files, list):
                 raise ToolError("'files' must be an array")
-            return ProjectWorkspace().write_files(_require_text(args, "project", 80), files, approved)
+            return ProjectWorkspace().write_files(_require_text(args, "project", 80), files, authorized)
         if name == "arya.project.inspect":
             return ProjectWorkspace().inspect(_require_text(args, "project", 80))
         if name == "arya.project.read":
@@ -162,7 +175,7 @@ class ToolCoordinator:
                 project=_require_text(args, "project", 80),
                 goal=_require_text(args, "goal", 8_000),
                 project_type=str(args.get("project_type", "auto"))[:100],
-                approved=approved,
+                approved=authorized,
             )
         if name == "web.fetch":
             evidence = WebClient().fetch(
@@ -220,7 +233,7 @@ class ToolCoordinator:
             )[:100]
             return self.bran.remember(
                 _require_text(args, "content"),
-                approved=True,
+                approved=authorized,
                 source=str(args.get("source", "user-approved"))[:200],
                 category=category,
                 metadata={
@@ -245,7 +258,7 @@ class ToolCoordinator:
             cwd = args.get("cwd")
             if cwd is not None and not isinstance(cwd, str):
                 raise ToolError("'cwd' must be a string or null")
-            return arya_run(command, raw_arguments, cwd, approved)
+            return arya_run(command, raw_arguments, cwd, authorized)
         if name == "king.recent":
             return KingEventBus().recent(_bounded_int(args, "limit", 20, 1, 200))
         if name == "dany.evaluate":
@@ -278,7 +291,6 @@ def main() -> int:
     invoke_parser.add_argument("name")
     invoke_parser.add_argument("--arguments")
     invoke_parser.add_argument("--arguments-base64")
-    invoke_parser.add_argument("--approved", action="store_true")
     invoke_parser.add_argument("--approval-id")
     args = parser.parse_args()
     coordinator = ToolCoordinator()
@@ -300,7 +312,6 @@ def main() -> int:
             result = coordinator.invoke(
                 args.name,
                 parse_arguments(raw_arguments),
-                args.approved,
                 args.approval_id,
             )
     except (OSError, ValueError, ToolError, ApprovalError) as error:

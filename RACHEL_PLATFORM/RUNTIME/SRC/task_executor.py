@@ -8,6 +8,7 @@ from contextlib import closing
 from pathlib import Path
 from typing import Any
 
+from security_runtime import ApprovalError
 from task_planner import PlanStore
 from tools_runtime import ToolCoordinator
 
@@ -99,17 +100,6 @@ class TaskExecutor:
             for step in payload.get("steps", [])
         }
 
-    @staticmethod
-    def _approved(
-        step: dict[str, Any],
-        approved_steps: set[str],
-        approve_all: bool,
-    ) -> bool:
-        if not bool(step.get("approval_required", False)):
-            return False
-
-        return approve_all or str(step["id"]) in approved_steps
-
     def status(self) -> dict[str, Any]:
         return {
             "available": True,
@@ -118,6 +108,8 @@ class TaskExecutor:
             "resumable": True,
             "persistent_checkpoints": True,
             "cyber_authorization": True,
+            "approval_tokens": True,
+            "legacy_boolean_approval": False,
             "arya_tools": True,
             "king_events": True,
             "jhon_observability": True,
@@ -127,11 +119,10 @@ class TaskExecutor:
     def execute(
         self,
         plan_id: str,
-        approved_steps: set[str] | None = None,
-        approve_all: bool = False,
+        approval_ids: dict[str, str] | None = None,
         maximum_steps: int | None = None,
     ) -> dict[str, Any]:
-        approvals = set(approved_steps or set())
+        approvals = dict(approval_ids or {})
         payload = self.store.get(plan_id)
 
         if payload is None:
@@ -156,7 +147,7 @@ class TaskExecutor:
         if not step_map:
             raise ExecutionError("Plan has no executable steps.")
 
-        unknown_approvals = approvals - set(step_map)
+        unknown_approvals = set(approvals) - set(step_map)
         if unknown_approvals:
             raise ExecutionError(
                 "Unknown approved steps: "
@@ -256,55 +247,9 @@ class TaskExecutor:
                 ):
                     continue
 
-                approved = self._approved(
-                    step,
-                    approvals,
-                    approve_all,
+                approval_id = approvals.get(
+                    str(step["id"])
                 )
-
-                if (
-                    bool(step.get("approval_required", False))
-                    and not approved
-                ):
-                    step["state"] = "awaiting_approval"
-                    payload["state"] = "awaiting_approval"
-                    self._persist(payload)
-
-                    self._publish(
-                        "plan.approval_required",
-                        {
-                            "plan_id": plan_id,
-                            "step_id": step["id"],
-                            "tool": step["tool"],
-                            "effect": step["effect"],
-                            "risk": step["risk"],
-                        },
-                        sender="cyber",
-                        recipient="ned",
-                    )
-                    self._log(
-                        "warning",
-                        "cyber",
-                        "plan.approval_required",
-                        plan_id=plan_id,
-                        step_id=step["id"],
-                        tool=step["tool"],
-                    )
-
-                    return {
-                        "state": "awaiting_approval",
-                        "plan_id": plan_id,
-                        "approval": {
-                            "step_id": step["id"],
-                            "title": step["title"],
-                            "tool": step["tool"],
-                            "effect": step["effect"],
-                            "risk": step["risk"],
-                            "arguments": step.get("arguments", {}),
-                        },
-                        "executed_now": executed_now,
-                        "plan": payload,
-                    }
 
                 step["state"] = "running"
                 step["error"] = None
@@ -330,11 +275,30 @@ class TaskExecutor:
                 )
 
                 try:
-                    response = self.coordinator.invoke(
-                        str(step["tool"]),
-                        dict(step.get("arguments", {})),
-                        approved=approved,
-                    )
+                    try:
+                        response = self.coordinator.invoke(
+                            str(step["tool"]),
+                            dict(step.get("arguments", {})),
+                            approval_id=approval_id,
+                        )
+                    except ApprovalError as approval_error:
+                        if not approval_id:
+                            raise
+
+                        self._log(
+                            "warning",
+                            "cyber",
+                            "approval.rejected",
+                            plan_id=plan_id,
+                            step_id=step["id"],
+                            error=str(approval_error),
+                        )
+
+                        response = self.coordinator.invoke(
+                            str(step["tool"]),
+                            dict(step.get("arguments", {})),
+                            approval_id=None,
+                        )
                 except Exception as error:
                     step["state"] = "failed"
                     step["error"] = (
@@ -381,19 +345,39 @@ class TaskExecutor:
                     step["result"] = response
                     self._persist(payload)
 
+                    approval = dict(
+                        response.get("approval") or {}
+                    )
+                    approval.update(
+                        {
+                            "step_id": step["id"],
+                            "title": step["title"],
+                        }
+                    )
+
+                    public_plan = {
+                        "id": payload.get("id"),
+                        "goal": payload.get("goal"),
+                        "state": payload.get("state"),
+                        "steps": [
+                            {
+                                "id": item.get("id"),
+                                "title": item.get("title"),
+                                "tool": item.get("tool"),
+                                "effect": item.get("effect"),
+                                "risk": item.get("risk"),
+                                "state": item.get("state"),
+                            }
+                            for item in payload.get("steps", [])
+                        ],
+                    }
+
                     return {
                         "state": "awaiting_approval",
                         "plan_id": plan_id,
-                        "approval": {
-                            "step_id": step["id"],
-                            "title": step["title"],
-                            "tool": step["tool"],
-                            "effect": step["effect"],
-                            "risk": step["risk"],
-                            "arguments": step.get("arguments", {}),
-                        },
+                        "approval": approval,
                         "executed_now": executed_now,
-                        "plan": payload,
+                        "plan": public_plan,
                     }
 
                 if response_state != "completed":
@@ -499,6 +483,42 @@ class TaskExecutor:
                 }
 
 
+def parse_approval_bindings(
+    values: list[str] | None,
+) -> dict[str, str]:
+    result: dict[str, str] = {}
+
+    for raw in values or []:
+        if "=" not in raw:
+            raise ExecutionError(
+                "Approval binding must use STEP_ID=APPROVAL_ID."
+            )
+
+        step_id, approval_id = (
+            part.strip()
+            for part in raw.split("=", 1)
+        )
+
+        if not step_id or not approval_id:
+            raise ExecutionError(
+                "Approval binding must use STEP_ID=APPROVAL_ID."
+            )
+
+        if not approval_id.startswith("approval_"):
+            raise ExecutionError(
+                "Approval id must be issued by Cyber."
+            )
+
+        if step_id in result:
+            raise ExecutionError(
+                f"Duplicate approval binding: {step_id}"
+            )
+
+        result[step_id] = approval_id
+
+    return result
+
+
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="rachel-task-executor"
@@ -521,13 +541,10 @@ def build_parser() -> argparse.ArgumentParser:
     run_parser = commands.add_parser("run")
     run_parser.add_argument("--plan-id", required=True)
     run_parser.add_argument(
-        "--approved-step",
+        "--approval",
         action="append",
         default=[],
-    )
-    run_parser.add_argument(
-        "--approve-all",
-        action="store_true",
+        metavar="STEP_ID=APPROVAL_ID",
     )
     run_parser.add_argument(
         "--maximum-steps",
@@ -563,8 +580,9 @@ def main() -> int:
 
     result = executor.execute(
         plan_id=arguments.plan_id,
-        approved_steps=set(arguments.approved_step),
-        approve_all=arguments.approve_all,
+        approval_ids=parse_approval_bindings(
+            arguments.approval
+        ),
         maximum_steps=arguments.maximum_steps,
     )
 

@@ -23,7 +23,10 @@ from rachel_core.bootstrap import build_container
 from rachel_core.domain.enums import Role
 from rachel_core.domain.models import Message
 
-from task_executor import TaskExecutor
+from task_executor import (
+    TaskExecutor,
+    parse_approval_bindings,
+)
 from task_planner import NedTaskPlanner, PlanError, PlanStore
 from tools_runtime import ToolCoordinator
 
@@ -275,8 +278,7 @@ class TaskOrchestrator:
     def execute(
         self,
         plan_id: str,
-        approved_steps: set[str] | None = None,
-        approve_all: bool = False,
+        approval_ids: dict[str, str] | None = None,
         maximum_steps: int | None = None,
     ) -> dict[str, Any]:
         return TaskExecutor(
@@ -284,8 +286,7 @@ class TaskOrchestrator:
             self.coordinator,
         ).execute(
             plan_id=plan_id,
-            approved_steps=approved_steps,
-            approve_all=approve_all,
+            approval_ids=approval_ids,
             maximum_steps=maximum_steps,
         )
 
@@ -330,13 +331,10 @@ def build_parser() -> argparse.ArgumentParser:
     run = commands.add_parser("run")
     run.add_argument("--plan-id", required=True)
     run.add_argument(
-        "--approved-step",
+        "--approval",
         action="append",
         default=[],
-    )
-    run.add_argument(
-        "--approve-all",
-        action="store_true",
+        metavar="STEP_ID=APPROVAL_ID",
     )
     run.add_argument("--maximum-steps", type=int)
 
@@ -409,10 +407,9 @@ def main() -> int:
 
         result = orchestrator.execute(
             plan_id=arguments.plan_id,
-            approved_steps=set(
-                arguments.approved_step
+            approval_ids=parse_approval_bindings(
+                arguments.approval
             ),
-            approve_all=arguments.approve_all,
             maximum_steps=arguments.maximum_steps,
         )
 

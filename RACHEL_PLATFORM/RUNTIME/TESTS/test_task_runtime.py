@@ -49,6 +49,7 @@ class FakeCoordinator:
                 "execute",
             ),
         }
+        self.sequence = 0
 
     def list_tools(self):
         return [
@@ -66,17 +67,31 @@ class FakeCoordinator:
         self,
         name,
         arguments=None,
-        approved=False,
+        approval_id=None,
     ):
+        if name == "arya.run" and approval_id is None:
+            self.sequence += 1
+            return {
+                "state": "approval_required",
+                "tool": name,
+                "approval": {
+                    "id": "approval_" + f"{self.sequence:032d}",
+                    "tool": name,
+                    "effect": "execute",
+                    "risk": "medium",
+                    "status": "pending",
+                    "arguments_summary": "{}",
+                },
+            }
+
         return {
             "state": "completed",
             "tool": name,
             "result": {
-                "approved": approved,
+                "approval_id": approval_id,
                 "arguments": arguments or {},
             },
         }
-
 
 class FakeResponse:
     def __init__(self, content):
@@ -205,18 +220,18 @@ class TaskRuntimeTests(unittest.TestCase):
                 source="test",
             )
 
-            blocked = orchestrator.execute(
-                plan["id"]
-            )
-
+            blocked = orchestrator.execute(plan["id"])
             self.assertEqual(
                 blocked["state"],
                 "awaiting_approval",
             )
 
+            approval_id = blocked["approval"]["id"]
             completed = orchestrator.execute(
                 plan["id"],
-                approved_steps={"execute"},
+                approval_ids={
+                    "execute": approval_id,
+                },
             )
 
             self.assertEqual(

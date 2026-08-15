@@ -50,14 +50,24 @@ class ToolsRuntimeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             memory = CognitiveMemory(Path(directory) / "memory.db")
             tools = ToolCoordinator(memory=memory)
+            arguments = {
+                "content": "Preferencia tecnica organizada.",
+                "source": "unit-test",
+                "kind": "preference",
+            }
+            pending = tools.invoke(
+                "bran.remember",
+                arguments,
+            )
+            approval_id = pending["approval"]["id"]
+            tools.approvals.decide(
+                approval_id,
+                True,
+            )
             result = tools.invoke(
                 "bran.remember",
-                {
-                    "content": "Prefiro relatórios técnicos organizados.",
-                    "source": "unit-test",
-                    "kind": "preference",
-                },
-                approved=True,
+                arguments,
+                approval_id=approval_id,
             )
             self.assertEqual(result["state"], "completed")
             self.assertEqual(result["result"]["state"], "stored")
@@ -67,14 +77,24 @@ class ToolsRuntimeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             memory = CognitiveMemory(Path(directory) / "memory.db")
             tools = ToolCoordinator(memory=memory)
+            arguments = {
+                "content": "Projeto usa arquitetura modular.",
+                "source": "unit-test",
+                "kind": "project",
+            }
+            pending = tools.invoke(
+                "bran.remember",
+                arguments,
+            )
+            approval_id = pending["approval"]["id"]
+            tools.approvals.decide(
+                approval_id,
+                True,
+            )
             tools.invoke(
                 "bran.remember",
-                {
-                    "content": "O projeto principal utiliza arquitetura modular.",
-                    "source": "unit-test",
-                    "kind": "project",
-                },
-                approved=True,
+                arguments,
+                approval_id=approval_id,
             )
             result = tools.invoke(
                 "bran.search",
@@ -82,6 +102,67 @@ class ToolsRuntimeTests(unittest.TestCase):
             )
             self.assertEqual(result["state"], "completed")
             self.assertEqual(len(result["result"]), 1)
+
+    def test_boolean_approval_parameter_is_removed(self):
+        import inspect
+        parameters = inspect.signature(
+            ToolCoordinator.invoke
+        ).parameters
+        self.assertNotIn("approved", parameters)
+        self.assertIn("approval_id", parameters)
+
+    def test_approval_response_hides_argument_values(self):
+        import json
+        secret = "private-value-987"
+        result = self.tools.invoke(
+            "bran.remember",
+            {
+                "content": secret,
+                "source": "unit-test",
+            },
+        )
+        serialized = json.dumps(
+            result,
+            ensure_ascii=False,
+        )
+        self.assertNotIn(secret, serialized)
+        self.assertNotIn("arguments", result)
+
+    def test_approval_is_single_use_through_tool_runtime(self):
+        from security_runtime import ApprovalError
+
+        with tempfile.TemporaryDirectory() as directory:
+            memory = CognitiveMemory(Path(directory) / "memory.db")
+            tools = ToolCoordinator(memory=memory)
+            arguments = {
+                "content": "Governed memory.",
+                "kind": "note",
+            }
+            pending = tools.invoke(
+                "bran.remember",
+                arguments,
+            )
+            approval_id = pending["approval"]["id"]
+            tools.approvals.decide(
+                approval_id,
+                True,
+            )
+            completed = tools.invoke(
+                "bran.remember",
+                arguments,
+                approval_id=approval_id,
+            )
+            self.assertEqual(
+                completed["state"],
+                "completed",
+            )
+
+            with self.assertRaises(ApprovalError):
+                tools.invoke(
+                    "bran.remember",
+                    arguments,
+                    approval_id=approval_id,
+                )
 
     def test_unknown_tool_is_blocked(self):
         with self.assertRaises(ToolError):

@@ -53,25 +53,51 @@ class FakeCoordinator:
         self.jhon = FakeLogger()
         self.calls = []
         self.fail_tools = set()
+        self.approval_tools = {"arya.run"}
+        self.invalid_approvals = set()
+        self.sequence = 0
 
-    def invoke(self, name, arguments=None, approved=False):
+    def invoke(
+        self,
+        name,
+        arguments=None,
+        approval_id=None,
+    ):
         self.calls.append(
             {
                 "name": name,
                 "arguments": arguments or {},
-                "approved": approved,
+                "approval_id": approval_id,
             }
         )
 
         if name in self.fail_tools:
             raise RuntimeError("simulated tool failure")
 
+        if approval_id in self.invalid_approvals:
+            from security_runtime import ApprovalError
+            raise ApprovalError("Approval expired")
+
+        if name in self.approval_tools and approval_id is None:
+            self.sequence += 1
+            return {
+                "state": "approval_required",
+                "tool": name,
+                "approval": {
+                    "id": "approval_" + f"{self.sequence:032d}",
+                    "tool": name,
+                    "effect": "execute",
+                    "risk": "medium",
+                    "status": "pending",
+                    "arguments_summary": "{}",
+                },
+            }
+
         return {
             "state": "completed",
             "tool": name,
             "result": {"ok": True},
         }
-
 
 class TaskExecutorTests(unittest.TestCase):
     def create_runtime(self):
@@ -106,7 +132,7 @@ class TaskExecutorTests(unittest.TestCase):
 
             self.assertEqual(result["state"], "completed")
             self.assertEqual(len(coordinator.calls), 1)
-            self.assertFalse(coordinator.calls[0]["approved"])
+            self.assertIsNone(coordinator.calls[0]["approval_id"])
         finally:
             temporary.cleanup()
 
@@ -136,7 +162,10 @@ class TaskExecutorTests(unittest.TestCase):
                 result["state"],
                 "awaiting_approval",
             )
-            self.assertEqual(len(coordinator.calls), 0)
+            self.assertEqual(len(coordinator.calls), 1)
+            self.assertTrue(
+                result["approval"]["id"].startswith("approval_")
+            )
         finally:
             temporary.cleanup()
 
@@ -169,21 +198,24 @@ class TaskExecutorTests(unittest.TestCase):
             store.save(plan)
 
             first = executor.execute(plan.id)
-
             self.assertEqual(
                 first["state"],
                 "awaiting_approval",
             )
-            self.assertEqual(len(coordinator.calls), 1)
+            approval_id = first["approval"]["id"]
 
             second = executor.execute(
                 plan.id,
-                approved_steps={"create"},
+                approval_ids={
+                    "create": approval_id,
+                },
             )
 
             self.assertEqual(second["state"], "completed")
-            self.assertEqual(len(coordinator.calls), 2)
-            self.assertTrue(coordinator.calls[-1]["approved"])
+            self.assertEqual(
+                coordinator.calls[-1]["approval_id"],
+                approval_id,
+            )
         finally:
             temporary.cleanup()
 
@@ -297,10 +329,65 @@ class TaskExecutorTests(unittest.TestCase):
             with self.assertRaises(Exception):
                 executor.execute(
                     plan.id,
-                    approved_steps={"unknown"},
+                    approval_ids={
+                        "unknown": "approval_" + "1" * 32,
+                    },
                 )
         finally:
             temporary.cleanup()
+
+    def test_stale_approval_requests_fresh_token(self):
+        temporary, store, coordinator, executor = (
+            self.create_runtime()
+        )
+
+        try:
+            plan = NedTaskPlanner().create(
+                "Create safely",
+                [
+                    {
+                        "id": "create",
+                        "title": "Create",
+                        "member": "arya",
+                        "tool": "arya.run",
+                        "effect": "create",
+                    }
+                ],
+            )
+            store.save(plan)
+
+            first = executor.execute(plan.id)
+            stale = first["approval"]["id"]
+            coordinator.invalid_approvals.add(stale)
+
+            second = executor.execute(
+                plan.id,
+                approval_ids={"create": stale},
+            )
+
+            self.assertEqual(
+                second["state"],
+                "awaiting_approval",
+            )
+            self.assertNotEqual(
+                second["approval"]["id"],
+                stale,
+            )
+            self.assertEqual(
+                second["plan"]["state"],
+                "awaiting_approval",
+            )
+        finally:
+            temporary.cleanup()
+
+    def test_legacy_boolean_parameters_are_removed(self):
+        import inspect
+        parameters = inspect.signature(
+            TaskExecutor.execute
+        ).parameters
+        self.assertNotIn("approved_steps", parameters)
+        self.assertNotIn("approve_all", parameters)
+        self.assertIn("approval_ids", parameters)
 
 
 if __name__ == "__main__":

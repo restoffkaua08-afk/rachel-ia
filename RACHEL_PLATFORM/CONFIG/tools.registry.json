@@ -194,6 +194,24 @@
                                          "goal":  "string",
                                          "project_type":  "string"
                                      }
+                  },
+                  {
+                      "name":  "arya.project.review",
+                      "member":  "dany",
+                      "effect":  "inspect",
+                      "description":  "Revisa qualidade, acessibilidade basica e referencias do projeto.",
+                      "parameters":  {
+                                         "project":  "string"
+                                     }
+                  },
+                  {
+                      "name":  "arya.project.report",
+                      "member":  "dany",
+                      "effect":  "write",
+                      "description":  "Gera relatorio tecnico persistente dentro do projeto.",
+                      "parameters":  {
+                                         "project":  "string"
+                                     }
                   }
               ]
 }

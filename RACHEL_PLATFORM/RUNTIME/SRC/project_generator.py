@@ -19,6 +19,7 @@ from rachel_core.bootstrap import build_container
 from rachel_core.domain.enums import Role
 from rachel_core.domain.models import Message
 from project_workspace import ProjectWorkspace, WorkspaceError
+from project_quality import ProjectQuality
 
 
 class GenerationError(RuntimeError):
@@ -80,8 +81,10 @@ class ProjectGenerator:
         specification = self.specifications(goal, project_type)
         created = self.workspace.create_project(project, approved=True)
         written = self.workspace.write_files(project, specification["files"], approved=True)
+        quality = ProjectQuality(self.workspace).review(project)
         return {
             "state": "completed",
+            "quality": quality,
             "project": project,
             "path": created["path"],
             "goal": specification["goal"],

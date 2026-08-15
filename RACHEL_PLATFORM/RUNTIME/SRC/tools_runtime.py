@@ -24,6 +24,7 @@ from search_runtime import SearchEngine
 from web_runtime import WebClient, evidence_summary
 from project_workspace import ProjectWorkspace
 from project_generator import ProjectGenerator
+from project_quality import ProjectQuality
 from team_runtime import CyberPolicy, JhonLogger, KingEventBus, TyrionSupervisor, doctor
 
 
@@ -125,6 +126,12 @@ class ToolCoordinator:
         }
 
     def _execute(self, name: str, args: dict[str, Any], approved: bool) -> Any:
+        if name == "arya.project.review":
+            result = ProjectQuality().review(_require_text(args, "project", 80))
+            result["dany"] = asdict(DanyEvaluator().evaluate(json.dumps(result, ensure_ascii=False)))
+            return result
+        if name == "arya.project.report":
+            return ProjectQuality().write_report(_require_text(args, "project", 80), approved)
         if name == "arya.project.status":
             return ProjectWorkspace().status()
         if name == "arya.project.create":

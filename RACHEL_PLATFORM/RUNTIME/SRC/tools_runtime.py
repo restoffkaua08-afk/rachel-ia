@@ -312,7 +312,7 @@ def main() -> int:
             result = coordinator.invoke(
                 args.name,
                 parse_arguments(raw_arguments),
-                args.approval_id,
+                approval_id=args.approval_id,
             )
     except (OSError, ValueError, ToolError, ApprovalError) as error:
         print(f"{type(error).__name__}: {error}", file=sys.stderr)

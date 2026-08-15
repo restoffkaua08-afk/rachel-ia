@@ -311,7 +311,7 @@ class NedCognitiveBridge:
         self,
         content: str,
         conversation_id: str | None = None,
-        approved: bool = False,
+        approval_id: str | None = None,
     ) -> dict[str, Any]:
         task_goal = extract_task_goal(content)
 
@@ -344,7 +344,11 @@ class NedCognitiveBridge:
             response["tool_plan"] = asdict(plan)
             response["tool_result"] = None
             return response
-        tool_result = self.tools.invoke(plan.tool, plan.arguments, approved)
+        tool_result = self.tools.invoke(
+            plan.tool,
+            plan.arguments,
+            approval_id=approval_id,
+        )
         if tool_result["state"] == "approval_required":
             return {
                 "state": "approval_required",
@@ -388,7 +392,7 @@ def main() -> int:
     assist.add_argument("content", nargs="?")
     assist.add_argument("--content-base64")
     assist.add_argument("--conversation-id")
-    assist.add_argument("--approved", action="store_true")
+    assist.add_argument("--approval-id")
     evaluate = sub.add_parser("evaluate")
     evaluate.add_argument("content")
     args = parser.parse_args()
@@ -402,7 +406,11 @@ def main() -> int:
         try:
             bridge = NedCognitiveBridge()
             payload = (
-                bridge.assist(content, args.conversation_id, args.approved)
+                bridge.assist(
+                    content,
+                    args.conversation_id,
+                    approval_id=args.approval_id,
+                )
                 if args.action == "assist" else bridge.chat(content, args.conversation_id)
             )
         except Exception as error:

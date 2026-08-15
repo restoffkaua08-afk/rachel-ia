@@ -1,4 +1,5 @@
 import inspect
+import subprocess
 import unittest
 from pathlib import Path
 import sys
@@ -6,6 +7,7 @@ import sys
 SRC = Path(__file__).resolve().parents[1] / "SRC"
 sys.path.insert(0, str(SRC))
 
+from cognitive_runtime import NedCognitiveBridge
 from task_executor import (
     TaskExecutor,
     build_parser as build_executor_parser,
@@ -37,6 +39,45 @@ class SecurityContractTests(unittest.TestCase):
         self.assertIn("approval_ids", executor)
         self.assertNotIn("approved_steps", task)
         self.assertNotIn("approve_all", task)
+
+    def test_cognitive_assist_uses_approval_id_contract(self):
+        parameters = inspect.signature(
+            NedCognitiveBridge.assist
+        ).parameters
+
+        self.assertNotIn("approved", parameters)
+        self.assertIn("approval_id", parameters)
+
+        source = (
+            SRC / "cognitive_runtime.py"
+        ).read_text(encoding="utf-8")
+
+        self.assertIn(
+            'assist.add_argument("--approval-id")',
+            source,
+        )
+        self.assertNotIn(
+            'assist.add_argument("--approved"',
+            source,
+        )
+
+    def test_cognitive_cli_rejects_legacy_approved_flag(self):
+        result = subprocess.run(
+            [
+                sys.executable,
+                str(SRC / "cognitive_runtime.py"),
+                "cognitive",
+                "assist",
+                "ola",
+                "--approved",
+            ],
+            check=False,
+            capture_output=True,
+            text=True,
+            encoding="utf-8",
+        )
+
+        self.assertEqual(result.returncode, 2)
 
     def test_executor_cli_rejects_approve_all(self):
         parser = build_executor_parser()

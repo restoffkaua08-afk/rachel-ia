@@ -51,6 +51,7 @@ class VoiceSession:
     turns: list[VoiceTurn] = field(default_factory=list)
     consecutive_errors: int = 0
     silence_timeouts: int = 0
+    interruptions: int = 0
     started_at_ms: int = field(default_factory=lambda: int(time.time() * 1000))
     stopped_at_ms: int | None = None
 
@@ -75,6 +76,10 @@ class VoiceSession:
     def register_silence(self) -> None:
         self.silence_timeouts += 1
         self.persist(reason="silence-timeout")
+
+    def register_interruption(self) -> None:
+        self.interruptions += 1
+        self.persist(reason="speech-interrupted")
 
     def register_error(self, error: Exception | str) -> None:
         self.consecutive_errors += 1
@@ -126,6 +131,7 @@ class VoiceSession:
             "turn_count": len(self.turns),
             "consecutive_errors": self.consecutive_errors,
             "silence_timeouts": self.silence_timeouts,
+            "interruptions": self.interruptions,
             "started_at_ms": self.started_at_ms,
             "stopped_at_ms": self.stopped_at_ms,
             "reason": reason,

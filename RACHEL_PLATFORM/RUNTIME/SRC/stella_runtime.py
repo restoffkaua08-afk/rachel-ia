@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 from voice_session import VoiceSession, VoiceState
+from realtime_voice import BargeInConfig, monitor_process_for_barge_in
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -79,7 +80,7 @@ def select_voice(name: str) -> dict[str, Any]:
     return {"selected": name}
 
 
-def speak(text: str, profile_name: str | None = None) -> None:
+def speak(text: str, profile_name: str | None = None, interruptible: bool = False, device: int | None = None) -> bool:
     config = load_config()
     profile_name = profile_name or config["default_profile"]
     profile = config["profiles"][profile_name]
@@ -126,9 +127,25 @@ foreach ($part in $parts) {{
 $s.Speak($builder)
 $s.Dispose()
 '''
-        result = subprocess.run(encoded_powershell(script), capture_output=True, timeout=180)
+        command = encoded_powershell(script)
+        barge_config = config.get("barge_in", {})
+        if interruptible and bool(barge_config.get("enabled", True)):
+            process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            result = monitor_process_for_barge_in(
+                process,
+                device,
+                BargeInConfig.from_mapping(barge_config),
+            )
+            if result["interrupted"]:
+                print(json.dumps({"event": "speech_interrupted", **result}, ensure_ascii=False), file=sys.stderr)
+                return True
+            if process.returncode not in {0, None}:
+                raise RuntimeError("Speech synthesis failed")
+            return False
+        result = subprocess.run(command, capture_output=True, timeout=180)
         if result.returncode != 0:
             raise RuntimeError("Speech synthesis failed")
+        return False
 
 
 def devices() -> list[dict[str, Any]]:
@@ -276,7 +293,9 @@ def conversation(device: int | None, profile: str | None) -> int:
             answer = response["message"]["content"]
             session.transition(VoiceState.SPEAKING)
             print(f"Rachel: {answer}")
-            speak(answer, profile)
+            interrupted = speak(answer, profile, interruptible=True, device=device)
+            if interrupted:
+                session.register_interruption()
             session.add_turn(
                 text,
                 answer,

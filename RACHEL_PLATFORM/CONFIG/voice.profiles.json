@@ -68,5 +68,16 @@
                          "recovery_delay_seconds":  0.75,
                          "turn_pause_seconds":  0.2,
                          "state_directory":  "RACHEL_PLATFORM/STATE/VOICE_SESSIONS"
-                     }
+                     },
+    "barge_in":  {
+                     "enabled":  true,
+                     "sample_rate":  16000,
+                     "block_seconds":  0.05,
+                     "warmup_seconds":  0.65,
+                     "absolute_threshold":  0.024,
+                     "noise_multiplier":  2.8,
+                     "consecutive_blocks":  4,
+                     "maximum_seconds":  180,
+                     "headphones_recommended":  true
+                 }
 }

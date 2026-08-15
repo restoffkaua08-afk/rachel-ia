@@ -8,6 +8,7 @@ from contextlib import closing
 from pathlib import Path
 from typing import Any
 
+from runtime_paths import STATE
 from security_runtime import ApprovalError
 from task_planner import PlanStore
 from tools_runtime import ToolCoordinator
@@ -526,9 +527,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--database",
         default=str(
-            Path(__file__).resolve().parents[2]
-            / "STATE"
-            / "task-plans.db"
+            STATE / "task-plans.db"
         ),
     )
 

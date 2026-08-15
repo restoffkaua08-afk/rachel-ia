@@ -22,10 +22,8 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8")
 
-ROOT = Path(__file__).resolve().parents[3]
-PLATFORM = ROOT / "RACHEL_PLATFORM"
-CONFIG = PLATFORM / "CONFIG"
-STATE = PLATFORM / "STATE"
+from runtime_paths import CONFIG, PLATFORM, ROOT, STATE
+
 CACHE = STATE / "WEB_CACHE"
 
 

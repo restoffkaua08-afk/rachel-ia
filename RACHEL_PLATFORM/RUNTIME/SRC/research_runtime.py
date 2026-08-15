@@ -13,7 +13,7 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8")
 
-ROOT = Path(__file__).resolve().parents[3]
+from runtime_paths import ROOT
 
 from search_runtime import SearchEngine
 from web_runtime import WebClient, WebEvidence

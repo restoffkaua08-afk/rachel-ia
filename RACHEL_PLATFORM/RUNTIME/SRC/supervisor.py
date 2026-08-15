@@ -11,11 +11,7 @@ from pathlib import Path
 from typing import Any
 
 
-ROOT = Path(__file__).resolve().parents[3]
-PLATFORM = ROOT / "RACHEL_PLATFORM"
-CONFIG = PLATFORM / "CONFIG"
-STATE = PLATFORM / "STATE"
-LOGS = PLATFORM / "LOGS"
+from runtime_paths import CONFIG, LOGS, PLATFORM, ROOT, STATE
 
 
 @dataclass

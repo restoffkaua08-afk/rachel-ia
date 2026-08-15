@@ -12,9 +12,10 @@ from pathlib import Path
 from typing import Any, Iterable
 
 
-ROOT = Path(__file__).resolve().parents[3]
-CONFIG_PATH = ROOT / "RACHEL_PLATFORM" / "CONFIG" / "voice.profiles.json"
-SESSION_DIR = ROOT / "RACHEL_PLATFORM" / "STATE" / "VOICE_SESSIONS"
+from runtime_paths import CONFIG, ROOT, STATE
+
+CONFIG_PATH = CONFIG / "voice.profiles.json"
+SESSION_DIR = STATE / "VOICE_SESSIONS"
 
 
 def percentile(values: Iterable[float], fraction: float) -> float:

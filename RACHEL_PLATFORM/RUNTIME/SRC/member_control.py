@@ -12,9 +12,8 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8")
 
-ROOT = Path(__file__).resolve().parents[3]
-PLATFORM = ROOT / "RACHEL_PLATFORM"
-CONFIG = PLATFORM / "CONFIG"
+from runtime_paths import CONFIG, PLATFORM, ROOT
+
 MEMBERS = PLATFORM / "MEMBROS"
 
 

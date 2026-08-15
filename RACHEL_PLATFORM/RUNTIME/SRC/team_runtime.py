@@ -16,11 +16,8 @@ if hasattr(sys.stdout, "reconfigure"):
 if hasattr(sys.stderr, "reconfigure"):
     sys.stderr.reconfigure(encoding="utf-8")
 
-ROOT = Path(__file__).resolve().parents[3]
-PLATFORM = ROOT / "RACHEL_PLATFORM"
-CONFIG = PLATFORM / "CONFIG"
-STATE = PLATFORM / "STATE"
-LOGS = PLATFORM / "LOGS"
+from runtime_paths import CONFIG, LOGS, PLATFORM, ROOT, STATE
+
 ORGAN_ROOT = PLATFORM / "ORGAOS"
 
 

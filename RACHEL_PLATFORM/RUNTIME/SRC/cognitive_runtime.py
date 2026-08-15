@@ -13,12 +13,11 @@ from typing import Any
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-ROOT = Path(__file__).resolve().parents[3]
-CORE_SRC = ROOT / "RACHEL_CORE" / "src"
+from runtime_paths import CORE_SRC, ROOT, STATE
+
 if str(CORE_SRC) not in sys.path:
     sys.path.insert(0, str(CORE_SRC))
 
-STATE = ROOT / "RACHEL_PLATFORM" / "STATE"
 STATE.mkdir(parents=True, exist_ok=True)
 os.environ.setdefault("RACHEL_HOME", str(STATE / "core"))
 

@@ -11,9 +11,7 @@ from typing import Any, Callable
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-ROOT = Path(__file__).resolve().parents[3]
-PLATFORM = ROOT / "RACHEL_PLATFORM"
-CONFIG = PLATFORM / "CONFIG"
+from runtime_paths import CONFIG, PLATFORM, ROOT
 
 from arya_runtime import run as arya_run, safe_cwd
 from bran_cognitive import CognitiveMemory

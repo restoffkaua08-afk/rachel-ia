@@ -9,15 +9,17 @@ from pathlib import Path
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-ROOT = Path(__file__).resolve().parents[3]
+from runtime_paths import PORTABLE_MODE, ROOT, WORKSPACE
+
+ARYA_ROOT = WORKSPACE if PORTABLE_MODE else ROOT
 ALLOWED_READ = {"git", "python", "py", "node", "npm", "cargo", "rustc", "cmake", "ffmpeg"}
 BLOCKED_ARGUMENTS = {"--force", "-force", "--delete", "--hard", "format", "shutdown", "reboot"}
 
 
 def safe_cwd(value: str | None) -> Path:
-    path = (Path(value) if value else ROOT).resolve()
+    path = (Path(value) if value else ARYA_ROOT).resolve()
     try:
-        path.relative_to(ROOT)
+        path.relative_to(ARYA_ROOT)
     except ValueError as error:
         raise ValueError("Arya can only operate inside the Rachel workspace") from error
     return path

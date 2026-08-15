@@ -21,10 +21,11 @@ from voice_diagnostics import calibrate as calibrate_voice, doctor as voice_doct
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-ROOT = Path(__file__).resolve().parents[3]
-CONFIG_PATH = ROOT / "RACHEL_PLATFORM" / "CONFIG" / "voice.profiles.json"
+from runtime_paths import CONFIG, ROOT, STATE
+
+CONFIG_PATH = CONFIG / "voice.profiles.json"
 WRAPPER = ROOT / "RACHEL_PLATFORM" / "SCRIPTS" / "rachel.ps1"
-VOICE_STATE = ROOT / "RACHEL_PLATFORM" / "STATE" / "VOICE_SESSIONS"
+VOICE_STATE = STATE / "VOICE_SESSIONS"
 
 
 def load_config() -> dict[str, Any]:

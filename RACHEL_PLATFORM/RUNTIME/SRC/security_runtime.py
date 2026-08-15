@@ -11,9 +11,7 @@ from pathlib import Path
 from typing import Any
 
 
-ROOT = Path(__file__).resolve().parents[3]
-CONFIG = ROOT / "RACHEL_PLATFORM" / "CONFIG"
-STATE = ROOT / "RACHEL_PLATFORM" / "STATE"
+from runtime_paths import CONFIG, ROOT, STATE
 DEFAULT_DATABASE = STATE / "cyber-approvals.db"
 DEFAULT_POLICY = CONFIG / "approval.policy.json"
 

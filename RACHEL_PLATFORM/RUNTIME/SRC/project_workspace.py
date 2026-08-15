@@ -11,9 +11,9 @@ import uuid
 from pathlib import Path, PurePosixPath
 from typing import Any
 
-ROOT = Path(__file__).resolve().parents[3]
-CONFIG = ROOT / "RACHEL_PLATFORM" / "CONFIG"
-DEFAULT_ROOT = ROOT / "RACHEL_WORKSPACE" / "PROJECTS"
+from runtime_paths import CONFIG, ROOT, WORKSPACE
+
+DEFAULT_ROOT = WORKSPACE / "PROJECTS"
 
 
 class WorkspaceError(RuntimeError):

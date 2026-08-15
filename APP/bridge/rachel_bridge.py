@@ -15,10 +15,13 @@ if hasattr(sys.stdout, "reconfigure"):
     )
 
 
-ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_ROOT = Path(__file__).resolve().parents[2]
+ROOT = Path(
+    os.environ.get("RACHEL_RUNTIME_ROOT")
+    or DEFAULT_ROOT
+).expanduser().resolve()
 RUNTIME_SRC = ROOT / "RACHEL_PLATFORM" / "RUNTIME" / "SRC"
 CORE_SRC = ROOT / "RACHEL_CORE" / "src"
-STATE = ROOT / "RACHEL_PLATFORM" / "STATE"
 
 
 for source in (
@@ -33,6 +36,8 @@ for source in (
             value,
         )
 
+
+from runtime_paths import STATE
 
 os.environ.setdefault(
     "RACHEL_HOME",

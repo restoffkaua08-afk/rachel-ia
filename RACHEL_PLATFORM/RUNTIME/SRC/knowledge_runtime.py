@@ -17,9 +17,7 @@ from document_runtime import DocumentExtractor
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-ROOT = Path(__file__).resolve().parents[3]
-PLATFORM = ROOT / "RACHEL_PLATFORM"
-STATE = PLATFORM / "STATE"
+from runtime_paths import PLATFORM, ROOT, STATE
 
 
 class BranMemory:

@@ -11,6 +11,8 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any, Iterable
 
+from runtime_paths import STATE
+
 
 VALID_STATES = {
     "planned",
@@ -340,9 +342,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--database",
         default=str(
-            Path(__file__).resolve().parents[2]
-            / "STATE"
-            / "task-plans.db"
+            STATE / "task-plans.db"
         ),
     )
 

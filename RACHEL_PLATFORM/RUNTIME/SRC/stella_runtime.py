@@ -14,12 +14,15 @@ import wave
 from pathlib import Path
 from typing import Any
 
+from voice_session import VoiceSession, VoiceState
+
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
 ROOT = Path(__file__).resolve().parents[3]
 CONFIG_PATH = ROOT / "RACHEL_PLATFORM" / "CONFIG" / "voice.profiles.json"
 WRAPPER = ROOT / "RACHEL_PLATFORM" / "SCRIPTS" / "rachel.ps1"
+VOICE_STATE = ROOT / "RACHEL_PLATFORM" / "STATE" / "VOICE_SESSIONS"
 
 
 def load_config() -> dict[str, Any]:
@@ -200,11 +203,19 @@ def transcribe(path: Path) -> str:
     return " ".join(segment.text.strip() for segment in segments).strip()
 
 
-def ask_ned(text: str) -> dict[str, Any]:
-    instruction = load_config()["profiles"][load_config()["default_profile"]]["instruction"]
+def ask_ned(text: str, conversation_id: str | None = None) -> dict[str, Any]:
+    config = load_config()
+    instruction = config["profiles"][config["default_profile"]]["instruction"]
     prompt = f"{instruction}\nResponda para uma conversa falada. Evite Markdown desnecessario.\nUsuario: {text}"
+    encoded = base64.b64encode(prompt.encode("utf-8")).decode("ascii")
+    command = [
+        "powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass",
+        "-File", str(WRAPPER), "cognitive", "assist", "--content-base64", encoded,
+    ]
+    if conversation_id:
+        command.extend(["--conversation-id", conversation_id])
     result = subprocess.run(
-        ["powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass", "-File", str(WRAPPER), "cognitive", "chat", prompt],
+        command,
         cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=300,
     )
     if result.returncode != 0:
@@ -231,33 +242,68 @@ def listen_once(device: int | None, profile: str | None, speak_answer: bool = Tr
 
 
 def conversation(device: int | None, profile: str | None) -> int:
-    stop_commands = {item.casefold() for item in load_config()["commands"]["stop"]}
+    config = load_config()
+    conversation_config = config.get("conversation", {})
+    stop_commands = {item.casefold() for item in config["commands"]["stop"]}
+    maximum_errors = int(conversation_config.get("maximum_consecutive_errors", 3))
+    maximum_silence = int(conversation_config.get("maximum_silence_timeouts", 120))
+    recovery_delay = float(conversation_config.get("recovery_delay_seconds", 0.75))
+    turn_pause = float(conversation_config.get("turn_pause_seconds", 0.20))
+    session = VoiceSession(VOICE_STATE, profile or config["default_profile"], device)
+    session.transition(VoiceState.LISTENING, reason="conversation-started")
     speak("Stella ativada. Pode falar.", profile)
+    print(json.dumps({"event": "voice_session_started", "session_id": session.session_id}, ensure_ascii=False))
     while True:
+        turn_started = int(time.time() * 1000)
         try:
             path = capture_utterance(device)
+            session.transition(VoiceState.TRANSCRIBING)
             try:
                 text = transcribe(path)
             finally:
                 path.unlink(missing_ok=True)
             if not text:
+                session.transition(VoiceState.LISTENING, reason="empty-transcript")
                 continue
             print(f"Voce: {text}")
             normalized = re.sub(r"[^a-zÃ¡Ã Ã¢Ã£Ã©ÃªÃ­Ã³Ã´ÃµÃºÃ§ ]", "", text.casefold()).strip()
             if normalized in stop_commands:
+                session.transition(VoiceState.STOPPED, reason="voice-stop-command")
                 speak("Conversa encerrada.", profile)
                 return 0
-            response = ask_ned(text)
+            session.transition(VoiceState.THINKING)
+            response = ask_ned(text, session.conversation_id)
             answer = response["message"]["content"]
+            session.transition(VoiceState.SPEAKING)
             print(f"Rachel: {answer}")
             speak(answer, profile)
-            time.sleep(0.25)
+            session.add_turn(
+                text,
+                answer,
+                turn_started,
+                response.get("quality"),
+                response.get("conversation_id"),
+            )
+            session.transition(VoiceState.LISTENING)
+            time.sleep(turn_pause)
         except TimeoutError:
+            session.register_silence()
+            if session.silence_timeouts >= maximum_silence:
+                session.transition(VoiceState.STOPPED, reason="silence-limit")
+                return 0
             continue
         except KeyboardInterrupt:
+            session.transition(VoiceState.STOPPED, reason="keyboard-interrupt")
             print("Conversa interrompida.")
             return 130
-
+        except Exception as error:
+            session.register_error(error)
+            print(f"Stella recuperando de {type(error).__name__}: {error}", file=sys.stderr)
+            if session.consecutive_errors >= maximum_errors:
+                session.transition(VoiceState.STOPPED, reason="error-limit")
+                return 3
+            time.sleep(recovery_delay)
+            session.recover()
 
 def main() -> int:
     parser = argparse.ArgumentParser(prog="stella")

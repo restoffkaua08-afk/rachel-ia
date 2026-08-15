@@ -1,63 +1,72 @@
 {
-  "version": 1,
-  "default_profile": "natural",
-  "stt": {
-    "provider": "faster-whisper",
-    "model": "base",
-    "language": "pt",
-    "device": "cpu",
-    "compute_type": "int8"
-  },
-  "capture": {
-    "sample_rate": 16000,
-    "channels": 1,
-    "energy_threshold": 0.018,
-    "start_timeout_seconds": 20,
-    "silence_seconds": 1.25,
-    "maximum_utterance_seconds": 45
-  },
-  "profiles": {
-    "natural": {
-      "rate": 0,
-      "volume": 100,
-      "instruction": "Fale de forma natural, inteligente, clara e confiante."
-    },
-    "tecnica": {
-      "rate": -1,
-      "volume": 100,
-      "instruction": "Explique termos tecnicos com clareza e pausas adequadas."
-    },
-    "objetiva": {
-      "rate": 1,
-      "volume": 100,
-      "instruction": "Use respostas curtas, diretas e informativas."
-    },
-    "apresentacao": {
-      "rate": 0,
-      "volume": 100,
-      "instruction": "Use diccao clara, ritmo seguro e estrutura de apresentacao."
-    },
-    "leitura": {
-      "rate": -2,
-      "volume": 100,
-      "instruction": "Leia com ritmo confortavel e pausas entre ideias."
-    }
-  },
-  "tts": {
-    "provider": "windows-sapi",
-    "voice": "Microsoft Maria Desktop",
-    "language_preference": "pt-BR",
-    "future_providers": [
-      "chatterbox",
-      "piper"
-    ]
-  },
-  "commands": {
-    "stop": [
-      "encerrar conversa",
-      "parar conversa",
-      "desativar stella",
-      "tchau rachel"
-    ]
-  }
+    "version":  1,
+    "default_profile":  "natural",
+    "stt":  {
+                "provider":  "faster-whisper",
+                "model":  "base",
+                "language":  "pt",
+                "device":  "cpu",
+                "compute_type":  "int8"
+            },
+    "capture":  {
+                    "sample_rate":  16000,
+                    "channels":  1,
+                    "energy_threshold":  0.018,
+                    "start_timeout_seconds":  20,
+                    "silence_seconds":  1.25,
+                    "maximum_utterance_seconds":  45
+                },
+    "profiles":  {
+                     "natural":  {
+                                     "rate":  0,
+                                     "volume":  100,
+                                     "instruction":  "Fale de forma natural, inteligente, clara e confiante."
+                                 },
+                     "tecnica":  {
+                                     "rate":  -1,
+                                     "volume":  100,
+                                     "instruction":  "Explique termos tecnicos com clareza e pausas adequadas."
+                                 },
+                     "objetiva":  {
+                                      "rate":  1,
+                                      "volume":  100,
+                                      "instruction":  "Use respostas curtas, diretas e informativas."
+                                  },
+                     "apresentacao":  {
+                                          "rate":  0,
+                                          "volume":  100,
+                                          "instruction":  "Use diccao clara, ritmo seguro e estrutura de apresentacao."
+                                      },
+                     "leitura":  {
+                                     "rate":  -2,
+                                     "volume":  100,
+                                     "instruction":  "Leia com ritmo confortavel e pausas entre ideias."
+                                 }
+                 },
+    "tts":  {
+                "provider":  "windows-sapi",
+                "voice":  "Microsoft Maria Desktop",
+                "language_preference":  "pt-BR",
+                "future_providers":  [
+                                         "chatterbox",
+                                         "piper"
+                                     ]
+            },
+    "commands":  {
+                     "stop":  [
+                                  "encerrar conversa",
+                                  "parar conversa",
+                                  "desativar stella",
+                                  "tchau rachel"
+                              ]
+                 },
+    "conversation":  {
+                         "persist_sessions":  true,
+                         "preserve_context":  true,
+                         "maximum_consecutive_errors":  3,
+                         "maximum_silence_timeouts":  120,
+                         "recovery_delay_seconds":  0.75,
+                         "turn_pause_seconds":  0.2,
+                         "state_directory":  "RACHEL_PLATFORM/STATE/VOICE_SESSIONS"
+                     }
 }

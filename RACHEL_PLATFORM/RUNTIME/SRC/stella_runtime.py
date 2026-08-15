@@ -16,6 +16,7 @@ from typing import Any
 
 from voice_session import VoiceSession, VoiceState
 from realtime_voice import BargeInConfig, monitor_process_for_barge_in
+from voice_diagnostics import calibrate as calibrate_voice, doctor as voice_doctor, session_summary
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -333,6 +334,9 @@ def main() -> int:
     sample = sub.add_parser("sample"); sample.add_argument("--voice"); sample.add_argument("--profile", default="natural"); sample.add_argument("--text", default="OlÃ¡, KauÃ£. Eu sou Rachel. Minha voz estÃ¡ pronta para acompanhar nossos projetos.")
     once = sub.add_parser("listen-once"); once.add_argument("--device", type=int); once.add_argument("--profile", default="natural"); once.add_argument("--no-speech", action="store_true")
     talk = sub.add_parser("conversation"); talk.add_argument("--device", type=int); talk.add_argument("--profile", default="natural")
+    calibration = sub.add_parser("calibrate"); calibration.add_argument("--device", type=int); calibration.add_argument("--seconds", type=float, default=3.0)
+    diagnostic = sub.add_parser("doctor"); diagnostic.add_argument("--offline", action="store_true")
+    sub.add_parser("sessions")
     args = parser.parse_args()
     try:
         if args.action == "devices": output = devices()
@@ -342,6 +346,9 @@ def main() -> int:
             if args.voice: select_voice(args.voice)
             speak(args.text, args.profile); output = {"spoken": True, "profile": args.profile, "voice": load_config()["tts"]["voice"]}
         elif args.action == "listen-once": output = listen_once(args.device, args.profile, not args.no_speech)
+        elif args.action == "calibrate": output = calibrate_voice(args.device, args.seconds)
+        elif args.action == "doctor": output = voice_doctor(not args.offline)
+        elif args.action == "sessions": output = session_summary()
         else: return conversation(args.device, args.profile)
     except Exception as error:
         print(f"{type(error).__name__}: {error}", file=sys.stderr)

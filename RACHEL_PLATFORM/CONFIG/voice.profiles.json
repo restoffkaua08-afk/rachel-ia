@@ -79,5 +79,11 @@
                      "consecutive_blocks":  4,
                      "maximum_seconds":  180,
                      "headphones_recommended":  true
-                 }
+                 },
+    "diagnostics":  {
+                        "calibration_seconds":  3,
+                        "keep_recent_sessions":  25,
+                        "require_input_device":  true,
+                        "last_calibration":  null
+                    }
 }

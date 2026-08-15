@@ -17,8 +17,10 @@ $taskRuntime = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\task_runtime.py"
 $projectWorkspace = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\project_workspace.py"
 $projectQuality = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\project_quality.py"
 $securityRuntime = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\security_runtime.py"
+$securityPanel = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\security_panel.py"
 if (-not (Test-Path -LiteralPath $python)) { throw "Runtime Python ausente." }
 if ($args.Count -eq 0) { throw "Informe um comando." }
+$securityDomains = @("security", "cyber")
 $approvalDomains = @("approval")
 $webDomains = @("web")
 $searchDomains = @("search")
@@ -34,7 +36,10 @@ $aryaDomains = @("arya")
 $cognitiveDomains = @("cognitive", "evaluate")
 $knowledgeDomains = @("memory", "vision")
 $runtimeDomains = @("runtime", "event", "policy", "organ-health", "route")
-if ($approvalDomains -contains [string]$args[0]) {
+if ($securityDomains -contains [string]$args[0]) {
+    & $python $securityPanel @($args | Select-Object -Skip 1)
+}
+elseif ($approvalDomains -contains [string]$args[0]) {
     & $python $securityRuntime @($args | Select-Object -Skip 1)
 }
 elseif ($qualityDomains -contains [string]$args[0]) {

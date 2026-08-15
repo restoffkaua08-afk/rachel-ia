@@ -136,6 +136,64 @@
                                          "query":  "string",
                                          "max_sources":  "integer"
                                      }
+                  },
+                  {
+                      "name":  "arya.project.status",
+                      "member":  "arya",
+                      "effect":  "status",
+                      "description":  "Consulta o workspace de engenharia da Arya.",
+                      "parameters":  {
+
+                                     }
+                  },
+                  {
+                      "name":  "arya.project.create",
+                      "member":  "arya",
+                      "effect":  "create",
+                      "description":  "Cria um projeto vazio no workspace autorizado.",
+                      "parameters":  {
+                                         "project":  "string"
+                                     }
+                  },
+                  {
+                      "name":  "arya.project.write",
+                      "member":  "arya",
+                      "effect":  "write",
+                      "description":  "Grava arquivos textuais de forma atomica e com backup.",
+                      "parameters":  {
+                                         "project":  "string",
+                                         "files":  "array"
+                                     }
+                  },
+                  {
+                      "name":  "arya.project.inspect",
+                      "member":  "arya",
+                      "effect":  "inspect",
+                      "description":  "Inspeciona arquivos e hashes de um projeto.",
+                      "parameters":  {
+                                         "project":  "string"
+                                     }
+                  },
+                  {
+                      "name":  "arya.project.read",
+                      "member":  "arya",
+                      "effect":  "read",
+                      "description":  "Le um arquivo permitido de um projeto.",
+                      "parameters":  {
+                                         "project":  "string",
+                                         "path":  "string"
+                                     }
+                  },
+                  {
+                      "name":  "arya.project.generate",
+                      "member":  "arya",
+                      "effect":  "create",
+                      "description":  "Gera um projeto completo por IA dentro do workspace seguro.",
+                      "parameters":  {
+                                         "project":  "string",
+                                         "goal":  "string",
+                                         "project_type":  "string"
+                                     }
                   }
               ]
 }

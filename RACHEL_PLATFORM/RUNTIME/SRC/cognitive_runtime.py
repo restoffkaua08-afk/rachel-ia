@@ -111,6 +111,22 @@ class NedToolPlanner:
             return ToolPlan("tool", "visao.status", {}, "Consultar capacidades reais da Visão.", "deterministic")
         if any(term in text for term in ("eventos recentes", "histórico de eventos", "historico de eventos")):
             return ToolPlan("tool", "king.recent", {"limit": 10}, "Consultar eventos do King.", "deterministic")
+        project_request = re.match(
+            r"^(?:rachel[, ]+)?(?:crie|desenvolva|construa|gere|faca)\s+"
+            r"(?:um|uma)?\s*(site|website|sistema|aplicacao|aplicativo|projeto)"
+            r"(?:\s+(?:chamado|chamada)\s+([A-Za-z0-9._-]+))?\s*[:,-]?\s*(.*)$",
+            content.strip(), re.I | re.S,
+        )
+        if project_request:
+            project_type = project_request.group(1).casefold()
+            project = project_request.group(2) or "projeto-rachel"
+            details = project_request.group(3).strip()
+            goal = content.strip() if not details else details
+            return ToolPlan(
+                "tool", "arya.project.generate",
+                {"project": project, "goal": goal, "project_type": project_type},
+                "Gerar projeto no workspace seguro da Arya.", "deterministic",
+            )
         research_request = re.match(
             r"^(?:rachel[, ]+)?(?:pesquise|procure|investigue|"
             r"busque\s+na\s+internet|busque\s+na\s+web)\s+"

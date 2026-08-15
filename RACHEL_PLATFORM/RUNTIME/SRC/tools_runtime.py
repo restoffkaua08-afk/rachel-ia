@@ -22,6 +22,8 @@ from knowledge_runtime import BranMemory, VisaoIngestor, status as knowledge_sta
 from research_runtime import ResearchEngine
 from search_runtime import SearchEngine
 from web_runtime import WebClient, evidence_summary
+from project_workspace import ProjectWorkspace
+from project_generator import ProjectGenerator
 from team_runtime import CyberPolicy, JhonLogger, KingEventBus, TyrionSupervisor, doctor
 
 
@@ -123,6 +125,26 @@ class ToolCoordinator:
         }
 
     def _execute(self, name: str, args: dict[str, Any], approved: bool) -> Any:
+        if name == "arya.project.status":
+            return ProjectWorkspace().status()
+        if name == "arya.project.create":
+            return ProjectWorkspace().create_project(_require_text(args, "project", 80), approved)
+        if name == "arya.project.write":
+            files = args.get("files")
+            if not isinstance(files, list):
+                raise ToolError("'files' must be an array")
+            return ProjectWorkspace().write_files(_require_text(args, "project", 80), files, approved)
+        if name == "arya.project.inspect":
+            return ProjectWorkspace().inspect(_require_text(args, "project", 80))
+        if name == "arya.project.read":
+            return ProjectWorkspace().read_file(_require_text(args, "project", 80), _require_text(args, "path", 500))
+        if name == "arya.project.generate":
+            return ProjectGenerator().create(
+                project=_require_text(args, "project", 80),
+                goal=_require_text(args, "goal", 8_000),
+                project_type=str(args.get("project_type", "auto"))[:100],
+                approved=approved,
+            )
         if name == "web.fetch":
             evidence = WebClient().fetch(
                 _require_text(args, "url", 4_000)

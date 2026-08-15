@@ -1,0 +1,10 @@
+{
+  "identifier": "default",
+  "description": "Permissoes minimas da janela principal da RACHEL IA.",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default"
+  ]
+}

@@ -1,37 +1,58 @@
-use serde_json::{json, Value};
+use serde_json::{
+    json,
+    Value,
+};
+
 use std::{
     env,
     io::Write,
     path::PathBuf,
-    process::{Command, Stdio},
+    process::{
+        Command,
+        Stdio,
+    },
 };
 
 
 fn repository_root() -> Result<PathBuf, String> {
-    if let Ok(value) = env::var("RACHEL_REPO_ROOT") {
-        let configured = PathBuf::from(value);
+    if let Ok(value) =
+        env::var("RACHEL_REPO_ROOT")
+    {
+        let configured =
+            PathBuf::from(value);
 
         if configured.exists() {
             return configured
                 .canonicalize()
-                .map_err(|error| error.to_string());
+                .map_err(
+                    |error|
+                    error.to_string()
+                );
         }
     }
 
-    PathBuf::from(env!("CARGO_MANIFEST_DIR"))
-        .join("..")
-        .join("..")
-        .canonicalize()
-        .map_err(|error| {
-            format!("Falha resolvendo raiz da Rachel: {error}")
-        })
+    PathBuf::from(
+        env!("CARGO_MANIFEST_DIR")
+    )
+    .join("..")
+    .join("..")
+    .canonicalize()
+    .map_err(
+        |error| {
+            format!(
+                "Falha resolvendo raiz da Rachel: {error}"
+            )
+        }
+    )
 }
 
 
 fn python_bridge(
     request: Value,
 ) -> Result<Value, String> {
-    let root = repository_root()?;
+
+    let root =
+        repository_root()?;
 
     let python = root
         .join("AMBIENTES")
@@ -44,101 +65,192 @@ fn python_bridge(
         .join("bridge")
         .join("rachel_bridge.py");
 
+
     if !python.is_file() {
-        return Err(format!(
-            "Runtime Python ausente: {}",
-            python.display()
-        ));
+        return Err(
+            format!(
+                "Runtime Python ausente: {}",
+                python.display()
+            )
+        );
     }
+
 
     if !bridge.is_file() {
-        return Err(format!(
-            "Bridge Python ausente: {}",
-            bridge.display()
-        ));
+        return Err(
+            format!(
+                "Bridge Python ausente: {}",
+                bridge.display()
+            )
+        );
     }
 
-    let mut child = Command::new(&python)
-        .arg(&bridge)
-        .current_dir(&root)
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::piped())
-        .spawn()
-        .map_err(|error| {
-            format!("Falha iniciando backend: {error}")
-        })?;
 
-    let body = serde_json::to_vec(&request)
-        .map_err(|error| error.to_string())?;
+    let mut child =
+        Command::new(&python)
+            .arg(&bridge)
+            .current_dir(&root)
+            .stdin(
+                Stdio::piped()
+            )
+            .stdout(
+                Stdio::piped()
+            )
+            .stderr(
+                Stdio::piped()
+            )
+            .spawn()
+            .map_err(
+                |error| {
+                    format!(
+                        "Falha iniciando backend: {error}"
+                    )
+                }
+            )?;
+
+
+    let body =
+        serde_json::to_vec(
+            &request
+        )
+        .map_err(
+            |error|
+            error.to_string()
+        )?;
+
 
     child
         .stdin
         .as_mut()
-        .ok_or_else(|| "stdin indisponivel".to_string())?
-        .write_all(&body)
-        .map_err(|error| {
-            format!("Falha enviando request: {error}")
-        })?;
+        .ok_or_else(
+            || {
+                "stdin indisponivel"
+                    .to_string()
+            }
+        )?
+        .write_all(
+            &body
+        )
+        .map_err(
+            |error| {
+                format!(
+                    "Falha enviando request: {error}"
+                )
+            }
+        )?;
 
-    let output = child
-        .wait_with_output()
-        .map_err(|error| {
-            format!("Falha aguardando backend: {error}")
-        })?;
 
-    let stdout = String::from_utf8_lossy(
-        &output.stdout
-    )
-    .to_string();
+    let output =
+        child
+            .wait_with_output()
+            .map_err(
+                |error| {
+                    format!(
+                        "Falha aguardando backend: {error}"
+                    )
+                }
+            )?;
 
-    let stderr = String::from_utf8_lossy(
-        &output.stderr
-    )
-    .trim()
-    .to_string();
 
-    let line = stdout
-        .lines()
-        .rev()
-        .find(|line| !line.trim().is_empty())
-        .ok_or_else(|| {
-            format!(
-                "Backend sem JSON. stderr={stderr}"
+    let stdout =
+        String::from_utf8_lossy(
+            &output.stdout
+        )
+        .to_string();
+
+    let stderr =
+        String::from_utf8_lossy(
+            &output.stderr
+        )
+        .trim()
+        .to_string();
+
+
+    let line =
+        stdout
+            .lines()
+            .rev()
+            .find(
+                |line|
+                !line.trim().is_empty()
             )
-        })?;
+            .ok_or_else(
+                || {
+                    format!(
+                        "Backend sem JSON. stderr={stderr}"
+                    )
+                }
+            )?;
+
 
     let response: Value =
-        serde_json::from_str(line.trim())
-            .map_err(|error| {
+        serde_json::from_str(
+            line.trim()
+        )
+        .map_err(
+            |error| {
                 format!(
                     "JSON invalido: {error}; stdout={stdout}; stderr={stderr}"
                 )
-            })?;
+            }
+        )?;
+
 
     if response
         .get("ok")
-        .and_then(Value::as_bool)
+        .and_then(
+            Value::as_bool
+        )
         != Some(true)
     {
-        let message = response
-            .get("error")
-            .and_then(|error| error.get("message"))
-            .and_then(Value::as_str)
-            .unwrap_or("Falha desconhecida");
+        let message =
+            response
+                .get("error")
+                .and_then(
+                    |error|
+                    error.get("message")
+                )
+                .and_then(
+                    Value::as_str
+                )
+                .unwrap_or(
+                    "Falha desconhecida"
+                );
 
-        return Err(message.to_string());
+        return Err(
+            message.to_string()
+        );
     }
+
 
     response
         .get("payload")
         .cloned()
-        .ok_or_else(|| "payload ausente".to_string())
+        .ok_or_else(
+            || {
+                "payload ausente"
+                    .to_string()
+            }
+        )
 }
 
 
 #[tauri::command]
-fn rachel_status() -> Result<Value, String> {
+fn rachel_dashboard()
+    -> Result<Value, String>
+{
+    python_bridge(
+        json!({
+            "action": "dashboard"
+        })
+    )
+}
+
+
+#[tauri::command]
+fn rachel_status()
+    -> Result<Value, String>
+{
     python_bridge(
         json!({
             "action": "status"
@@ -179,16 +291,100 @@ fn rachel_assist(
 }
 
 
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
+#[tauri::command]
+fn rachel_security_snapshot(
+    limit: Option<i64>,
+) -> Result<Value, String> {
+    python_bridge(
+        json!({
+            "action": "security_snapshot",
+            "limit": limit.unwrap_or(50),
+        })
+    )
+}
+
+
+#[tauri::command]
+fn rachel_security_decide(
+    approval_id: String,
+    allow: bool,
+    confirmation: String,
+) -> Result<Value, String> {
+    python_bridge(
+        json!({
+            "action": "security_decide",
+            "approval_id": approval_id,
+            "allow": allow,
+            "confirmation": confirmation,
+        })
+    )
+}
+
+
+#[tauri::command]
+fn rachel_memory_search(
+    query: String,
+    limit: Option<i64>,
+) -> Result<Value, String> {
+    python_bridge(
+        json!({
+            "action": "memory_search",
+            "query": query,
+            "limit": limit.unwrap_or(10),
+        })
+    )
+}
+
+
+#[tauri::command]
+fn rachel_voice_status(
+    include_hardware: Option<bool>,
+) -> Result<Value, String> {
+    python_bridge(
+        json!({
+            "action": "voice_status",
+            "include_hardware": include_hardware.unwrap_or(true),
+        })
+    )
+}
+
+
+#[tauri::command]
+fn rachel_health()
+    -> Result<Value, String>
+{
+    python_bridge(
+        json!({
+            "action": "health"
+        })
+    )
+}
+
+
+#[cfg_attr(
+    mobile,
+    tauri::mobile_entry_point
+)]
 pub fn run() {
+
     tauri::Builder::default()
         .invoke_handler(
             tauri::generate_handler![
+                rachel_dashboard,
                 rachel_status,
                 rachel_chat,
-                rachel_assist
+                rachel_assist,
+                rachel_security_snapshot,
+                rachel_security_decide,
+                rachel_memory_search,
+                rachel_voice_status,
+                rachel_health
             ]
         )
-        .run(tauri::generate_context!())
-        .expect("error while running RACHEL IA");
+        .run(
+            tauri::generate_context!()
+        )
+        .expect(
+            "error while running RACHEL IA"
+        );
 }

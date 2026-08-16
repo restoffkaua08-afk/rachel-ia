@@ -258,6 +258,9 @@ class NedCognitiveBridge:
         status["capabilities"]["governed_actions"] = True
         status["tool_count"] = len(self.tools.list_tools())
         status["memory"] = self.memory.status()
+        status["learning"] = (
+            self.container.learning.status()
+        )
         status["member"] = "ned"
         status["quality_member"] = "dany"
         return status
@@ -285,9 +288,35 @@ class NedCognitiveBridge:
                 system_prompt=effective_system or None,
             )
         )
-        report = DanyEvaluator().evaluate(result.message.content)
+        report = DanyEvaluator().evaluate(
+            result.message.content
+        )
+
+        experience_id = (
+            result.message.metadata.get(
+                "learning_experience_id"
+            )
+            if isinstance(
+                result.message.metadata,
+                dict,
+            )
+            else None
+        )
+
+        if experience_id:
+            self.container.learning.update_quality(
+                experience_id,
+                accepted=report.accepted,
+                score=report.score,
+                issues=report.issues,
+                checks=report.checks,
+            )
+
         if not report.accepted:
-            raise RuntimeError(f"Dany rejected the response: {report.issues}")
+            raise RuntimeError(
+                f"Dany rejected the response: {report.issues}"
+            )
+
         payload = result.to_dict()
         payload["quality"] = asdict(report)
         payload["memory"] = {

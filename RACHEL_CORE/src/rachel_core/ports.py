@@ -37,3 +37,37 @@ class AuditPort(Protocol):
 class KnowledgePort(Protocol):
     def search(self, query: str, limit: int = 5) -> list[dict[str, Any]]: ...
 
+
+class LearningPort(Protocol):
+    def capture_chat(
+        self,
+        *,
+        conversation_id: str,
+        run_id: str,
+        user_content: str,
+        assistant_content: str,
+        provider: str,
+        model: str,
+        input_tokens: int | None,
+        output_tokens: int | None,
+        duration_ms: int,
+        metadata: dict[str, Any] | None = None,
+    ) -> str: ...
+
+    def update_quality(
+        self,
+        experience_id: str,
+        *,
+        accepted: bool,
+        score: int,
+        issues: list[str] | tuple[str, ...],
+        checks: dict[str, bool],
+    ) -> None: ...
+
+    def status(self) -> dict[str, Any]: ...
+
+    def recent(
+        self,
+        limit: int = 20,
+    ) -> list[dict[str, Any]]: ...
+

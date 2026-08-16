@@ -21,7 +21,7 @@ from voice_diagnostics import calibrate as calibrate_voice, doctor as voice_doct
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-from runtime_paths import CONFIG, ROOT, STATE
+from runtime_paths import CONFIG, PORTABLE_MODE, ROOT, STATE
 
 CONFIG_PATH = CONFIG / "voice.profiles.json"
 WRAPPER = ROOT / "RACHEL_PLATFORM" / "SCRIPTS" / "rachel.ps1"
@@ -226,6 +226,19 @@ def ask_ned(text: str, conversation_id: str | None = None) -> dict[str, Any]:
     config = load_config()
     instruction = config["profiles"][config["default_profile"]]["instruction"]
     prompt = f"{instruction}\nResponda para uma conversa falada. Evite Markdown desnecessario.\nUsuario: {text}"
+    if PORTABLE_MODE:
+        from cognitive_runtime import (
+            NedCognitiveBridge,
+        )
+
+        return (
+            NedCognitiveBridge()
+            .assist(
+                prompt,
+                conversation_id,
+            )
+        )
+
     encoded = base64.b64encode(prompt.encode("utf-8")).decode("ascii")
     command = [
         "powershell.exe", "-NoProfile", "-ExecutionPolicy", "Bypass",

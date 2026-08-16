@@ -15,7 +15,7 @@ from typing import Any
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-from runtime_paths import CONFIG, PLATFORM, ROOT
+from runtime_paths import CONFIG, PLATFORM, PORTABLE_MODE, ROOT
 
 
 class DocumentError(ValueError):
@@ -214,6 +214,49 @@ class DocumentExtractor:
         self,
         path: Path,
     ) -> tuple[str, dict[str, Any]]:
+
+        if PORTABLE_MODE:
+            from docling_adapter import (
+                extract as docling_extract,
+            )
+
+            payload = docling_extract(
+                path,
+                self.policy.maximum_extracted_characters,
+            )
+
+            content = payload.get(
+                "content"
+            )
+
+            metadata = payload.get(
+                "metadata"
+            )
+
+            if (
+                not isinstance(
+                    content,
+                    str,
+                )
+                or not content.strip()
+            ):
+                raise DocumentError(
+                    "Docling returned no document content"
+                )
+
+            if not isinstance(
+                metadata,
+                dict,
+            ):
+                raise DocumentError(
+                    "Docling returned invalid metadata"
+                )
+
+            return (
+                content,
+                metadata,
+            )
+
         registry = json.loads(
             (CONFIG / "document.engines.json").read_text(
                 encoding="utf-8-sig"

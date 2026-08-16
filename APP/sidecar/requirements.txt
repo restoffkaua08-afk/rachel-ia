@@ -1,0 +1,5 @@
+pyinstaller==6.21.0
+numpy==2.5.2
+sounddevice==0.5.5
+faster-whisper==1.2.1
+docling==2.120.1

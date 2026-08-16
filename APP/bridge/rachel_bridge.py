@@ -15,13 +15,46 @@ if hasattr(sys.stdout, "reconfigure"):
     )
 
 
-DEFAULT_ROOT = Path(__file__).resolve().parents[2]
+if getattr(
+    sys,
+    "frozen",
+    False,
+):
+    DEFAULT_ROOT = Path(
+        getattr(
+            sys,
+            "_MEIPASS",
+            Path(
+                sys.executable
+            ).resolve().parent,
+        )
+    ).resolve()
+else:
+    DEFAULT_ROOT = (
+        Path(__file__)
+        .resolve()
+        .parents[2]
+    )
+
 ROOT = Path(
-    os.environ.get("RACHEL_RUNTIME_ROOT")
+    os.environ.get(
+        "RACHEL_RUNTIME_ROOT"
+    )
     or DEFAULT_ROOT
 ).expanduser().resolve()
-RUNTIME_SRC = ROOT / "RACHEL_PLATFORM" / "RUNTIME" / "SRC"
-CORE_SRC = ROOT / "RACHEL_CORE" / "src"
+
+RUNTIME_SRC = (
+    ROOT
+    / "RACHEL_PLATFORM"
+    / "RUNTIME"
+    / "SRC"
+)
+
+CORE_SRC = (
+    ROOT
+    / "RACHEL_CORE"
+    / "src"
+)
 
 
 for source in (
@@ -187,6 +220,22 @@ def execute(
     action = payload.get(
         "action"
     )
+
+
+    if action == "runtime_paths":
+        from runtime_paths import (
+            describe_paths,
+        )
+
+        return describe_paths()
+
+
+    if action == "document_engine_status":
+        from docling_adapter import (
+            status,
+        )
+
+        return status()
 
 
     if action == "dashboard":
@@ -368,19 +417,48 @@ def execute(
     )
 
 
-def main() -> int:
-    try:
+def load_request() -> dict[str, Any]:
+
+    if (
+        len(sys.argv) == 3
+        and sys.argv[1]
+        == "--request-file"
+    ):
+        request_path = Path(
+            sys.argv[2]
+        ).expanduser().resolve()
+
+        payload = json.loads(
+            request_path.read_text(
+                encoding="utf-8"
+            )
+        )
+
+    elif len(sys.argv) == 1:
         payload = json.load(
             sys.stdin
         )
 
-        if not isinstance(
-            payload,
-            dict,
-        ):
-            raise ValueError(
-                "Bridge request must be an object"
-            )
+    else:
+        raise ValueError(
+            "Usage: rachel-backend "
+            "[--request-file PATH]"
+        )
+
+    if not isinstance(
+        payload,
+        dict,
+    ):
+        raise ValueError(
+            "Bridge request must be an object"
+        )
+
+    return payload
+
+
+def main() -> int:
+    try:
+        payload = load_request()
 
         result = execute(
             payload

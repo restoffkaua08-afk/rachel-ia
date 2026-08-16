@@ -28,3 +28,25 @@ O instalador Windows e produzido pelo bundle NSIS configurado no projeto.
 
 Esta versao usa o runtime local da RACHEL nesta estacao de desenvolvimento.
 O empacotamento standalone do backend Python, modelos e orgaos sera tratado separadamente.
+
+
+## Backend standalone
+
+O desktop utiliza um sidecar Python
+empacotado com PyInstaller e integrado
+ao Tauri por externalBin.
+
+Build:
+
+    pnpm run build:sidecar
+    pnpm tauri build
+
+Os dados gravaveis ficam no AppLocalData
+do Windows.
+
+O instalador nao depende do repositorio
+de desenvolvimento nem de uma instalacao
+externa do Python.
+
+Pesos grandes de modelos locais nao sao
+embutidos nesta etapa.

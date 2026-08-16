@@ -11,7 +11,7 @@ from pathlib import Path
 from typing import Any
 
 
-from runtime_paths import CONFIG, LOGS, PLATFORM, ROOT, STATE
+from runtime_paths import CONFIG, LOGS, PLATFORM, PORTABLE_MODE, ROOT, STATE
 
 
 @dataclass
@@ -53,15 +53,55 @@ def inspect_organ(organ: dict[str, Any]) -> OrganHealth:
     manifest = PLATFORM / "ORGAOS" / alias / "organ.json"
     source_exists = source.exists()
     manifest_exists = manifest.exists()
-    git_exists = (source / ".git").exists() if source_exists else False
-    ok = source_exists and manifest_exists
+
+    git_exists = (
+        (source / ".git").exists()
+        if source_exists
+        else False
+    )
+
+    packaged = (
+        PORTABLE_MODE
+        and manifest_exists
+        and not source_exists
+    )
+
+    ok = (
+        source_exists
+        and manifest_exists
+    ) or packaged
+
+    if (
+        source_exists
+        and manifest_exists
+    ):
+        detail = str(
+            source
+        )
+
+    elif packaged:
+        detail = (
+            "packaged organ manifest; "
+            "development source checkout "
+            "not bundled"
+        )
+
+    else:
+        detail = (
+            "source or manifest missing"
+        )
+
     return OrganHealth(
         organ_id=organ_id,
         source_exists=source_exists,
         manifest_exists=manifest_exists,
         git_exists=git_exists,
-        status="available" if ok else "failed",
-        detail=str(source) if ok else "source or manifest missing",
+        status=(
+            "available"
+            if ok
+            else "failed"
+        ),
+        detail=detail,
     )
 
 

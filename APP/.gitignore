@@ -22,3 +22,6 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+sidecar/build/
+sidecar/dist/
+src-tauri/binaries/*.exe

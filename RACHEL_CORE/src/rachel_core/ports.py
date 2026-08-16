@@ -64,9 +64,43 @@ class LearningPort(Protocol):
         checks: dict[str, bool],
     ) -> None: ...
 
-    def status(self) -> dict[str, Any]: ...
+    def capture_event(
+        self,
+        *,
+        kind: str,
+        payload: dict[str, Any],
+        correlation_id: str | None = None,
+        conversation_id: str | None = None,
+        parent_experience_id: str | None = None,
+        provider: str | None = None,
+        model: str | None = None,
+    ) -> str: ...
+
+    def capture_feedback(
+        self,
+        *,
+        experience_id: str,
+        verdict: str,
+        correction_text: str | None = None,
+        note: str | None = None,
+        metadata: dict[str, Any] | None = None,
+    ) -> str: ...
+
+    def status(
+        self,
+    ) -> dict[str, Any]: ...
 
     def recent(
+        self,
+        limit: int = 20,
+    ) -> list[dict[str, Any]]: ...
+
+    def recent_events(
+        self,
+        limit: int = 20,
+    ) -> list[dict[str, Any]]: ...
+
+    def recent_feedback(
         self,
         limit: int = 20,
     ) -> list[dict[str, Any]]: ...

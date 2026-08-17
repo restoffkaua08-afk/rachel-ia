@@ -213,6 +213,9 @@ def dashboard() -> dict[str, Any]:
     from cognitive_runtime import NedCognitiveBridge
     from security_panel import SecurityPanel
     from voice_diagnostics import doctor
+    from learning_engine_runtime import (
+        LearningDatasetReviewService,
+    )
 
     return {
         "runtime": NedCognitiveBridge().status(),
@@ -223,6 +226,10 @@ def dashboard() -> dict[str, Any]:
         "memory": CognitiveMemory().status(),
         "voice": doctor(
             include_hardware=False
+        ),
+        "learning_datasets": (
+            LearningDatasetReviewService()
+            .status()
         ),
         "health": health_snapshot(),
     }
@@ -493,6 +500,159 @@ def execute(
             ),
             "verdict": verdict,
             "automatic_training": False,
+        }
+
+
+    if action == "learning_dataset_status":
+        from learning_engine_runtime import (
+            LearningDatasetReviewService,
+        )
+
+        return (
+            LearningDatasetReviewService()
+            .status(
+                bounded_int(
+                    payload,
+                    "limit",
+                    100,
+                    1,
+                    200,
+                )
+            )
+        )
+
+
+    if action == "learning_dataset_versions":
+        from learning_engine_runtime import (
+            LearningDatasetReviewService,
+        )
+
+        service = (
+            LearningDatasetReviewService()
+        )
+
+        dataset_type = optional_text(
+            payload,
+            "dataset_type",
+            maximum=100,
+        )
+
+        return {
+            "items": (
+                service.factory
+                .list_versions(
+                    dataset_type=(
+                        dataset_type
+                    ),
+                    limit=bounded_int(
+                        payload,
+                        "limit",
+                        50,
+                        1,
+                        200,
+                    ),
+                )
+            ),
+            "automatic_training": False,
+            "automatic_promotion": False,
+            "external_export": False,
+        }
+
+
+    if action == "learning_dataset_review":
+        from learning_engine_runtime import (
+            LearningDatasetReviewService,
+        )
+
+        version_id = required_text(
+            payload,
+            "version_id",
+            300,
+        )
+
+        return (
+            LearningDatasetReviewService()
+            .review(
+                version_id
+            )
+        )
+
+
+    if action == "learning_dataset_request_export":
+        from learning_engine_runtime import (
+            LearningDatasetReviewService,
+        )
+
+        version_id = required_text(
+            payload,
+            "version_id",
+            300,
+        )
+
+        return (
+            LearningDatasetReviewService()
+            .request_export(
+                version_id
+            )
+        )
+
+
+    if action == "learning_dataset_approve_export":
+        from learning_engine_runtime import (
+            LearningDatasetReviewService,
+        )
+
+        version_id = required_text(
+            payload,
+            "version_id",
+            300,
+        )
+
+        approval_id = required_text(
+            payload,
+            "approval_id",
+            200,
+        )
+
+        return (
+            LearningDatasetReviewService()
+            .approve_export(
+                version_id,
+                approval_id,
+            )
+        )
+
+
+    if action == "learning_dataset_review_history":
+        from learning_engine_runtime import (
+            LearningDatasetReviewService,
+        )
+
+        version_id = required_text(
+            payload,
+            "version_id",
+            300,
+        )
+
+        service = (
+            LearningDatasetReviewService()
+        )
+
+        return {
+            "version_id": version_id,
+            "items": (
+                service.factory
+                .review_history(
+                    version_id,
+                    limit=bounded_int(
+                        payload,
+                        "limit",
+                        50,
+                        1,
+                        200,
+                    ),
+                )
+            ),
         }
 
 

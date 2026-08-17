@@ -270,7 +270,7 @@ class TrainingPreflight:
             ),
         }
 
-        structural_ready = all(
+        metadata_ready = all(
             checks[
                 name
             ]
@@ -279,11 +279,41 @@ class TrainingPreflight:
                 "registry_entry",
                 "enabled",
                 "connected_status",
+            )
+        )
+
+        source_available = all(
+            checks[
+                name
+            ]
+            for name
+            in (
                 "source_directory",
                 "pyproject",
                 "python_package",
                 "package_init",
             )
+        )
+
+        structural_ready = (
+            metadata_ready
+            and source_available
+        )
+
+        # Em um sidecar PyInstaller, os manifests
+        # dos orgaos sao empacotados, mas os
+        # repositorios-fonte completos nao.
+        #
+        # Isso nao bloqueia o Learning Engine.
+        # O source fisico do LitGPT passa a ser
+        # requisito somente antes da execucao
+        # real da Etapa 12.
+        runtime_preflight_ready = (
+            metadata_ready
+        )
+
+        training_backend_available = (
+            structural_ready
         )
 
         return {
@@ -319,8 +349,23 @@ class TrainingPreflight:
                 True
             ),
             "checks": checks,
+            "metadata_ready": (
+                metadata_ready
+            ),
+            "source_available": (
+                source_available
+            ),
             "structural_ready": (
                 structural_ready
+            ),
+            "runtime_preflight_ready": (
+                runtime_preflight_ready
+            ),
+            "training_backend_available": (
+                training_backend_available
+            ),
+            "training_backend_required_before_execution": (
+                True
             ),
             "training_execution_enabled": (
                 False
@@ -514,13 +559,19 @@ class TrainingPreflight:
         pipeline_ready = (
             bool(
                 litgpt[
-                    "structural_ready"
+                    "runtime_preflight_ready"
                 ]
             )
             and catalog[
                 "failed"
             ]
             == 0
+        )
+
+        training_backend_available = bool(
+            litgpt[
+                "training_backend_available"
+            ]
         )
 
         training_data_available = (
@@ -534,13 +585,26 @@ class TrainingPreflight:
             state = (
                 "blocked"
             )
-        elif training_data_available:
+        elif (
+            training_data_available
+            and training_backend_available
+        ):
             state = (
                 "ready-with-data"
             )
-        else:
+        elif training_data_available:
+            state = (
+                "pipeline-ready-with-data-"
+                "backend-required"
+            )
+        elif training_backend_available:
             state = (
                 "pipeline-ready-no-data"
+            )
+        else:
+            state = (
+                "pipeline-ready-no-data-"
+                "backend-external"
             )
 
         return {
@@ -552,6 +616,12 @@ class TrainingPreflight:
             ),
             "training_data_available": (
                 training_data_available
+            ),
+            "training_backend_available": (
+                training_backend_available
+            ),
+            "training_backend_required_before_execution": (
+                True
             ),
             "litgpt": (
                 litgpt

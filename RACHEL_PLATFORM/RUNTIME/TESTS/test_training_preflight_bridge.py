@@ -390,6 +390,163 @@ class TrainingPreflightBridgeTests(
             ],
         )
 
+    def test_frozen_metadata_only_does_not_block_pipeline(
+        self,
+    ):
+        config = (
+            self.root
+            / "FROZEN_CONFIG"
+        )
+
+        organs = (
+            self.root
+            / "FROZEN_ORGAOS"
+        )
+
+        litgpt_organ = (
+            organs
+            / "litgpt"
+        )
+
+        litgpt_organ.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        (
+            litgpt_organ
+            / "organ.json"
+        ).write_text(
+            json.dumps(
+                {
+                    "name": "LitGPT",
+                    "alias": "rachel.litgpt",
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        config.mkdir(
+            parents=True,
+            exist_ok=True,
+        )
+
+        registry = (
+            config
+            / "organs.registry.json"
+        )
+
+        registry.write_text(
+            json.dumps(
+                {
+                    "orgaos": [
+                        {
+                            "nome": "LitGPT",
+                            "alias": (
+                                "rachel.litgpt"
+                            ),
+                            "alias_curto": (
+                                "litgpt"
+                            ),
+                            "conexao": (
+                                "C:\\build-machine\\"
+                                "RACHEL_PLATFORM\\"
+                                "ORGAOS\\litgpt\\fonte"
+                            ),
+                            "commit": "abc123",
+                            "origem": (
+                                "https://github.com/"
+                                "Lightning-AI/litgpt.git"
+                            ),
+                            "status": (
+                                "conectado"
+                            ),
+                            "habilitado": True,
+                        }
+                    ]
+                }
+            ),
+            encoding="utf-8",
+        )
+
+        preflight = TrainingPreflight(
+            exporter=self.exporter,
+            compiler=self.compiler,
+            registry_path=registry,
+            organ_root=organs,
+        )
+
+        litgpt = preflight.litgpt()
+
+        self.assertTrue(
+            litgpt[
+                "metadata_ready"
+            ]
+        )
+
+        self.assertFalse(
+            litgpt[
+                "source_available"
+            ]
+        )
+
+        self.assertFalse(
+            litgpt[
+                "structural_ready"
+            ]
+        )
+
+        self.assertTrue(
+            litgpt[
+                "runtime_preflight_ready"
+            ]
+        )
+
+        self.assertFalse(
+            litgpt[
+                "training_backend_available"
+            ]
+        )
+
+        report = preflight.report()
+
+        self.assertTrue(
+            report[
+                "pipeline_ready"
+            ]
+        )
+
+        self.assertFalse(
+            report[
+                "training_backend_available"
+            ]
+        )
+
+        self.assertFalse(
+            report[
+                "stage12_execution_enabled"
+            ]
+        )
+
+        self.assertFalse(
+            report[
+                "automatic_training"
+            ]
+        )
+
+        self.assertFalse(
+            report[
+                "checkpoint_created"
+            ]
+        )
+
+        self.assertFalse(
+            report[
+                "weights_modified"
+            ]
+        )
+
+
     def test_real_litgpt_organ_is_detected(
         self,
     ):

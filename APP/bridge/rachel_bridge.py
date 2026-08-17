@@ -275,6 +275,9 @@ def dashboard() -> dict[str, Any]:
     from training_execution_gate import (
         TrainingExecutionGate,
     )
+    from samwell_runtime import (
+        SamwellRuntime,
+    )
 
     return {
         "runtime": NedCognitiveBridge().status(),
@@ -314,6 +317,10 @@ def dashboard() -> dict[str, Any]:
         ),
         "training_execution_gate": (
             TrainingExecutionGate()
+            .status()
+        ),
+        "samwell": (
+            SamwellRuntime()
             .status()
         ),
         "health": health_snapshot(),
@@ -1136,6 +1143,50 @@ def execute(
                     1,
                     200,
                 )
+            )
+        )
+
+
+    if action == "samwell_status":
+        from samwell_runtime import (
+            SamwellRuntime,
+        )
+
+        return (
+            SamwellRuntime()
+            .status()
+        )
+
+
+    if action == "samwell_audit":
+        from samwell_runtime import (
+            SamwellRuntime,
+        )
+
+        return (
+            SamwellRuntime()
+            .audit()
+        )
+
+
+    if action == "samwell_provision_plan":
+        from samwell_runtime import (
+            SamwellRuntime,
+        )
+
+        mode = (
+            optional_text(
+                payload,
+                "mode",
+                maximum=100,
+            )
+            or "development"
+        )
+
+        return (
+            SamwellRuntime()
+            .provision_plan(
+                mode
             )
         )
 

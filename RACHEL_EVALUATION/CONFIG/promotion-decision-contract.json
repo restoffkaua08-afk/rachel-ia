@@ -1,0 +1,66 @@
+{
+  "candidate": {
+    "checkpoint_available": false,
+    "checkpoint_required": true,
+    "checkpoint_verified_required": true,
+    "model_id": "rachel-model-v0.1"
+  },
+  "decision": {
+    "allowed_decisions": [
+      "blocked",
+      "eligible",
+      "rejected"
+    ],
+    "automatic_decision": false,
+    "current_decision": null,
+    "dany_required": true,
+    "decision_recording_enabled": false,
+    "evidence_hashes_required": true,
+    "reason_required": true,
+    "state": "not-decided"
+  },
+  "evidence": {
+    "all_required_suites_complete_required": true,
+    "candidate_evaluation_report_available": false,
+    "candidate_evaluation_report_required": true,
+    "critical_failure_count_required": true,
+    "quality_regression_result_required": true,
+    "regression_comparison_available": false,
+    "regression_comparison_required": true,
+    "safety_regression_result_required": true
+  },
+  "execution": {
+    "decision_execution_enabled": false,
+    "decision_recording_enabled": false,
+    "dspy_invocation_enabled": false,
+    "external_publish_enabled": false,
+    "model_execution_enabled": false,
+    "promotion_execution_enabled": false,
+    "promptfoo_invocation_enabled": false,
+    "training_execution_enabled": false,
+    "weights_modified": false
+  },
+  "id": "rachel-promotion-decision-contract-v1",
+  "owner": "dany",
+  "promotion": {
+    "automatic_promotion": false,
+    "cyber_required_for_external_publish": true,
+    "eligible": false,
+    "external_publish_enabled": false,
+    "promotion_execution_enabled": false,
+    "state": "blocked"
+  },
+  "purpose": "Separar a decisao de qualidade da execucao real de promocao do modelo.",
+  "schema_version": 1,
+  "separation_of_concerns": {
+    "decision_is_not_execution": true,
+    "eligibility_implies_execution": false,
+    "evaluation_implies_promotion": false,
+    "training_implies_promotion": false
+  },
+  "state": "contract-defined-decision-disabled",
+  "thresholds": {
+    "numeric_thresholds_defined": false,
+    "state": "not-calibrated"
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "baseline": {
+    "evaluation_report_available": false,
+    "evaluation_report_required": true,
+    "subject_id": "qwen3:1.7b"
+  },
+  "candidate": {
+    "evaluation_report_available": false,
+    "evaluation_report_required": true,
+    "subject_id": "rachel-model-v0.1"
+  },
+  "comparability": {
+    "incomparable_results_must_block": true,
+    "same_evaluator_version_required": true,
+    "same_input_set_required": true,
+    "same_metric_definitions_required": true,
+    "same_suite_registry_required": true
+  },
+  "dimensions": [
+    "functional-quality",
+    "tool-correctness",
+    "safety-security",
+    "memory-privacy"
+  ],
+  "execution": {
+    "comparison_execution_enabled": false,
+    "dspy_invocation_enabled": false,
+    "model_execution_enabled": false,
+    "promotion_execution_enabled": false,
+    "promptfoo_invocation_enabled": false,
+    "report_write_enabled": false,
+    "training_execution_enabled": false,
+    "weights_modified": false
+  },
+  "id": "rachel-regression-comparison-contract-v1",
+  "owner": "dany",
+  "purpose": "Comparar baseline e candidato usando evidencias equivalentes e auditaveis.",
+  "result": {
+    "comparison_available": false,
+    "critical_failure_delta_available": false,
+    "memory_delta_available": false,
+    "pass_fail_available": false,
+    "quality_delta_available": false,
+    "safety_delta_available": false,
+    "state": "not-computed",
+    "tool_delta_available": false
+  },
+  "rules": {
+    "automatic_candidate_selection": false,
+    "automatic_pass": false,
+    "critical_failure_allowed": false,
+    "safety_regression_allowed": false
+  },
+  "schema_version": 1,
+  "state": "contract-defined-comparison-disabled",
+  "thresholds": {
+    "numeric_thresholds_defined": false,
+    "state": "not-calibrated",
+    "values": null
+  }
+}

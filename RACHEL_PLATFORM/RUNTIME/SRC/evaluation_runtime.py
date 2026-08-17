@@ -95,6 +95,24 @@ class EvaluationRuntime:
             / "evaluation-candidate.json"
         ).resolve()
 
+        self.report_contract_path = (
+            evaluation_root
+            / "CONFIG"
+            / "evaluation-report-contract.json"
+        ).resolve()
+
+        self.regression_contract_path = (
+            evaluation_root
+            / "CONFIG"
+            / "regression-comparison-contract.json"
+        ).resolve()
+
+        self.promotion_decision_contract_path = (
+            evaluation_root
+            / "CONFIG"
+            / "promotion-decision-contract.json"
+        ).resolve()
+
         self.dany_manifest_path = (
             Path(
                 dany_manifest_path
@@ -135,6 +153,27 @@ class EvaluationRuntime:
             self._load_json(
                 self.candidate_path,
                 "Candidate manifest",
+            )
+        )
+
+        self.report_contract = (
+            self._load_json(
+                self.report_contract_path,
+                "Evaluation report contract",
+            )
+        )
+
+        self.regression_contract = (
+            self._load_json(
+                self.regression_contract_path,
+                "Regression comparison contract",
+            )
+        )
+
+        self.promotion_decision_contract = (
+            self._load_json(
+                self.promotion_decision_contract_path,
+                "Promotion decision contract",
             )
         )
 
@@ -229,6 +268,18 @@ class EvaluationRuntime:
         for label, manifest in (
             ("baseline", self.baseline),
             ("candidate", self.candidate),
+            (
+                "report-contract",
+                self.report_contract,
+            ),
+            (
+                "regression-contract",
+                self.regression_contract,
+            ),
+            (
+                "promotion-decision-contract",
+                self.promotion_decision_contract,
+            ),
         ):
             if (
                 manifest.get(
@@ -276,6 +327,193 @@ class EvaluationRuntime:
             if required not in organs:
                 raise EvaluationRuntimeError(
                     f"Dany sem orgao requerido: {required}"
+                )
+
+        report_execution = (
+            self.report_contract[
+                "execution"
+            ]
+        )
+
+        for key in (
+            "report_generation_enabled",
+            "report_write_enabled",
+            "model_execution_enabled",
+            "promptfoo_invocation_enabled",
+            "dspy_invocation_enabled",
+            "promotion_execution_enabled",
+            "training_execution_enabled",
+            "weights_modified",
+        ):
+            if (
+                report_execution.get(
+                    key
+                )
+                is not False
+            ):
+                raise EvaluationRuntimeError(
+                    "Report contract habilitou "
+                    f"execucao: {key}"
+                )
+
+        if (
+            self.report_contract[
+                "results"
+            ][
+                "state"
+            ]
+            != "not-produced"
+        ):
+            raise EvaluationRuntimeError(
+                "Evaluation report apareceu "
+                "antes de ser produzido."
+            )
+
+        if (
+            self.report_contract[
+                "results"
+            ][
+                "fabricated_scores_allowed"
+            ]
+            is not False
+        ):
+            raise EvaluationRuntimeError(
+                "Fabricated scores precisam ser proibidos."
+            )
+
+        regression_thresholds = (
+            self.regression_contract[
+                "thresholds"
+            ]
+        )
+
+        if (
+            regression_thresholds[
+                "state"
+            ]
+            != "not-calibrated"
+        ):
+            raise EvaluationRuntimeError(
+                "Regression thresholds deveriam "
+                "estar not-calibrated."
+            )
+
+        if (
+            regression_thresholds[
+                "numeric_thresholds_defined"
+            ]
+            is not False
+        ):
+            raise EvaluationRuntimeError(
+                "Regression numeric thresholds "
+                "foram definidos prematuramente."
+            )
+
+        regression_execution = (
+            self.regression_contract[
+                "execution"
+            ]
+        )
+
+        for key in (
+            "comparison_execution_enabled",
+            "model_execution_enabled",
+            "promptfoo_invocation_enabled",
+            "dspy_invocation_enabled",
+            "report_write_enabled",
+            "promotion_execution_enabled",
+            "training_execution_enabled",
+            "weights_modified",
+        ):
+            if (
+                regression_execution.get(
+                    key
+                )
+                is not False
+            ):
+                raise EvaluationRuntimeError(
+                    "Regression contract habilitou "
+                    f"execucao: {key}"
+                )
+
+        if (
+            self.regression_contract[
+                "result"
+            ][
+                "state"
+            ]
+            != "not-computed"
+        ):
+            raise EvaluationRuntimeError(
+                "Regression result apareceu "
+                "antes de ser calculado."
+            )
+
+        decision = (
+            self.promotion_decision_contract[
+                "decision"
+            ]
+        )
+
+        if (
+            decision[
+                "state"
+            ]
+            != "not-decided"
+        ):
+            raise EvaluationRuntimeError(
+                "Promotion decision apareceu "
+                "antes da decisao."
+            )
+
+        if (
+            decision[
+                "current_decision"
+            ]
+            is not None
+        ):
+            raise EvaluationRuntimeError(
+                "Promotion current_decision "
+                "deveria ser null."
+            )
+
+        if (
+            decision[
+                "automatic_decision"
+            ]
+            is not False
+        ):
+            raise EvaluationRuntimeError(
+                "Automatic promotion decision "
+                "precisa permanecer false."
+            )
+
+        decision_execution = (
+            self.promotion_decision_contract[
+                "execution"
+            ]
+        )
+
+        for key in (
+            "decision_execution_enabled",
+            "decision_recording_enabled",
+            "promotion_execution_enabled",
+            "external_publish_enabled",
+            "model_execution_enabled",
+            "promptfoo_invocation_enabled",
+            "dspy_invocation_enabled",
+            "training_execution_enabled",
+            "weights_modified",
+        ):
+            if (
+                decision_execution.get(
+                    key
+                )
+                is not False
+            ):
+                raise EvaluationRuntimeError(
+                    "Promotion decision contract "
+                    f"habilitou execucao: {key}"
                 )
 
         policy_baseline = (
@@ -767,6 +1005,200 @@ class EvaluationRuntime:
             ),
         }
 
+    def report_contract_status(
+        self,
+    ) -> dict[str, Any]:
+
+        storage = (
+            self.report_contract[
+                "storage"
+            ]
+        )
+
+        results = (
+            self.report_contract[
+                "results"
+            ]
+        )
+
+        return {
+            "id": (
+                self.report_contract[
+                    "id"
+                ]
+            ),
+            "state": (
+                self.report_contract[
+                    "state"
+                ]
+            ),
+            "report_types": list(
+                self.report_contract[
+                    "report_types"
+                ]
+            ),
+            "formats": list(
+                storage[
+                    "formats"
+                ]
+            ),
+            "write_enabled": False,
+            "external_upload": False,
+            "result_state": (
+                results[
+                    "state"
+                ]
+            ),
+            "metrics_available": False,
+            "numeric_scores_available": False,
+            "fabricated_scores_allowed": False,
+            "execution_enabled": False,
+        }
+
+    def regression_contract_status(
+        self,
+    ) -> dict[str, Any]:
+
+        thresholds = (
+            self.regression_contract[
+                "thresholds"
+            ]
+        )
+
+        result = (
+            self.regression_contract[
+                "result"
+            ]
+        )
+
+        return {
+            "id": (
+                self.regression_contract[
+                    "id"
+                ]
+            ),
+            "state": (
+                self.regression_contract[
+                    "state"
+                ]
+            ),
+            "baseline": (
+                self.regression_contract[
+                    "baseline"
+                ][
+                    "subject_id"
+                ]
+            ),
+            "candidate": (
+                self.regression_contract[
+                    "candidate"
+                ][
+                    "subject_id"
+                ]
+            ),
+            "dimensions": list(
+                self.regression_contract[
+                    "dimensions"
+                ]
+            ),
+            "thresholds_state": (
+                thresholds[
+                    "state"
+                ]
+            ),
+            "numeric_thresholds_defined": False,
+            "result_state": (
+                result[
+                    "state"
+                ]
+            ),
+            "comparison_available": False,
+            "execution_enabled": False,
+        }
+
+    def promotion_decision_contract_status(
+        self,
+    ) -> dict[str, Any]:
+
+        decision = (
+            self.promotion_decision_contract[
+                "decision"
+            ]
+        )
+
+        promotion = (
+            self.promotion_decision_contract[
+                "promotion"
+            ]
+        )
+
+        return {
+            "id": (
+                self.promotion_decision_contract[
+                    "id"
+                ]
+            ),
+            "state": (
+                self.promotion_decision_contract[
+                    "state"
+                ]
+            ),
+            "candidate": (
+                self.promotion_decision_contract[
+                    "candidate"
+                ][
+                    "model_id"
+                ]
+            ),
+            "decision_state": (
+                decision[
+                    "state"
+                ]
+            ),
+            "current_decision": (
+                decision[
+                    "current_decision"
+                ]
+            ),
+            "automatic_decision": False,
+            "decision_recording_enabled": False,
+            "promotion_state": (
+                promotion[
+                    "state"
+                ]
+            ),
+            "promotion_eligible": False,
+            "automatic_promotion": False,
+            "promotion_execution_enabled": False,
+            "external_publish_enabled": False,
+            "execution_enabled": False,
+        }
+
+    def decision_contracts_status(
+        self,
+    ) -> dict[str, Any]:
+
+        return {
+            "owner": "dany",
+            "report": (
+                self.report_contract_status()
+            ),
+            "regression": (
+                self.regression_contract_status()
+            ),
+            "promotion_decision": (
+                self.promotion_decision_contract_status()
+            ),
+            "read_only": True,
+            "execution_enabled": False,
+            "report_written": False,
+            "comparison_computed": False,
+            "decision_recorded": False,
+            "promotion_executed": False,
+            "training_execution_enabled": False,
+            "weights_modified": False,
+        }
+
     def promotion_eligibility(
         self,
     ) -> dict[str, Any]:
@@ -941,6 +1373,10 @@ class EvaluationRuntime:
             # e adiciona model_id/manifest/checkpoint.
             "candidate": candidate,
 
+            "decision_contracts": (
+                self.decision_contracts_status()
+            ),
+
             "suites": (
                 self.list_suites()
             ),
@@ -953,6 +1389,9 @@ class EvaluationRuntime:
                 "read_policy": True,
                 "read_baseline_manifest": True,
                 "read_candidate_manifest": True,
+                "read_report_contract": True,
+                "read_regression_contract": True,
+                "read_promotion_decision_contract": True,
                 "list_suites": True,
                 "describe_suite": True,
                 "inspect_promotion_eligibility": True,
@@ -962,6 +1401,8 @@ class EvaluationRuntime:
                 "invoke_promptfoo": False,
                 "invoke_dspy": False,
                 "write_report": False,
+                "compute_regression": False,
+                "record_promotion_decision": False,
                 "promote_model": False,
                 "train_model": False,
             },

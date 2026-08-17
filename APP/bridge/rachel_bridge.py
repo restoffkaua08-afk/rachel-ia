@@ -284,6 +284,9 @@ def dashboard() -> dict[str, Any]:
     from evaluation_runtime import (
         EvaluationRuntime,
     )
+    from evaluation_plan_runtime import (
+        EvaluationPlanRuntime,
+    )
 
     return {
         "runtime": NedCognitiveBridge().status(),
@@ -335,6 +338,10 @@ def dashboard() -> dict[str, Any]:
         ),
         "evaluation": (
             EvaluationRuntime()
+            .status()
+        ),
+        "evaluation_plan": (
+            EvaluationPlanRuntime()
             .status()
         ),
         "health": health_snapshot(),
@@ -1213,6 +1220,28 @@ def execute(
         return (
             EvaluationRuntime()
             .promotion_eligibility()
+        )
+
+
+    if action == "evaluation_plan_status":
+        from evaluation_plan_runtime import (
+            EvaluationPlanRuntime,
+        )
+
+        return (
+            EvaluationPlanRuntime()
+            .status()
+        )
+
+
+    if action == "evaluation_plan_preview":
+        from evaluation_plan_runtime import (
+            EvaluationPlanRuntime,
+        )
+
+        return (
+            EvaluationPlanRuntime()
+            .preview()
         )
 
 

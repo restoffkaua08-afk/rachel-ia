@@ -102,6 +102,30 @@ class RachelModelRuntime:
                 "base-model-unselected"
             )
 
+        else:
+            if (
+                base.get(
+                    "source_weights_state"
+                )
+                != "downloaded"
+            ):
+                blockers.append(
+                    "base-weights-not-downloaded"
+                )
+
+            if (
+                base.get(
+                    "checkpoint_state"
+                )
+                != "litgpt-ready"
+                or not base.get(
+                    "training_checkpoint"
+                )
+            ):
+                blockers.append(
+                    "base-checkpoint-not-ready"
+                )
+
         if not bool(
             report[
                 "training_data_available"

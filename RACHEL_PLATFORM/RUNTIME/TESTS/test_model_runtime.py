@@ -124,8 +124,18 @@ class RachelModelRuntimeTests(
             .blockers()
         )
 
-        self.assertIn(
+        self.assertNotIn(
             "base-model-unselected",
+            blockers,
+        )
+
+        self.assertIn(
+            "base-weights-not-downloaded",
+            blockers,
+        )
+
+        self.assertIn(
+            "base-checkpoint-not-ready",
             blockers,
         )
 
@@ -186,6 +196,47 @@ class RachelModelRuntimeTests(
                 "can_train_weights"
             ]
         )
+
+    def test_training_base_is_selected_but_not_downloaded(
+        self,
+    ):
+        status = (
+            self.service()
+            .status()
+        )
+
+        model = status[
+            "model"
+        ]
+
+        self.assertEqual(
+            "selected",
+            model[
+                "base_model_selection"
+            ],
+        )
+
+        self.assertEqual(
+            "Qwen/Qwen3-1.7B-Base",
+            model[
+                "base_model_repository"
+            ],
+        )
+
+        self.assertEqual(
+            "not-downloaded",
+            model[
+                "source_weights_state"
+            ],
+        )
+
+        self.assertEqual(
+            "not-created",
+            model[
+                "checkpoint_state"
+            ],
+        )
+
 
     def test_qwen_ollama_is_temporary_runtime_only(
         self,

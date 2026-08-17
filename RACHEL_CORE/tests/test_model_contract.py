@@ -97,7 +97,7 @@ class ModelContractTests(
             ]
         )
 
-    def test_training_base_is_unselected(
+    def test_training_base_is_qwen3_1_7b_base(
         self,
     ):
         contract = self.load()
@@ -107,15 +107,88 @@ class ModelContractTests(
         ]
 
         self.assertEqual(
-            "unselected",
+            "selected",
             base[
                 "selection_state"
+            ],
+        )
+
+        self.assertEqual(
+            "Qwen/Qwen3-1.7B-Base",
+            base[
+                "repository"
+            ],
+        )
+
+        self.assertEqual(
+            "Qwen3",
+            base[
+                "family"
+            ],
+        )
+
+        self.assertEqual(
+            "base",
+            base[
+                "variant"
+            ],
+        )
+
+        self.assertEqual(
+            "apache-2.0",
+            base[
+                "license"
+            ],
+        )
+
+        self.assertEqual(
+            1.7,
+            base[
+                "parameter_scale_b"
+            ],
+        )
+
+        self.assertTrue(
+            base[
+                "litgpt_support"
+            ][
+                "verified"
+            ]
+        )
+
+
+    def test_selected_base_has_no_weights_or_checkpoint_yet(
+        self,
+    ):
+        contract = self.load()
+
+        base = contract.value[
+            "base_model"
+        ]
+
+        self.assertEqual(
+            "not-downloaded",
+            base[
+                "source_weights_state"
+            ],
+        )
+
+        self.assertEqual(
+            "not-created",
+            base[
+                "checkpoint_state"
             ],
         )
 
         self.assertIsNone(
             base[
                 "training_checkpoint"
+            ]
+        )
+
+        self.assertFalse(
+            base[
+                "weights_download_allowed"
             ]
         )
 

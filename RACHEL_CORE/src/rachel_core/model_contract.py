@@ -224,6 +224,131 @@ class ModelContract:
             )
 
         if (
+            base.get(
+                "selection_state"
+            )
+            == "selected"
+        ):
+            required_base = {
+                "provider": "huggingface",
+                "repository": "Qwen/Qwen3-1.7B-Base",
+                "family": "Qwen3",
+                "architecture": "qwen3",
+                "variant": "base",
+                "license": "apache-2.0",
+                "training_checkpoint_format": "litgpt-native",
+            }
+
+            for key, expected in required_base.items():
+                if base.get(key) != expected:
+                    raise ModelContractError(
+                        "Training base invalida: "
+                        f"{key}."
+                    )
+
+            if float(
+                base.get(
+                    "parameter_scale_b",
+                    0,
+                )
+            ) != 1.7:
+                raise ModelContractError(
+                    "Parameter scale da base invalida."
+                )
+
+            support = base.get(
+                "litgpt_support"
+            )
+
+            if not isinstance(
+                support,
+                dict,
+            ):
+                raise ModelContractError(
+                    "LitGPT support ausente."
+                )
+
+            if not bool(
+                support.get(
+                    "verified"
+                )
+            ):
+                raise ModelContractError(
+                    "LitGPT support nao verificado."
+                )
+
+            if (
+                support.get(
+                    "pinned_commit"
+                )
+                != (
+                    "7bf2960dfb26bae8e815c9a16a22732974824ac1"
+                )
+            ):
+                raise ModelContractError(
+                    "LitGPT pinned commit invalido."
+                )
+
+            weights_state = base.get(
+                "source_weights_state"
+            )
+
+            checkpoint_state = base.get(
+                "checkpoint_state"
+            )
+
+            if weights_state not in {
+                "not-downloaded",
+                "downloaded",
+            }:
+                raise ModelContractError(
+                    "source_weights_state invalido."
+                )
+
+            if checkpoint_state not in {
+                "not-created",
+                "litgpt-ready",
+            }:
+                raise ModelContractError(
+                    "checkpoint_state invalido."
+                )
+
+            if (
+                weights_state
+                == "not-downloaded"
+                and base.get(
+                    "training_checkpoint"
+                )
+                is not None
+            ):
+                raise ModelContractError(
+                    "Pesos nao baixados nao podem "
+                    "ter training checkpoint."
+                )
+
+            if (
+                checkpoint_state
+                == "litgpt-ready"
+                and not base.get(
+                    "training_checkpoint"
+                )
+            ):
+                raise ModelContractError(
+                    "Checkpoint litgpt-ready precisa "
+                    "de caminho."
+                )
+
+            if bool(
+                base.get(
+                    "weights_download_allowed"
+                )
+            ):
+                raise ModelContractError(
+                    "Download de pesos precisa "
+                    "permanecer bloqueado no 1C."
+                )
+
+        if (
             inference.get(
                 "role"
             )
@@ -453,6 +578,41 @@ class ModelContract:
                 base[
                     "selection_state"
                 ]
+            ),
+            "base_model_repository": (
+                base.get(
+                    "repository"
+                )
+            ),
+            "base_model_family": (
+                base.get(
+                    "family"
+                )
+            ),
+            "base_model_variant": (
+                base.get(
+                    "variant"
+                )
+            ),
+            "base_model_license": (
+                base.get(
+                    "license"
+                )
+            ),
+            "base_model_parameter_scale_b": (
+                base.get(
+                    "parameter_scale_b"
+                )
+            ),
+            "source_weights_state": (
+                base.get(
+                    "source_weights_state"
+                )
+            ),
+            "checkpoint_state": (
+                base.get(
+                    "checkpoint_state"
+                )
             ),
             "training_checkpoint": (
                 base[

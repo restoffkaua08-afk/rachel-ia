@@ -1,0 +1,70 @@
+{
+  "bridge": {
+    "approval_consumption_action_available": false,
+    "approval_creation_action_available": false,
+    "browser_execution_action_available": false,
+    "dashboard_key": "agent",
+    "execution_actions": [],
+    "goal_execution_action_available": false,
+    "path": "APP/bridge/rachel_bridge.py",
+    "read_actions": [
+      "agent_status",
+      "agent_dependencies",
+      "agent_authority",
+      "agent_readiness",
+      "agent_blockers"
+    ],
+    "task_execution_action_available": false,
+    "tool_execution_action_available": false
+  },
+  "dashboard": {
+    "integrated": true,
+    "key": "agent",
+    "payload": "AgentRuntime.status",
+    "read_only_agent_payload": true
+  },
+  "execution": {
+    "approval_consumption": false,
+    "approval_creation": false,
+    "background_execution": false,
+    "browser_execution": false,
+    "credential_use": false,
+    "external_publish": false,
+    "goal_decomposition": false,
+    "goal_execution": false,
+    "self_modification": false,
+    "task_execution": false,
+    "task_plan_creation": false,
+    "tool_execution": false,
+    "training_execution": false,
+    "unattended_execution": false,
+    "weights_modified": false
+  },
+  "id": "rachel-agent-desktop-bridge-v1",
+  "next": {
+    "execution_required": false,
+    "goal": "Rebuild frozen do Portable Runtime e validar as actions read-only do Agent.",
+    "step": "14/1D"
+  },
+  "owner": "rachel",
+  "packaging": {
+    "agent_config_bundled": true,
+    "frozen_rebuild_performed": false,
+    "frozen_validation_state": "pending",
+    "runtime_hidden_import_via_src_glob": true,
+    "runtime_source_bundled": true,
+    "spec": "APP/sidecar/rachel_backend.spec"
+  },
+  "runtime": {
+    "class": "AgentRuntime",
+    "database_access": false,
+    "mode": "inspection-only",
+    "model_access": false,
+    "module": "RACHEL_PLATFORM/RUNTIME/SRC/agent_runtime.py",
+    "operational_runtime_imports": false,
+    "read_only": true
+  },
+  "schema_version": 1,
+  "stage": 14,
+  "state": "integrated-read-only-source"
+}

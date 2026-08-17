@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "policy_version": "rachel-training-hardware-v1",
+  "profiles": {
+    "current-cpu-blocked": {
+      "kind": "observed-baseline",
+      "description": "Hardware auditado no PC atual da Rachel. Perfil explicitamente bloqueado para treinamento de pesos.",
+      "training_candidate": false,
+      "requirements": {
+        "nvidia_cuda": false,
+        "torch_cuda": false,
+        "min_vram_gb": 0,
+        "min_ram_gb": 0,
+        "min_free_disk_gb": 0
+      },
+      "recipe": null
+    },
+    "qwen3-1.7b-lora-minimum": {
+      "kind": "policy",
+      "description": "Politica minima conservadora da Rachel para avaliar futura execucao LoRA/SFT de Qwen3 1.7B.",
+      "training_candidate": true,
+      "requirements": {
+        "nvidia_cuda": true,
+        "torch_cuda": true,
+        "min_vram_gb": 12,
+        "min_ram_gb": 16,
+        "min_free_disk_gb": 60
+      },
+      "recipe": {
+        "method": "lora",
+        "training_format": "sft",
+        "devices": 1,
+        "num_nodes": 1,
+        "precision": "bf16-true",
+        "quantize": null,
+        "lora_r": 8,
+        "lora_alpha": 16,
+        "lora_dropout": 0.05,
+        "lora_query": true,
+        "lora_key": false,
+        "lora_value": true,
+        "lora_projection": false,
+        "lora_mlp": false,
+        "lora_head": false,
+        "epochs": 3,
+        "global_batch_size": 8,
+        "micro_batch_size": 1,
+        "learning_rate": 0.0002,
+        "lr_warmup_steps": 100,
+        "max_seq_length": 2048,
+        "eval_interval": 100,
+        "eval_max_iters": 100,
+        "seed": 1337
+      }
+    },
+    "qwen3-1.7b-lora-recommended": {
+      "kind": "policy",
+      "description": "Perfil recomendado pela politica interna da Rachel para margem operacional maior durante LoRA/SFT.",
+      "training_candidate": true,
+      "requirements": {
+        "nvidia_cuda": true,
+        "torch_cuda": true,
+        "min_vram_gb": 16,
+        "min_ram_gb": 32,
+        "min_free_disk_gb": 100
+      },
+      "recipe": {
+        "method": "lora",
+        "training_format": "sft",
+        "devices": 1,
+        "num_nodes": 1,
+        "precision": "bf16-true",
+        "quantize": null,
+        "lora_r": 8,
+        "lora_alpha": 16,
+        "lora_dropout": 0.05,
+        "lora_query": true,
+        "lora_key": false,
+        "lora_value": true,
+        "lora_projection": false,
+        "lora_mlp": false,
+        "lora_head": false,
+        "epochs": 3,
+        "global_batch_size": 16,
+        "micro_batch_size": 1,
+        "learning_rate": 0.0002,
+        "lr_warmup_steps": 100,
+        "max_seq_length": 2048,
+        "eval_interval": 100,
+        "eval_max_iters": 100,
+        "seed": 1337
+      }
+    }
+  },
+  "execution": {
+    "planner_only": true,
+    "automatic_training": false,
+    "automatic_install": false,
+    "automatic_download": false,
+    "automatic_checkpoint_creation": false
+  }
+}

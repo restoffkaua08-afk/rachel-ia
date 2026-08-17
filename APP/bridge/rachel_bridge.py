@@ -1593,6 +1593,28 @@ def execute(
         }
 
 
+    if action == "agent_budgets":
+        from agent_runtime import (
+            AgentRuntime,
+        )
+
+        return (
+            AgentRuntime()
+            .budgets()
+        )
+
+
+    if action == "agent_execution_envelope":
+        from agent_runtime import (
+            AgentRuntime,
+        )
+
+        return (
+            AgentRuntime()
+            .execution_envelope()
+        )
+
+
     if action == "memory_status":
         from bran_cognitive import CognitiveMemory
 

@@ -3,8 +3,10 @@
     "approval_consumption_action_available": false,
     "approval_creation_action_available": false,
     "browser_execution_action_available": false,
+    "budget_action": "agent_budgets",
     "dashboard_key": "agent",
     "execution_actions": [],
+    "execution_envelope_action": "agent_execution_envelope",
     "goal_execution_action_available": false,
     "path": "APP/bridge/rachel_bridge.py",
     "read_actions": [
@@ -12,12 +14,16 @@
       "agent_dependencies",
       "agent_authority",
       "agent_readiness",
-      "agent_blockers"
+      "agent_blockers",
+      "agent_budgets",
+      "agent_execution_envelope"
     ],
     "task_execution_action_available": false,
     "tool_execution_action_available": false
   },
   "dashboard": {
+    "budget_summary_available": true,
+    "execution_envelope_summary_available": true,
     "integrated": true,
     "key": "agent",
     "payload": "AgentRuntime.status",
@@ -43,14 +49,19 @@
   "id": "rachel-agent-desktop-bridge-v1",
   "next": {
     "execution_required": false,
-    "goal": "Rebuild frozen do Portable Runtime e validar as actions read-only do Agent.",
-    "step": "14/1D"
+    "goal": "Rebuild the frozen Portable Runtime and validate seven Agent read actions, dashboard, budgets and execution envelope.",
+    "step": "14/1G"
   },
   "owner": "rachel",
   "packaging": {
     "agent_config_bundled": true,
     "frozen_rebuild_performed": false,
-    "frozen_validation_state": "pending",
+    "frozen_validation_state": "stale-after-source-change",
+    "historical_frozen_validation": {
+      "sha256": "6CEDDF1EA2626AF2CED3E531883B4EAED50F31ED97F0C52954DAE1C6A1F866F1",
+      "source_commit": "9595d01c179745b1cd7aae07a8079abb8fd163fc",
+      "state": "historical"
+    },
     "runtime_hidden_import_via_src_glob": true,
     "runtime_source_bundled": true,
     "spec": "APP/sidecar/rachel_backend.spec"

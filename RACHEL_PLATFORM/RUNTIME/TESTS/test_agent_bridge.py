@@ -444,6 +444,172 @@ class AgentBridgeTests(
             ),
         )
 
+    def test_agent_budgets(
+        self,
+    ):
+
+        budgets = self.call(
+            "agent_budgets"
+        )
+
+        self.assertEqual(
+            "explicit-per-goal-no-default",
+            budgets[
+                "strategy"
+            ],
+        )
+
+        self.assertTrue(
+            budgets[
+                "contract_ready"
+            ]
+        )
+
+        self.assertEqual(
+            4,
+            budgets[
+                "dimension_count"
+            ],
+        )
+
+        self.assertFalse(
+            budgets[
+                "defaults_allowed"
+            ]
+        )
+
+        self.assertFalse(
+            budgets[
+                "goal_budget_resolved"
+            ]
+        )
+
+        self.assertFalse(
+            budgets[
+                "goal_budget_materialized"
+            ]
+        )
+
+        self.assertFalse(
+            budgets[
+                "runtime_accounting_enabled"
+            ]
+        )
+
+        self.assertFalse(
+            budgets[
+                "budget_enforcement_enabled"
+            ]
+        )
+
+        self.assertFalse(
+            budgets[
+                "execution_enabled"
+            ]
+        )
+
+        self.assertTrue(
+            budgets[
+                "read_only"
+            ]
+        )
+
+
+    def test_agent_execution_envelope(
+        self,
+    ):
+
+        envelope = self.call(
+            "agent_execution_envelope"
+        )
+
+        self.assertTrue(
+            envelope[
+                "contract_ready"
+            ]
+        )
+
+        self.assertEqual(
+            "maximum_steps",
+            envelope[
+                "existing_limit_parameter"
+            ],
+        )
+
+        self.assertEqual(
+            1,
+            envelope[
+                "maximum_completed_steps_per_slice"
+            ],
+        )
+
+        self.assertTrue(
+            envelope[
+                "single_step_slice_required"
+            ]
+        )
+
+        self.assertFalse(
+            envelope[
+                "new_executor_required"
+            ]
+        )
+
+        self.assertTrue(
+            envelope[
+                "checkpoint_required"
+            ]
+        )
+
+        self.assertTrue(
+            envelope[
+                "observation_required"
+            ]
+        )
+
+        self.assertTrue(
+            envelope[
+                "authorization_revalidation_required"
+            ]
+        )
+
+        self.assertTrue(
+            envelope[
+                "budget_revalidation_required"
+            ]
+        )
+
+        self.assertFalse(
+            envelope[
+                "automatic_continue"
+            ]
+        )
+
+        self.assertFalse(
+            envelope[
+                "automatic_retry"
+            ]
+        )
+
+        self.assertFalse(
+            envelope[
+                "automatic_replan"
+            ]
+        )
+
+        self.assertFalse(
+            envelope[
+                "execution_enabled"
+            ]
+        )
+
+        self.assertTrue(
+            envelope[
+                "read_only"
+            ]
+        )
+
+
     def test_dashboard_contains_agent_status(
         self,
     ):
@@ -492,6 +658,72 @@ class AgentBridgeTests(
             ]
         )
 
+        self.assertTrue(
+            agent[
+                "budgets"
+            ][
+                "contract_ready"
+            ]
+        )
+
+        self.assertEqual(
+            4,
+            agent[
+                "budgets"
+            ][
+                "dimension_count"
+            ],
+        )
+
+        self.assertFalse(
+            agent[
+                "budgets"
+            ][
+                "defaults_allowed"
+            ]
+        )
+
+        self.assertFalse(
+            agent[
+                "budgets"
+            ][
+                "goal_budget_resolved"
+            ]
+        )
+
+        self.assertTrue(
+            agent[
+                "execution_envelope"
+            ][
+                "contract_ready"
+            ]
+        )
+
+        self.assertEqual(
+            1,
+            agent[
+                "execution_envelope"
+            ][
+                "maximum_completed_steps_per_slice"
+            ],
+        )
+
+        self.assertFalse(
+            agent[
+                "execution_envelope"
+            ][
+                "automatic_continue"
+            ]
+        )
+
+        self.assertFalse(
+            agent[
+                "execution_envelope"
+            ][
+                "execution_enabled"
+            ]
+        )
+
     def test_agent_read_actions_do_not_mutate_seeded_state(
         self,
     ):
@@ -511,6 +743,8 @@ class AgentBridgeTests(
             "agent_authority",
             "agent_readiness",
             "agent_blockers",
+            "agent_budgets",
+            "agent_execution_envelope",
         ):
 
             self.call(

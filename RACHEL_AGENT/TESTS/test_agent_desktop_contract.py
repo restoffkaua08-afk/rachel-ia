@@ -106,6 +106,8 @@ class AgentDesktopContractTests(
                 "agent_authority",
                 "agent_readiness",
                 "agent_blockers",
+                "agent_budgets",
+                "agent_execution_envelope",
             ],
             bridge[
                 "read_actions"
@@ -216,7 +218,7 @@ class AgentDesktopContractTests(
         )
 
         self.assertEqual(
-            "pending",
+            "stale-after-source-change",
             packaging[
                 "frozen_validation_state"
             ],
@@ -273,6 +275,16 @@ class AgentDesktopContractTests(
 
         self.assertIn(
             'if action == "agent_blockers"',
+            self.bridge,
+        )
+
+        self.assertIn(
+            'if action == "agent_budgets"',
+            self.bridge,
+        )
+
+        self.assertIn(
+            'if action == "agent_execution_envelope"',
             self.bridge,
         )
 

@@ -1,0 +1,116 @@
+{
+  "schema_version": 1,
+  "model_id": "rachel-model-v0.1",
+  "status": "architecture-defined",
+  "model_kind": "specialized-adapter",
+  "ownership": {
+    "system": "RACHEL",
+    "artifact_role": "first-specialized-model",
+    "foundation_model_from_scratch": false
+  },
+  "base_model": {
+    "selection_state": "unselected",
+    "training_checkpoint": null,
+    "training_checkpoint_format": "litgpt-native",
+    "training_checkpoint_required": true,
+    "selection_requires_explicit_validation": true
+  },
+  "current_inference_runtime": {
+    "provider": "ollama",
+    "model": "qwen3:1.7b",
+    "role": "temporary-inference-provider",
+    "is_rachel_model": false,
+    "is_training_base": false,
+    "ollama_artifact_trainable_as_litgpt_source": false
+  },
+  "training_backend": {
+    "name": "LitGPT",
+    "organ": "rachel.litgpt",
+    "pinned_commit": "7bf2960dfb26bae8e815c9a16a22732974824ac1",
+    "primary_method": "lora",
+    "supported_fallback_methods": [
+      "adapter",
+      "adapter_v2"
+    ],
+    "full_finetune_allowed": false
+  },
+  "specialization": {
+    "strategy": "adapter-first",
+    "phase_1": {
+      "name": "sft-lora",
+      "training_format": "sft",
+      "enabled": false
+    },
+    "future_curricula": [
+      "preference",
+      "tool-use"
+    ],
+    "automatic_weight_updates": false
+  },
+  "dataset_policy": {
+    "required_source_state": "compiled-local",
+    "required_integrity": true,
+    "supported_compiled_formats": [
+      "sft",
+      "preference",
+      "tool-use"
+    ],
+    "phase_1_trainable_formats": [
+      "sft"
+    ],
+    "training_data_required": true
+  },
+  "artifact_policy": {
+    "adapter_is_primary_artifact": true,
+    "merged_weights_created_by_default": false,
+    "checkpoint_promotion_automatic": false,
+    "external_export_automatic": false,
+    "checkpoint_root": "STATE/model-checkpoints/rachel-model-v0.1",
+    "adapter_root": "STATE/model-adapters/rachel-model-v0.1",
+    "run_root": "STATE/training-runs/rachel-model-v0.1"
+  },
+  "execution_policy": {
+    "stage12_execution_enabled": false,
+    "training_execution_enabled": false,
+    "automatic_training": false,
+    "automatic_checkpoint_creation": false,
+    "automatic_weight_merge": false,
+    "automatic_model_promotion": false,
+    "automatic_external_export": false,
+    "cyber_approval_required_for_training": true,
+    "cyber_approval_required_for_checkpoint_promotion": true,
+    "dany_preflight_required": true,
+    "dany_post_training_evaluation_required": true
+  },
+  "current_machine_audit": {
+    "captured_for_architecture_decision": true,
+    "cpu": "12th Gen Intel(R) Core(TM) i3-1215U",
+    "ram_gb": 7.68,
+    "ram_free_gb_at_audit": 1.0,
+    "disk_free_gb_at_audit": 36.56,
+    "gpu": "Intel(R) UHD Graphics",
+    "nvidia_cuda_gpu": false,
+    "torch_installed": false,
+    "torch_cuda_available": false,
+    "local_weight_training_allowed": false,
+    "full_finetune_recommended": false,
+    "decision": "training-execution-blocked-on-current-machine"
+  },
+  "execution_requirements": {
+    "base_model_selected": true,
+    "training_data_available": true,
+    "training_backend_available": true,
+    "ml_stack_provisioned": true,
+    "hardware_profile_approved": true,
+    "dany_preflight_passed": true,
+    "cyber_training_approval_consumed": true
+  },
+  "safety_invariants": {
+    "ollama_runtime_is_not_rachel_model": true,
+    "memory_is_not_training": true,
+    "rag_is_not_training": true,
+    "dataset_compilation_is_not_training": true,
+    "no_raw_hidden_chain_of_thought_training": true,
+    "private_data_external_export_default": false
+  }
+}

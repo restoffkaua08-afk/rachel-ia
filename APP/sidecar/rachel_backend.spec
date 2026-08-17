@@ -25,6 +25,11 @@ PLATFORM = (
     / "RACHEL_PLATFORM"
 )
 
+EVALUATION = (
+    ROOT
+    / "RACHEL_EVALUATION"
+)
+
 SRC = (
     PLATFORM
     / "RUNTIME"
@@ -51,6 +56,13 @@ datas = [
             / "CONFIG"
         ),
         "RACHEL_PLATFORM/CONFIG",
+    ),
+    (
+        str(
+            EVALUATION
+            / "CONFIG"
+        ),
+        "RACHEL_EVALUATION/CONFIG",
     ),
     (
         str(

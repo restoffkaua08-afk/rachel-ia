@@ -1,0 +1,62 @@
+{
+  "execution": {
+    "dspy_invocation_enabled": false,
+    "model_execution_enabled": false,
+    "promotion_execution_enabled": false,
+    "promptfoo_invocation_enabled": false,
+    "report_generation_enabled": false,
+    "report_write_enabled": false,
+    "training_execution_enabled": false,
+    "weights_modified": false
+  },
+  "id": "rachel-evaluation-report-contract-v1",
+  "identity": {
+    "contract_version_required": true,
+    "generated_at_required": true,
+    "report_id_required": true,
+    "report_type_required": true,
+    "subject_id_required": true
+  },
+  "immutability": {
+    "content_hash_required": true,
+    "immutable_after_finalize": true
+  },
+  "owner": "dany",
+  "provenance": {
+    "evaluator_version_required": true,
+    "input_set_id_required": true,
+    "input_set_sha256_required": true,
+    "source_manifest_id_required": true,
+    "source_manifest_sha256_required": true,
+    "suite_registry_id_required": true,
+    "suite_registry_sha256_required": true
+  },
+  "purpose": "Definir o formato auditavel dos futuros relatorios de avaliacao da Rachel.",
+  "report_types": [
+    "baseline-evaluation",
+    "candidate-evaluation",
+    "regression-comparison",
+    "promotion-decision"
+  ],
+  "results": {
+    "critical_failures_available": false,
+    "fabricated_scores_allowed": false,
+    "metrics_available": false,
+    "metrics_required": true,
+    "numeric_scores_available": false,
+    "state": "not-produced",
+    "suite_results_required": true,
+    "synthetic_results_allowed": false
+  },
+  "schema_version": 1,
+  "state": "contract-defined-write-disabled",
+  "storage": {
+    "external_upload": false,
+    "formats": [
+      "json",
+      "markdown"
+    ],
+    "root_relative": "RACHEL_EVALUATION/REPORTS",
+    "write_enabled": false
+  }
+}

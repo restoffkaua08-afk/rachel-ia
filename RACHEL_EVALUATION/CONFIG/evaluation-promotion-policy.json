@@ -1,0 +1,119 @@
+{
+  "evaluation_layers": [
+    {
+      "id": "contract-integrity",
+      "purpose": "Validar contratos, manifests e invariantes.",
+      "requires_model_execution": false
+    },
+    {
+      "id": "functional-quality",
+      "purpose": "Avaliar qualidade funcional de respostas e tarefas.",
+      "requires_model_execution": true
+    },
+    {
+      "id": "tool-correctness",
+      "purpose": "Avaliar selecao de ferramentas, argumentos e comportamento de execucao.",
+      "requires_model_execution": true
+    },
+    {
+      "id": "safety-security",
+      "purpose": "Avaliar Cyber, privacidade, autorizacoes e comportamento deny-by-default.",
+      "requires_model_execution": true
+    },
+    {
+      "id": "memory-privacy",
+      "purpose": "Avaliar memoria, isolamento, vazamento e persistencia autorizada.",
+      "requires_model_execution": true
+    },
+    {
+      "id": "regression",
+      "purpose": "Comparar candidato contra baseline e versoes anteriores.",
+      "requires_model_execution": true
+    },
+    {
+      "id": "model-promotion",
+      "purpose": "Determinar elegibilidade para promocao de um checkpoint validado.",
+      "requires_model_execution": true
+    }
+  ],
+  "execution": {
+    "dspy_optimization_enabled": false,
+    "evaluation_execution_enabled": false,
+    "external_publish_enabled": false,
+    "model_generation_enabled": false,
+    "promotion_execution_enabled": false,
+    "promptfoo_invocation_enabled": false,
+    "report_write_enabled": false,
+    "training_execution_enabled": false,
+    "weights_modified": false
+  },
+  "id": "rachel-evaluation-promotion-v1",
+  "organs": {
+    "dspy": {
+      "execution_enabled": false,
+      "role": "controlled-optimization-and-analysis"
+    },
+    "promptfoo": {
+      "execution_enabled": false,
+      "role": "evaluation-and-regression"
+    }
+  },
+  "owner": "dany",
+  "promotion_policy": {
+    "automatic_promotion": false,
+    "baseline_required": true,
+    "candidate_checkpoint_available": false,
+    "candidate_checkpoint_required": true,
+    "critical_failure_allowed": false,
+    "cyber_required_for_external_publish": true,
+    "dany_approval_required": true,
+    "numeric_thresholds_defined": false,
+    "promotion_execution_enabled": false,
+    "quality_regression_allowed": false,
+    "regression_suite_required": true,
+    "safety_regression_allowed": false,
+    "safety_suite_required": true,
+    "state": "blocked",
+    "thresholds_state": "not-calibrated"
+  },
+  "purpose": "Avaliar qualidade, seguranca, regressao e elegibilidade de promocao dos runtimes e futuros checkpoints da Rachel.",
+  "reports": {
+    "external_upload": false,
+    "format": [
+      "json",
+      "markdown"
+    ],
+    "root_relative": "RACHEL_EVALUATION/REPORTS",
+    "write_enabled": false
+  },
+  "schema_version": 1,
+  "sector": "ST-Dany",
+  "stage_13": {
+    "current_command": "1A",
+    "next_expected_capabilities": [
+      "evaluation-runtime",
+      "suite-registry",
+      "baseline-manifest",
+      "candidate-manifest",
+      "report-contract",
+      "promotion-gate"
+    ],
+    "phase": "contract"
+  },
+  "state": "contract-defined-execution-disabled",
+  "subjects": {
+    "rachel_model": {
+      "base_repository": "Qwen/Qwen3-1.7B-Base",
+      "candidate_available": false,
+      "checkpoint_state": "not-created",
+      "id": "rachel-model-v0.1",
+      "role": "future-candidate"
+    },
+    "temporary_runtime": {
+      "id": "qwen3:1.7b",
+      "promotable_as_rachel_model": false,
+      "provider": "ollama",
+      "role": "temporary-baseline"
+    }
+  }
+}

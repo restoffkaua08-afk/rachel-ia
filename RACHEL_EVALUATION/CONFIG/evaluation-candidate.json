@@ -1,0 +1,44 @@
+{
+  "base_repository": "Qwen/Qwen3-1.7B-Base",
+  "candidate_available": false,
+  "checkpoint": {
+    "checkpoint_id": null,
+    "path": null,
+    "sha256": null,
+    "state": "not-created",
+    "verified": false
+  },
+  "evaluation": {
+    "execution_enabled": false,
+    "report_id": null,
+    "state": "not-ready",
+    "suite_results_available": false
+  },
+  "id": "rachel-model-v0.1-candidate-v1",
+  "model_id": "rachel-model-v0.1",
+  "owner": "dany",
+  "promotion": {
+    "automatic_promotion": false,
+    "eligible": false,
+    "execution_enabled": false,
+    "state": "blocked"
+  },
+  "schema_version": 1,
+  "security": {
+    "automatic_execution": false,
+    "automatic_promotion": false,
+    "automatic_report_write": false,
+    "cyber_required_for_external_publish": true,
+    "dany_required": true
+  },
+  "state": "candidate-not-created",
+  "subject_type": "rachel-model-candidate",
+  "training": {
+    "execution_enabled": false,
+    "run_id": null,
+    "state": "not-executed",
+    "weights_modified": false
+  },
+  "training_method": "lora",
+  "training_phase": "sft"
+}

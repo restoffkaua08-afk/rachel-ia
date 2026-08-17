@@ -1,0 +1,55 @@
+{
+  "execution": {
+    "comparison_execution_enabled": false,
+    "decision_recording_enabled": false,
+    "dspy_invocation_enabled": false,
+    "external_publish_enabled": false,
+    "model_execution_enabled": false,
+    "plan_execution_enabled": false,
+    "promotion_execution_enabled": false,
+    "promptfoo_invocation_enabled": false,
+    "report_generation_enabled": false,
+    "report_write_enabled": false,
+    "suite_execution_enabled": false,
+    "training_execution_enabled": false,
+    "weights_modified": false
+  },
+  "id": "rachel-evaluation-plan-policy-v1",
+  "owner": "dany",
+  "phases": [
+    {
+      "execution_enabled": false,
+      "id": "baseline-evaluation",
+      "subject": "qwen3:1.7b"
+    },
+    {
+      "execution_enabled": false,
+      "id": "candidate-evaluation",
+      "subject": "rachel-model-v0.1"
+    },
+    {
+      "execution_enabled": false,
+      "id": "regression-comparison",
+      "subject": "qwen3:1.7b-vs-rachel-model-v0.1"
+    },
+    {
+      "execution_enabled": false,
+      "id": "promotion-decision",
+      "subject": "rachel-model-v0.1"
+    }
+  ],
+  "purpose": "Calcular readiness e blockers da avaliacao sem executar modelos, suites, comparacoes, relatorios, decisoes ou promocao.",
+  "rules": {
+    "missing_evidence_must_block": true,
+    "numeric_thresholds_must_not_be_invented": true,
+    "plan_is_not_authorization": true,
+    "plan_is_not_decision": true,
+    "plan_is_not_evaluation": true,
+    "plan_is_not_promotion": true,
+    "plan_is_not_report": true,
+    "readiness_is_not_execution": true,
+    "unknown_state_must_block": true
+  },
+  "schema_version": 1,
+  "state": "planning-read-only-execution-disabled"
+}

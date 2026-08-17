@@ -1,0 +1,182 @@
+{
+  "dspy": {
+    "automatic_optimization": false,
+    "invocation_enabled": false,
+    "role": "future-controlled-analysis-and-optimization",
+    "suite_owner": "dany",
+    "weights_modified": false
+  },
+  "execution": {
+    "dspy_invocation_enabled": false,
+    "model_generation_enabled": false,
+    "promotion_execution_enabled": false,
+    "promptfoo_invocation_enabled": false,
+    "report_write_enabled": false,
+    "suite_execution_enabled": false,
+    "training_execution_enabled": false,
+    "weights_modified": false
+  },
+  "id": "rachel-evaluation-suite-registry-v1",
+  "owner": "dany",
+  "policy": "RACHEL_EVALUATION/CONFIG/evaluation-promotion-policy.json",
+  "schema_version": 1,
+  "state": "registered-execution-disabled",
+  "suites": [
+    {
+      "execution_enabled": false,
+      "id": "contract-integrity",
+      "name": "Contract Integrity",
+      "owner": "dany",
+      "requires_dspy": false,
+      "requires_model_execution": false,
+      "requires_promptfoo": false,
+      "runner": "internal-static",
+      "signals": [
+        "schema-validity",
+        "contract-consistency",
+        "invariant-consistency",
+        "artifact-state-consistency"
+      ],
+      "state": "registered-read-only",
+      "subjects": [
+        "runtime",
+        "candidate"
+      ],
+      "thresholds": null
+    },
+    {
+      "execution_enabled": false,
+      "id": "functional-quality",
+      "name": "Functional Quality",
+      "owner": "dany",
+      "requires_dspy": false,
+      "requires_model_execution": true,
+      "requires_promptfoo": true,
+      "runner": "promptfoo",
+      "signals": [
+        "task-completion",
+        "response-quality",
+        "instruction-following",
+        "answer-consistency"
+      ],
+      "state": "planned-disabled",
+      "subjects": [
+        "baseline",
+        "candidate"
+      ],
+      "thresholds": null
+    },
+    {
+      "execution_enabled": false,
+      "id": "tool-correctness",
+      "name": "Tool Correctness",
+      "owner": "dany",
+      "requires_dspy": false,
+      "requires_model_execution": true,
+      "requires_promptfoo": true,
+      "runner": "promptfoo",
+      "signals": [
+        "tool-selection",
+        "argument-correctness",
+        "effect-correctness",
+        "unnecessary-tool-use"
+      ],
+      "state": "planned-disabled",
+      "subjects": [
+        "baseline",
+        "candidate"
+      ],
+      "thresholds": null
+    },
+    {
+      "execution_enabled": false,
+      "id": "safety-security",
+      "name": "Safety & Security",
+      "owner": "dany",
+      "requires_dspy": false,
+      "requires_model_execution": true,
+      "requires_promptfoo": true,
+      "runner": "promptfoo",
+      "signals": [
+        "cyber-enforcement",
+        "deny-by-default",
+        "authorization-binding",
+        "unauthorized-effects",
+        "critical-failures"
+      ],
+      "state": "planned-disabled",
+      "subjects": [
+        "baseline",
+        "candidate"
+      ],
+      "thresholds": null
+    },
+    {
+      "execution_enabled": false,
+      "id": "memory-privacy",
+      "name": "Memory & Privacy",
+      "owner": "dany",
+      "requires_dspy": false,
+      "requires_model_execution": true,
+      "requires_promptfoo": true,
+      "runner": "promptfoo",
+      "signals": [
+        "memory-isolation",
+        "unauthorized-persistence",
+        "private-data-leakage",
+        "scope-correctness"
+      ],
+      "state": "planned-disabled",
+      "subjects": [
+        "baseline",
+        "candidate"
+      ],
+      "thresholds": null
+    },
+    {
+      "execution_enabled": false,
+      "id": "regression",
+      "name": "Regression Comparison",
+      "owner": "dany",
+      "requires_dspy": false,
+      "requires_model_execution": true,
+      "requires_promptfoo": true,
+      "runner": "promptfoo",
+      "signals": [
+        "quality-delta",
+        "safety-delta",
+        "tool-delta",
+        "memory-delta"
+      ],
+      "state": "planned-disabled",
+      "subjects": [
+        "baseline",
+        "candidate"
+      ],
+      "thresholds": null
+    },
+    {
+      "execution_enabled": false,
+      "id": "model-promotion",
+      "name": "Model Promotion Gate",
+      "owner": "dany",
+      "requires_dspy": false,
+      "requires_model_execution": true,
+      "requires_promptfoo": false,
+      "runner": "internal-gate",
+      "signals": [
+        "candidate-availability",
+        "suite-completion",
+        "critical-failure-count",
+        "safety-regression",
+        "quality-regression",
+        "dany-decision"
+      ],
+      "state": "planned-disabled",
+      "subjects": [
+        "candidate"
+      ],
+      "thresholds": null
+    }
+  ]
+}

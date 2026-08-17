@@ -1,0 +1,134 @@
+{
+  "base": {
+    "stage_12_merge": "f0e46c1b0ec34d59a0400e7ae99362ffab0a5bce"
+  },
+  "baseline": {
+    "evaluated": false,
+    "id": "qwen3:1.7b",
+    "promotable_as_rachel_model": false,
+    "role": "temporary-baseline"
+  },
+  "branch": "agent/etapa-13-dany-evaluation-promotion",
+  "candidate": {
+    "available": false,
+    "base": "Qwen/Qwen3-1.7B-Base",
+    "checkpoint_state": "not-created",
+    "evaluated": false,
+    "id": "rachel-model-v0.1",
+    "weights_modified": false
+  },
+  "commits": {
+    "1A": "3a92789ab3a2836102f7a4bac8e4e9544c5d81c0",
+    "1B": "bef1be9e035af11e6c16edb8ace834a17767da9d",
+    "1C": "36d29480f580fa6df7abf0b18aec20e8dd722978",
+    "1D": {
+      "commit": null,
+      "type": "validation-only"
+    },
+    "1E": "91f088341b858215baadf3545a28405a1a2756db",
+    "1F": "81604783ab97f6c85d2325d76dc27e54f893c158",
+    "1G": {
+      "commit": null,
+      "type": "validation-only"
+    }
+  },
+  "evaluation": {
+    "dashboard_integrated": true,
+    "desktop_bridge_integrated": true,
+    "owner": "dany",
+    "runtime": "read-only",
+    "suite_count": 7,
+    "suites": [
+      "contract-integrity",
+      "functional-quality",
+      "tool-correctness",
+      "safety-security",
+      "memory-privacy",
+      "regression",
+      "model-promotion"
+    ]
+  },
+  "evaluation_plan": {
+    "authorization_granted": false,
+    "blocked_phase_count": 4,
+    "global_blocker_count": 17,
+    "phase_count": 4,
+    "read_only": true,
+    "ready_phase_count": 0,
+    "state": "blocked"
+  },
+  "execution": {
+    "baseline_execution": false,
+    "candidate_execution": false,
+    "decision_recording": false,
+    "dspy_invocation": false,
+    "external_publish": false,
+    "model_execution": false,
+    "promotion_execution": false,
+    "promptfoo_invocation": false,
+    "regression_computation": false,
+    "report_generation": false,
+    "report_write": false,
+    "suite_execution": false,
+    "training_execution": false,
+    "weights_modified": false
+  },
+  "frozen_validation": {
+    "dashboard_frozen": true,
+    "evaluation_frozen": true,
+    "evaluation_plan_frozen": true,
+    "evaluation_writes": 0,
+    "portable_mode": true,
+    "portable_runtime_mb": 405.43,
+    "portable_runtime_sha256": "114AA3DF39FCE5C3E04624EB7F611CD4FF1CD7161DC1EFB549CAF393843084FB",
+    "state": "validated"
+  },
+  "id": "rachel-stage-13-dany-evaluation-promotion-closure-v1",
+  "invariants": [
+    "training-is-not-promotion",
+    "evaluation-is-not-promotion",
+    "eligibility-is-not-execution",
+    "decision-is-not-execution",
+    "temporary-baseline-is-not-rachel-model",
+    "missing-evidence-blocks-readiness",
+    "unknown-state-blocks-readiness",
+    "numeric-thresholds-must-not-be-invented",
+    "fabricated-scores-are-forbidden"
+  ],
+  "next": {
+    "action": "publish-stage-13-branch-and-open-pr",
+    "model_execution_required": false,
+    "training_required": false
+  },
+  "pre_closure_validation": {
+    "core_tests": 59,
+    "runtime_tests": 238,
+    "stage_13_tests": 48
+  },
+  "promotion_decision": {
+    "automatic_decision": false,
+    "automatic_promotion": false,
+    "promotion_execution_enabled": false,
+    "promotion_state": "blocked",
+    "state": "not-decided"
+  },
+  "publication": {
+    "branch_push": false,
+    "merged_to_main": false,
+    "pull_request_created": false
+  },
+  "regression": {
+    "numeric_thresholds_defined": false,
+    "state": "not-computed",
+    "thresholds_state": "not-calibrated"
+  },
+  "report": {
+    "fabricated_scores_allowed": false,
+    "state": "not-produced",
+    "write_enabled": false
+  },
+  "schema_version": 1,
+  "stage": 13,
+  "stage_name": "Dany Evaluation & Model Promotion",
+  "state": "technically-closed-pre-publication"
+}

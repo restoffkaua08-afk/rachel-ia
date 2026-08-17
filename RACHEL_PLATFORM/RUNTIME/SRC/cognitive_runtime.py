@@ -208,13 +208,62 @@ class NedToolPlanner:
 
 
 class NedCognitiveBridge:
-    def __init__(self, memory: CognitiveMemory | None = None) -> None:
+    def __init__(
+        self,
+        memory: CognitiveMemory | None = None,
+        learning: Any | None = None,
+    ) -> None:
         from tools_runtime import ToolCoordinator
 
         self.container = build_container()
-        self.memory = memory or CognitiveMemory()
-        self.tools = ToolCoordinator(memory=self.memory)
-        self.planner = NedToolPlanner(self.tools, self.container.chat.model)
+
+        if learning is not None:
+            self.container.learning = learning
+            self.container.chat.learning = learning
+
+        self.memory = (
+            memory
+            or CognitiveMemory()
+        )
+
+        self.tools = ToolCoordinator(
+            memory=self.memory
+        )
+
+        self.planner = NedToolPlanner(
+            self.tools,
+            self.container.chat.model,
+        )
+
+    def _capture_learning_event(
+        self,
+        kind: str,
+        payload: dict[str, Any],
+        *,
+        correlation_id: str | None = None,
+        conversation_id: str | None = None,
+    ) -> str | None:
+        try:
+            return self.container.learning.capture_event(
+                kind=kind,
+                payload=payload,
+                correlation_id=correlation_id,
+                conversation_id=conversation_id,
+                provider=(
+                    self.container
+                    .chat
+                    .model
+                    .provider_name
+                ),
+                model=(
+                    self.container
+                    .chat
+                    .model
+                    .model_name
+                ),
+            )
+        except Exception:
+            return None
 
     def prepare_memory(
         self,
@@ -367,35 +416,149 @@ class NedCognitiveBridge:
             }
 
         plan = self.planner.plan(content)
-        if plan.action != "tool" or plan.tool is None:
-            response = self.chat(content, conversation_id)
-            response["tool_plan"] = asdict(plan)
-            response["tool_result"] = None
-            return response
-        tool_result = self.tools.invoke(
-            plan.tool,
-            plan.arguments,
-            approval_id=approval_id,
+
+        plan_event_id = self._capture_learning_event(
+            "planner_decision",
+            {
+                "input": content,
+                "plan": asdict(plan),
+                "approval_supplied": (
+                    approval_id is not None
+                ),
+            },
+            conversation_id=conversation_id,
         )
+
+        if plan.action != "tool" or plan.tool is None:
+            response = self.chat(
+                content,
+                conversation_id,
+            )
+
+            response["tool_plan"] = asdict(
+                plan
+            )
+
+            response["tool_result"] = None
+
+            response["agent_learning"] = {
+                "plan_event_id": plan_event_id,
+                "tool_event_id": None,
+            }
+
+            return response
+
+        try:
+            tool_result = self.tools.invoke(
+                plan.tool,
+                plan.arguments,
+                approval_id=approval_id,
+            )
+
+        except Exception as error:
+            self._capture_learning_event(
+                "tool_failed",
+                {
+                    "plan": asdict(plan),
+                    "error_type": (
+                        type(error).__name__
+                    ),
+                    "approval_supplied": (
+                        approval_id is not None
+                    ),
+                },
+                conversation_id=conversation_id,
+            )
+
+            raise
+
+        learning_result = dict(
+            tool_result
+        )
+
+        approval_present = (
+            learning_result.pop(
+                "approval",
+                None,
+            )
+            is not None
+        )
+
+        learning_result[
+            "approval_present"
+        ] = approval_present
+
+        tool_event_id = self._capture_learning_event(
+            "tool_result",
+            {
+                "plan": asdict(plan),
+                "result": learning_result,
+                "approval_supplied": (
+                    approval_id is not None
+                ),
+            },
+            correlation_id=(
+                tool_result.get(
+                    "request_event_id"
+                )
+                if isinstance(
+                    tool_result,
+                    dict,
+                )
+                else None
+            ),
+            conversation_id=conversation_id,
+        )
+
         if tool_result["state"] == "approval_required":
             return {
                 "state": "approval_required",
                 "message": {
                     "role": "assistant",
-                    "content": f"Preciso da sua autorização para executar {plan.tool}: {plan.reason}",
+                    "content": (
+                        f"Preciso da sua autorização para executar "
+                        f"{plan.tool}: {plan.reason}"
+                    ),
                 },
                 "tool_plan": asdict(plan),
                 "tool_result": tool_result,
+                "agent_learning": {
+                    "plan_event_id": plan_event_id,
+                    "tool_event_id": tool_event_id,
+                },
             }
-        evidence = json.dumps(tool_result, ensure_ascii=False, indent=2)
+
+        evidence = json.dumps(
+            tool_result,
+            ensure_ascii=False,
+            indent=2,
+        )
+
         system = (
             "Você é Rachel. Uma ferramenta autorizada foi realmente executada. "
             "Responda em português usando apenas o resultado abaixo como evidência da execução. "
-            "Não invente campos, não esconda falhas e seja objetiva.\n\nRESULTADO DA FERRAMENTA:\n" + evidence
+            "Não invente campos, não esconda falhas e seja objetiva.\n\n"
+            "RESULTADO DA FERRAMENTA:\n"
+            + evidence
         )
-        response = self.chat(content, conversation_id, system)
-        response["tool_plan"] = asdict(plan)
+
+        response = self.chat(
+            content,
+            conversation_id,
+            system,
+        )
+
+        response["tool_plan"] = asdict(
+            plan
+        )
+
         response["tool_result"] = tool_result
+
+        response["agent_learning"] = {
+            "plan_event_id": plan_event_id,
+            "tool_event_id": tool_event_id,
+        }
+
         return response
 
 

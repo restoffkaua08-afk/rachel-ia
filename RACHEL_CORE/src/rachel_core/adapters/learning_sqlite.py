@@ -545,6 +545,185 @@ class SQLiteLearningAdapter:
 
         return feedback_id
 
+    def curation_experiences(
+        self,
+        limit: int = 1000,
+    ) -> list[dict[str, Any]]:
+        limit = max(
+            1,
+            min(
+                10_000,
+                int(limit),
+            ),
+        )
+
+        with self._connection() as connection:
+            rows = connection.execute(
+                """
+                SELECT
+                    id,
+                    created_at,
+                    conversation_id,
+                    run_id,
+                    kind,
+                    user_content,
+                    assistant_content,
+                    provider,
+                    model,
+                    input_tokens,
+                    output_tokens,
+                    duration_ms,
+                    quality_accepted,
+                    quality_score,
+                    quality_issues_json,
+                    quality_checks_json,
+                    metadata_json,
+                    training_state,
+                    review_state
+                FROM experiences
+                ORDER BY created_at ASC
+                LIMIT ?
+                """,
+                (
+                    limit,
+                ),
+            ).fetchall()
+
+        output = []
+
+        for row in rows:
+            item = dict(row)
+
+            item["quality_issues"] = json.loads(
+                item.pop(
+                    "quality_issues_json"
+                )
+                or "[]"
+            )
+
+            item["quality_checks"] = json.loads(
+                item.pop(
+                    "quality_checks_json"
+                )
+                or "{}"
+            )
+
+            item["metadata"] = json.loads(
+                item.pop(
+                    "metadata_json"
+                )
+                or "{}"
+            )
+
+            output.append(
+                item
+            )
+
+        return output
+
+    def curation_events(
+        self,
+        limit: int = 1000,
+    ) -> list[dict[str, Any]]:
+        limit = max(
+            1,
+            min(
+                10_000,
+                int(limit),
+            ),
+        )
+
+        with self._connection() as connection:
+            rows = connection.execute(
+                """
+                SELECT
+                    id,
+                    created_at,
+                    kind,
+                    correlation_id,
+                    conversation_id,
+                    parent_experience_id,
+                    provider,
+                    model,
+                    payload_json,
+                    training_state,
+                    review_state
+                FROM learning_events
+                ORDER BY created_at ASC
+                LIMIT ?
+                """,
+                (
+                    limit,
+                ),
+            ).fetchall()
+
+        output = []
+
+        for row in rows:
+            item = dict(row)
+
+            item["payload"] = json.loads(
+                item.pop(
+                    "payload_json"
+                )
+            )
+
+            output.append(
+                item
+            )
+
+        return output
+
+    def curation_feedback(
+        self,
+        limit: int = 1000,
+    ) -> list[dict[str, Any]]:
+        limit = max(
+            1,
+            min(
+                10_000,
+                int(limit),
+            ),
+        )
+
+        with self._connection() as connection:
+            rows = connection.execute(
+                """
+                SELECT
+                    id,
+                    created_at,
+                    experience_id,
+                    verdict,
+                    correction_text,
+                    note,
+                    metadata_json
+                FROM learning_feedback
+                ORDER BY created_at ASC
+                LIMIT ?
+                """,
+                (
+                    limit,
+                ),
+            ).fetchall()
+
+        output = []
+
+        for row in rows:
+            item = dict(row)
+
+            item["metadata"] = json.loads(
+                item.pop(
+                    "metadata_json"
+                )
+                or "{}"
+            )
+
+            output.append(
+                item
+            )
+
+        return output
+
     def status(self) -> dict[str, Any]:
         with self._connection() as connection:
             experiences = connection.execute(

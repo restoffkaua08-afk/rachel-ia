@@ -1039,6 +1039,76 @@ class DatasetFactory:
 
         return output
 
+    def content_hash_for_item(
+        self,
+        item: dict[str, Any],
+    ) -> str:
+        return str(
+            self._prepare_item(
+                item
+            )[
+                "content_hash"
+            ]
+        )
+
+    def contains_content_hash(
+        self,
+        content_hash: str,
+    ) -> bool:
+        digest = str(
+            content_hash
+        ).strip()
+
+        if not digest:
+            return False
+
+        with self._connection() as connection:
+            row = connection.execute(
+                """
+                SELECT 1
+                FROM dataset_items
+                WHERE content_hash = ?
+                LIMIT 1
+                """,
+                (
+                    digest,
+                ),
+            ).fetchone()
+
+        return (
+            row
+            is not None
+        )
+
+    def contains_source(
+        self,
+        source_kind: str,
+        source_id: str,
+    ) -> bool:
+        with self._connection() as connection:
+            row = connection.execute(
+                """
+                SELECT 1
+                FROM dataset_items
+                WHERE source_kind = ?
+                  AND source_id = ?
+                LIMIT 1
+                """,
+                (
+                    str(
+                        source_kind
+                    ).strip(),
+                    str(
+                        source_id
+                    ).strip(),
+                ),
+            ).fetchone()
+
+        return (
+            row
+            is not None
+        )
+
     def status(
         self,
     ) -> dict[

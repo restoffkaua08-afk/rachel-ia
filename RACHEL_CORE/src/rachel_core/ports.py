@@ -96,6 +96,21 @@ class LearningPort(Protocol):
         metadata: dict[str, Any] | None = None,
     ) -> str: ...
 
+    def curation_experiences(
+        self,
+        limit: int = 1000,
+    ) -> list[dict[str, Any]]: ...
+
+    def curation_events(
+        self,
+        limit: int = 1000,
+    ) -> list[dict[str, Any]]: ...
+
+    def curation_feedback(
+        self,
+        limit: int = 1000,
+    ) -> list[dict[str, Any]]: ...
+
     def status(
         self,
     ) -> dict[str, Any]: ...

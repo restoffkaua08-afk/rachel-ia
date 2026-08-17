@@ -79,6 +79,7 @@ class DatasetFactory:
         )
 
         self._initialize()
+        self._initialize_review_registry()
 
     def _connect(
         self,
@@ -1108,6 +1109,580 @@ class DatasetFactory:
             row
             is not None
         )
+
+    def _initialize_review_registry(
+        self,
+    ) -> None:
+        with self._connection() as connection:
+            connection.executescript(
+                """
+                CREATE TABLE IF NOT EXISTS
+                dataset_reviews (
+                    id TEXT PRIMARY KEY,
+
+                    version_id TEXT NOT NULL,
+
+                    created_at TEXT NOT NULL,
+
+                    reviewer TEXT NOT NULL,
+
+                    decision TEXT NOT NULL,
+
+                    previous_state TEXT NOT NULL,
+
+                    target_state TEXT NOT NULL,
+
+                    dany_accepted INTEGER NOT NULL,
+
+                    dany_score INTEGER NOT NULL,
+
+                    dany_issues_json TEXT NOT NULL,
+
+                    dany_checks_json TEXT NOT NULL,
+
+                    authorization TEXT NOT NULL,
+
+                    content_hash TEXT NOT NULL,
+
+                    FOREIGN KEY(version_id)
+                        REFERENCES dataset_versions(id)
+                        ON DELETE RESTRICT
+                );
+
+                CREATE INDEX IF NOT EXISTS
+                    idx_dataset_reviews_version
+                ON dataset_reviews(
+                    version_id,
+                    created_at DESC
+                );
+                """
+            )
+
+            connection.execute(
+                """
+                INSERT INTO dataset_meta(
+                    key,
+                    value
+                )
+                VALUES(
+                    'review_schema_version',
+                    '1'
+                )
+                ON CONFLICT(key)
+                DO UPDATE SET
+                    value = excluded.value
+                """
+            )
+
+    def verify_version(
+        self,
+        version_id: str,
+    ) -> dict[str, Any]:
+        version = self.get_version(
+            version_id
+        )
+
+        if version is None:
+            raise DatasetFactoryError(
+                "Versao inexistente: "
+                + str(version_id)
+            )
+
+        root = self.root.resolve()
+
+        manifest_path = Path(
+            version["manifest_path"]
+        ).resolve()
+
+        data_path = Path(
+            version["data_path"]
+        ).resolve()
+
+        if (
+            not manifest_path.is_relative_to(root)
+            or not data_path.is_relative_to(root)
+        ):
+            raise DatasetFactoryError(
+                "Dataset path saiu do root autorizado."
+            )
+
+        if not manifest_path.is_file():
+            raise DatasetFactoryError(
+                "Manifest ausente."
+            )
+
+        if not data_path.is_file():
+            raise DatasetFactoryError(
+                "Dataset data ausente."
+            )
+
+        try:
+            manifest = json.loads(
+                manifest_path.read_text(
+                    encoding="utf-8"
+                )
+            )
+        except (
+            OSError,
+            json.JSONDecodeError,
+        ) as error:
+            raise DatasetFactoryError(
+                "Manifest invalido."
+            ) from error
+
+        if not isinstance(manifest, dict):
+            raise DatasetFactoryError(
+                "Manifest deve ser objeto."
+            )
+
+        rows: list[dict[str, Any]] = []
+
+        try:
+            for line in data_path.read_text(
+                encoding="utf-8"
+            ).splitlines():
+
+                if not line.strip():
+                    continue
+
+                item = json.loads(line)
+
+                if not isinstance(item, dict):
+                    raise DatasetFactoryError(
+                        "Dataset item deve ser objeto."
+                    )
+
+                rows.append(item)
+
+        except (
+            OSError,
+            json.JSONDecodeError,
+        ) as error:
+            raise DatasetFactoryError(
+                "Dataset JSONL invalido."
+            ) from error
+
+        if not rows:
+            raise DatasetFactoryError(
+                "Dataset vazio."
+            )
+
+        if (
+            int(
+                manifest.get(
+                    "item_count",
+                    -1,
+                )
+            )
+            != len(rows)
+        ):
+            raise DatasetFactoryError(
+                "Item count do manifest nao confere."
+            )
+
+        if (
+            int(version["item_count"])
+            != len(rows)
+        ):
+            raise DatasetFactoryError(
+                "Item count do registry nao confere."
+            )
+
+        hashes: list[str] = []
+
+        for position, row in enumerate(
+            rows,
+            start=1,
+        ):
+            if (
+                int(
+                    row.get(
+                        "position",
+                        -1,
+                    )
+                )
+                != position
+            ):
+                raise DatasetFactoryError(
+                    "Posicao de item invalida."
+                )
+
+            if (
+                row.get("version_id")
+                != version_id
+            ):
+                raise DatasetFactoryError(
+                    "Version binding invalido."
+                )
+
+            digest = self._sha256(
+                {
+                    "payload": row.get(
+                        "payload"
+                    ),
+                    "provenance": row.get(
+                        "provenance"
+                    ),
+                }
+            )
+
+            if (
+                digest
+                != row.get(
+                    "content_hash"
+                )
+            ):
+                raise DatasetFactoryError(
+                    "Hash de item invalido."
+                )
+
+            hashes.append(digest)
+
+        metadata = (
+            manifest.get("metadata")
+            or {}
+        )
+
+        if metadata != version["metadata"]:
+            raise DatasetFactoryError(
+                "Metadata do manifest nao confere."
+            )
+
+        dataset_hash = self._sha256(
+            {
+                "dataset_type": (
+                    version["dataset_type"]
+                ),
+                "items": hashes,
+                "metadata": metadata,
+            }
+        )
+
+        if (
+            dataset_hash
+            != version["content_hash"]
+        ):
+            raise DatasetFactoryError(
+                "Hash da versao nao confere."
+            )
+
+        if (
+            dataset_hash
+            != manifest.get(
+                "content_hash"
+            )
+        ):
+            raise DatasetFactoryError(
+                "Hash do manifest nao confere."
+            )
+
+        return {
+            "integrity": True,
+            "version_id": version_id,
+            "dataset_type": (
+                version["dataset_type"]
+            ),
+            "item_count": len(rows),
+            "content_hash": (
+                dataset_hash
+            ),
+            "checks": {
+                "manifest_present": True,
+                "data_present": True,
+                "paths_confined": True,
+                "item_count": True,
+                "item_hashes": True,
+                "version_binding": True,
+                "metadata_binding": True,
+                "dataset_hash": True,
+            },
+        }
+
+    def load_version_items(
+        self,
+        version_id: str,
+    ) -> list[dict[str, Any]]:
+        self.verify_version(
+            version_id
+        )
+
+        version = self.get_version(
+            version_id
+        )
+
+        if version is None:
+            raise DatasetFactoryError(
+                "Versao inexistente."
+            )
+
+        output: list[
+            dict[str, Any]
+        ] = []
+
+        for line in Path(
+            version["data_path"]
+        ).read_text(
+            encoding="utf-8"
+        ).splitlines():
+
+            if line.strip():
+                output.append(
+                    json.loads(line)
+                )
+
+        return output
+
+    def record_review_transition(
+        self,
+        version_id: str,
+        *,
+        target_state: str,
+        reviewer: str,
+        dany_accepted: bool,
+        dany_score: int,
+        dany_issues: list[str]
+            | tuple[str, ...],
+        dany_checks: dict[str, bool],
+        authorization: str,
+    ) -> dict[str, Any]:
+
+        selected = str(
+            target_state
+        ).strip()
+
+        if selected not in {
+            "approved-for-export",
+            "rejected",
+        }:
+            raise DatasetFactoryError(
+                "Target state invalido."
+            )
+
+        if (
+            selected
+            == "approved-for-export"
+            and (
+                not dany_accepted
+                or authorization
+                != "cyber-consumed"
+            )
+        ):
+            raise DatasetFactoryError(
+                "Export approval exige "
+                "Dany + Cyber consumido."
+            )
+
+        allowed = {
+            (
+                "candidate",
+                "approved-for-export",
+            ),
+            (
+                "candidate",
+                "rejected",
+            ),
+        }
+
+        review_id = (
+            "review_"
+            + uuid.uuid4().hex
+        )
+
+        created_at = datetime.now(
+            timezone.utc
+        ).isoformat()
+
+        with self._connection() as connection:
+            row = connection.execute(
+                """
+                SELECT
+                    state,
+                    content_hash
+                FROM dataset_versions
+                WHERE id = ?
+                """,
+                (
+                    version_id,
+                ),
+            ).fetchone()
+
+            if row is None:
+                raise DatasetFactoryError(
+                    "Versao inexistente: "
+                    + str(version_id)
+                )
+
+            previous = str(
+                row["state"]
+            )
+
+            if (
+                previous,
+                selected,
+            ) not in allowed:
+                raise DatasetFactoryError(
+                    "Transicao nao permitida: "
+                    f"{previous} -> {selected}"
+                )
+
+            updated = connection.execute(
+                """
+                UPDATE dataset_versions
+                SET state = ?
+                WHERE id = ?
+                  AND state = ?
+                """,
+                (
+                    selected,
+                    version_id,
+                    previous,
+                ),
+            )
+
+            if updated.rowcount != 1:
+                raise DatasetFactoryError(
+                    "Estado mudou durante a revisao."
+                )
+
+            connection.execute(
+                """
+                INSERT INTO dataset_reviews(
+                    id,
+                    version_id,
+                    created_at,
+                    reviewer,
+                    decision,
+                    previous_state,
+                    target_state,
+                    dany_accepted,
+                    dany_score,
+                    dany_issues_json,
+                    dany_checks_json,
+                    authorization,
+                    content_hash
+                )
+                VALUES(
+                    ?, ?, ?, ?, ?, ?, ?,
+                    ?, ?, ?, ?, ?, ?
+                )
+                """,
+                (
+                    review_id,
+                    version_id,
+                    created_at,
+                    str(reviewer)[:100],
+                    (
+                        "approved"
+                        if selected
+                        == "approved-for-export"
+                        else "rejected"
+                    ),
+                    previous,
+                    selected,
+                    (
+                        1
+                        if dany_accepted
+                        else 0
+                    ),
+                    int(dany_score),
+                    json.dumps(
+                        list(dany_issues),
+                        ensure_ascii=False,
+                    ),
+                    json.dumps(
+                        dany_checks,
+                        ensure_ascii=False,
+                        sort_keys=True,
+                    ),
+                    str(
+                        authorization
+                    )[:100],
+                    str(
+                        row["content_hash"]
+                    ),
+                ),
+            )
+
+        return {
+            "review_id": review_id,
+            "version": (
+                self.get_version(
+                    version_id
+                )
+            ),
+            "previous_state": previous,
+            "target_state": selected,
+            "authorization": (
+                authorization
+            ),
+        }
+
+    def review_history(
+        self,
+        version_id: str,
+        limit: int = 50,
+    ) -> list[dict[str, Any]]:
+
+        limit = max(
+            1,
+            min(
+                200,
+                int(limit),
+            ),
+        )
+
+        with self._connection() as connection:
+            rows = connection.execute(
+                """
+                SELECT
+                    id,
+                    version_id,
+                    created_at,
+                    reviewer,
+                    decision,
+                    previous_state,
+                    target_state,
+                    dany_accepted,
+                    dany_score,
+                    dany_issues_json,
+                    dany_checks_json,
+                    authorization,
+                    content_hash
+                FROM dataset_reviews
+                WHERE version_id = ?
+                ORDER BY created_at DESC
+                LIMIT ?
+                """,
+                (
+                    version_id,
+                    limit,
+                ),
+            ).fetchall()
+
+        output = []
+
+        for row in rows:
+            item = dict(row)
+
+            item["dany_accepted"] = bool(
+                item["dany_accepted"]
+            )
+
+            item["dany_issues"] = json.loads(
+                item.pop(
+                    "dany_issues_json"
+                )
+            )
+
+            item["dany_checks"] = json.loads(
+                item.pop(
+                    "dany_checks_json"
+                )
+            )
+
+            output.append(item)
+
+        return output
 
     def status(
         self,

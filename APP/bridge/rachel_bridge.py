@@ -360,6 +360,127 @@ def execute(
         )
 
 
+    if action == "learning_status":
+        from rachel_core.bootstrap import build_container
+
+        return (
+            build_container()
+            .learning
+            .status()
+        )
+
+
+    if action == "learning_recent":
+        from rachel_core.bootstrap import build_container
+
+        limit = bounded_int(
+            payload,
+            "limit",
+            20,
+            1,
+            100,
+        )
+
+        learning = (
+            build_container()
+            .learning
+        )
+
+        return {
+            "status": (
+                learning.status()
+            ),
+            "experiences": (
+                learning.recent(
+                    limit
+                )
+            ),
+            "events": (
+                learning.recent_events(
+                    limit
+                )
+            ),
+            "feedback": (
+                learning.recent_feedback(
+                    limit
+                )
+            ),
+        }
+
+
+    if action == "learning_feedback":
+        from rachel_core.bootstrap import build_container
+
+        experience_id = required_text(
+            payload,
+            "experience_id",
+            200,
+        )
+
+        verdict = required_text(
+            payload,
+            "verdict",
+            30,
+        ).casefold()
+
+        if verdict not in {
+            "accepted",
+            "rejected",
+            "corrected",
+        }:
+            raise ValueError(
+                "verdict must be accepted, rejected or corrected"
+            )
+
+        correction_text = optional_text(
+            payload,
+            "correction_text",
+            maximum=50_000,
+        )
+
+        note = optional_text(
+            payload,
+            "note",
+            maximum=5_000,
+        )
+
+        learning = (
+            build_container()
+            .learning
+        )
+
+        feedback_id = (
+            learning
+            .capture_feedback(
+                experience_id=(
+                    experience_id
+                ),
+                verdict=verdict,
+                correction_text=(
+                    correction_text
+                ),
+                note=note,
+                metadata={
+                    "source": (
+                        "desktop-bridge"
+                    ),
+                    "explicit_user_feedback": True,
+                },
+            )
+        )
+
+        return {
+            "feedback_id": (
+                feedback_id
+            ),
+            "experience_id": (
+                experience_id
+            ),
+            "verdict": verdict,
+            "automatic_training": False,
+        }
+
+
     if action == "memory_status":
         from bran_cognitive import CognitiveMemory
 

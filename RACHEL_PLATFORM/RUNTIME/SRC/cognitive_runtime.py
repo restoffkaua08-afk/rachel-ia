@@ -398,6 +398,7 @@ class NedCognitiveBridge:
             task_plan = TaskOrchestrator(
                 coordinator=self.tools,
                 model=self.container.chat.model,
+                learning=self.container.learning,
             ).create_plan(task_goal)
 
             return {

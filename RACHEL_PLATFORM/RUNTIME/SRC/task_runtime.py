@@ -51,16 +51,174 @@ class TaskOrchestrator:
         database: str | Path | None = None,
         coordinator: Any | None = None,
         model: Any | None = None,
+        learning: Any | None = None,
     ) -> None:
         self.database = Path(
-            database or STATE / "task-plans.db"
+            database
+            or STATE / "task-plans.db"
         )
-        self.store = PlanStore(self.database)
-        self.coordinator = coordinator or ToolCoordinator()
-        self.model = model
 
-        if self.model is None:
-            self.model = build_container().chat.model
+        self.store = PlanStore(
+            self.database
+        )
+
+        self.coordinator = (
+            coordinator
+            or ToolCoordinator()
+        )
+
+        self.model = model
+        self.learning = learning
+
+        if (
+            self.model is None
+            or self.learning is None
+        ):
+            container = build_container()
+
+            if self.model is None:
+                self.model = (
+                    container
+                    .chat
+                    .model
+                )
+
+            if self.learning is None:
+                self.learning = (
+                    container
+                    .learning
+                )
+
+    @staticmethod
+    def _safe_learning_payload(
+        value: Any,
+    ) -> Any:
+        if isinstance(value, str):
+            if value.startswith(
+                "approval_"
+            ):
+                return (
+                    "[APPROVAL_REDACTED]"
+                )
+
+            return value
+
+        if isinstance(value, list):
+            return [
+                TaskOrchestrator
+                ._safe_learning_payload(
+                    item
+                )
+                for item in value
+            ]
+
+        if isinstance(value, tuple):
+            return [
+                TaskOrchestrator
+                ._safe_learning_payload(
+                    item
+                )
+                for item in value
+            ]
+
+        if isinstance(value, dict):
+            output: dict[
+                str,
+                Any,
+            ] = {}
+
+            for raw_key, item in value.items():
+                key = str(
+                    raw_key
+                )
+
+                if key == "approval":
+                    output[
+                        "approval_present"
+                    ] = bool(
+                        item
+                    )
+                    continue
+
+                if key in {
+                    "approval_id",
+                    "approval_ids",
+                }:
+                    continue
+
+                if key == "error":
+                    if isinstance(
+                        item,
+                        str,
+                    ):
+                        output[
+                            "error_type"
+                        ] = (
+                            item
+                            .split(
+                                ":",
+                                1,
+                            )[0][:120]
+                        )
+                    else:
+                        output[
+                            "error_present"
+                        ] = (
+                            item
+                            is not None
+                        )
+                    continue
+
+                output[
+                    key
+                ] = (
+                    TaskOrchestrator
+                    ._safe_learning_payload(
+                        item
+                    )
+                )
+
+            return output
+
+        return value
+
+    def _capture_learning_event(
+        self,
+        kind: str,
+        payload: dict[str, Any],
+        *,
+        correlation_id: str | None = None,
+    ) -> str | None:
+        if self.learning is None:
+            return None
+
+        try:
+            return (
+                self.learning
+                .capture_event(
+                    kind=kind,
+                    payload=(
+                        self
+                        ._safe_learning_payload(
+                            payload
+                        )
+                    ),
+                    correlation_id=(
+                        correlation_id
+                    ),
+                    provider=(
+                        self.model
+                        .provider_name
+                    ),
+                    model=(
+                        self.model
+                        .model_name
+                    ),
+                )
+            )
+
+        except Exception:
+            return None
 
     def status(self) -> dict[str, Any]:
         return {
@@ -242,7 +400,11 @@ class TaskOrchestrator:
         | None = None,
         source: str = "model",
     ) -> dict[str, Any]:
-        clean_goal = " ".join(goal.strip().split())
+        clean_goal = " ".join(
+            goal
+            .strip()
+            .split()
+        )
 
         if not clean_goal:
             raise TaskRuntimeError(
@@ -250,28 +412,76 @@ class TaskOrchestrator:
             )
 
         secured = (
-            self._secure_specifications(specifications)
-            if specifications is not None
-            else self.model_specifications(clean_goal)
+            self._secure_specifications(
+                specifications
+            )
+            if specifications
+            is not None
+            else self.model_specifications(
+                clean_goal
+            )
         )
 
         try:
-            plan = NedTaskPlanner().create(
-                goal=clean_goal,
-                specifications=secured,
-                metadata={
-                    "source": source,
-                    "orchestrator": "task-runtime",
-                    "model_planning": (
-                        specifications is None
-                    ),
-                },
+            plan = (
+                NedTaskPlanner()
+                .create(
+                    goal=clean_goal,
+                    specifications=secured,
+                    metadata={
+                        "source": source,
+                        "orchestrator": (
+                            "task-runtime"
+                        ),
+                        "model_planning": (
+                            specifications
+                            is None
+                        ),
+                    },
+                )
             )
-        except PlanError as error:
-            raise TaskRuntimeError(str(error)) from error
 
-        self.store.save(plan)
-        return plan.to_dict()
+        except PlanError as error:
+            raise TaskRuntimeError(
+                str(error)
+            ) from error
+
+        self.store.save(
+            plan
+        )
+
+        result = plan.to_dict()
+
+        event_id = (
+            self._capture_learning_event(
+                "task_plan",
+                {
+                    "goal": clean_goal,
+                    "source": source,
+                    "plan": result,
+                },
+                correlation_id=(
+                    str(
+                        result.get(
+                            "id",
+                            "",
+                        )
+                    )
+                    or None
+                ),
+            )
+        )
+
+        if event_id:
+            result = dict(
+                result
+            )
+
+            result[
+                "learning_event_id"
+            ] = event_id
+
+        return result
 
     def execute(
         self,
@@ -279,14 +489,48 @@ class TaskOrchestrator:
         approval_ids: dict[str, str] | None = None,
         maximum_steps: int | None = None,
     ) -> dict[str, Any]:
-        return TaskExecutor(
-            self.store,
-            self.coordinator,
-        ).execute(
-            plan_id=plan_id,
-            approval_ids=approval_ids,
-            maximum_steps=maximum_steps,
+        result = (
+            TaskExecutor(
+                self.store,
+                self.coordinator,
+            )
+            .execute(
+                plan_id=plan_id,
+                approval_ids=approval_ids,
+                maximum_steps=maximum_steps,
+            )
         )
+
+        event_id = (
+            self._capture_learning_event(
+                "task_execution",
+                {
+                    "plan_id": plan_id,
+                    "approved_steps": sorted(
+                        (
+                            approval_ids
+                            or {}
+                        ).keys()
+                    ),
+                    "maximum_steps": (
+                        maximum_steps
+                    ),
+                    "result": result,
+                },
+                correlation_id=plan_id,
+            )
+        )
+
+        if event_id:
+            result = dict(
+                result
+            )
+
+            result[
+                "learning_event_id"
+            ] = event_id
+
+        return result
 
     def show(self, plan_id: str) -> dict[str, Any]:
         plan = self.store.get(plan_id)

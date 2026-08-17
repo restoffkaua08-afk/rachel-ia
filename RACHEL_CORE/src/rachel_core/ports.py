@@ -9,10 +9,20 @@ class ModelPort(Protocol):
     provider_name: str
     model_name: str
 
-    def generate(self, messages: Sequence[Message], system_prompt: str | None) -> ModelResponse: ...
+    def health(
+        self,
+    ) -> dict[str, object]: ...
+
+    def generate(
+        self,
+        messages: Sequence[Message],
+        system_prompt: str | None,
+    ) -> ModelResponse: ...
 
     def generate_stream(
-        self, messages: Sequence[Message], system_prompt: str | None
+        self,
+        messages: Sequence[Message],
+        system_prompt: str | None,
     ) -> Iterable[str]: ...
 
 
@@ -36,4 +46,72 @@ class AuditPort(Protocol):
 
 class KnowledgePort(Protocol):
     def search(self, query: str, limit: int = 5) -> list[dict[str, Any]]: ...
+
+
+class LearningPort(Protocol):
+    def capture_chat(
+        self,
+        *,
+        conversation_id: str,
+        run_id: str,
+        user_content: str,
+        assistant_content: str,
+        provider: str,
+        model: str,
+        input_tokens: int | None,
+        output_tokens: int | None,
+        duration_ms: int,
+        metadata: dict[str, Any] | None = None,
+    ) -> str: ...
+
+    def update_quality(
+        self,
+        experience_id: str,
+        *,
+        accepted: bool,
+        score: int,
+        issues: list[str] | tuple[str, ...],
+        checks: dict[str, bool],
+    ) -> None: ...
+
+    def capture_event(
+        self,
+        *,
+        kind: str,
+        payload: dict[str, Any],
+        correlation_id: str | None = None,
+        conversation_id: str | None = None,
+        parent_experience_id: str | None = None,
+        provider: str | None = None,
+        model: str | None = None,
+    ) -> str: ...
+
+    def capture_feedback(
+        self,
+        *,
+        experience_id: str,
+        verdict: str,
+        correction_text: str | None = None,
+        note: str | None = None,
+        metadata: dict[str, Any] | None = None,
+    ) -> str: ...
+
+    def status(
+        self,
+    ) -> dict[str, Any]: ...
+
+    def recent(
+        self,
+        limit: int = 20,
+    ) -> list[dict[str, Any]]: ...
+
+    def recent_events(
+        self,
+        limit: int = 20,
+    ) -> list[dict[str, Any]]: ...
+
+    def recent_feedback(
+        self,
+        limit: int = 20,
+    ) -> list[dict[str, Any]]: ...
 

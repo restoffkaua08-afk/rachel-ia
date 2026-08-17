@@ -5,7 +5,7 @@ import time
 from .domain.enums import Role, RunState
 from .domain.errors import ValidationError
 from .domain.models import ChatRequest, ChatResult, Message, new_id
-from .ports import AuditPort, KnowledgePort, MemoryPort, ModelPort
+from .ports import AuditPort, KnowledgePort, LearningPort, MemoryPort, ModelPort
 
 
 DEFAULT_SYSTEM_PROMPT = """Você é Rachel, uma assistente técnica cuidadosa e objetiva.
@@ -21,11 +21,13 @@ class ChatService:
         memory: MemoryPort,
         audit: AuditPort,
         knowledge: KnowledgePort,
+        learning: LearningPort | None = None,
     ) -> None:
         self.model = model
         self.memory = memory
         self.audit = audit
         self.knowledge = knowledge
+        self.learning = learning
 
     def chat(self, request: ChatRequest) -> ChatResult:
         content = request.content.strip()
@@ -74,14 +76,52 @@ class ChatService:
             )
             raise
 
+        duration_ms = int(
+            (time.perf_counter() - started)
+            * 1000
+        )
+
+        learning_experience_id = None
+
+        if self.learning is not None:
+            learning_experience_id = (
+                self.learning.capture_chat(
+                    conversation_id=conversation.id,
+                    run_id=run_id,
+                    user_content=content,
+                    assistant_content=response.content,
+                    provider=response.provider,
+                    model=response.model,
+                    input_tokens=response.input_tokens,
+                    output_tokens=response.output_tokens,
+                    duration_ms=duration_ms,
+                    metadata={
+                        "source": "chat-service",
+                        "automatic_training": False,
+                    },
+                )
+            )
+
+        message_metadata = {
+            "provider": response.provider,
+            "model": response.model,
+        }
+
+        if learning_experience_id:
+            message_metadata[
+                "learning_experience_id"
+            ] = learning_experience_id
+
         assistant_message = Message(
             conversation_id=conversation.id,
             role=Role.ASSISTANT,
             content=response.content,
-            metadata={"provider": response.provider, "model": response.model},
+            metadata=message_metadata,
         )
-        self.memory.add_message(assistant_message)
-        duration_ms = int((time.perf_counter() - started) * 1000)
+
+        self.memory.add_message(
+            assistant_message
+        )
         self.audit.record(
             "chat.completed",
             run_id,
@@ -106,11 +146,56 @@ class ChatService:
             duration_ms=duration_ms,
         )
 
-    def status(self) -> dict[str, object]:
+    def status(
+        self,
+    ) -> dict[str, object]:
+        try:
+            provider_health = (
+                self.model
+                .health()
+            )
+
+        except Exception as exc:
+            provider_health = {
+                "available": False,
+                "reachable": False,
+                "provider": (
+                    self.model
+                    .provider_name
+                ),
+                "model": (
+                    self.model
+                    .model_name
+                ),
+                "model_available": False,
+                "error_type": (
+                    type(exc).__name__
+                ),
+            }
+
+        available = bool(
+            provider_health.get(
+                "available"
+            )
+        )
+
         return {
-            "status": "ok",
-            "provider": self.model.provider_name,
-            "model": self.model.model_name,
+            "status": (
+                "ok"
+                if available
+                else "degraded"
+            ),
+            "provider": (
+                self.model
+                .provider_name
+            ),
+            "model": (
+                self.model
+                .model_name
+            ),
+            "provider_health": (
+                provider_health
+            ),
             "capabilities": {
                 "chat": True,
                 "persistence": True,

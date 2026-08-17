@@ -213,6 +213,18 @@ def dashboard() -> dict[str, Any]:
     from cognitive_runtime import NedCognitiveBridge
     from security_panel import SecurityPanel
     from voice_diagnostics import doctor
+    from learning_engine_runtime import (
+        LearningDatasetReviewService,
+    )
+    from learning_export_runtime import (
+        LearningDatasetExportService,
+    )
+    from training_dataset_runtime import (
+        TrainingDatasetService,
+    )
+    from training_preflight_runtime import (
+        TrainingPreflight,
+    )
 
     return {
         "runtime": NedCognitiveBridge().status(),
@@ -223,6 +235,24 @@ def dashboard() -> dict[str, Any]:
         "memory": CognitiveMemory().status(),
         "voice": doctor(
             include_hardware=False
+        ),
+        "learning_datasets": (
+            LearningDatasetReviewService()
+            .status()
+        ),
+        "learning_exports": (
+            LearningDatasetExportService()
+            .status()
+        ),
+        "training_datasets": (
+            TrainingDatasetService()
+            .status()
+        ),
+        "training_preflight": (
+            TrainingPreflight()
+            .report(
+                limit=50
+            )
         ),
         "health": health_snapshot(),
     }
@@ -494,6 +524,558 @@ def execute(
             "verdict": verdict,
             "automatic_training": False,
         }
+
+
+    if action == "learning_dataset_status":
+        from learning_engine_runtime import (
+            LearningDatasetReviewService,
+        )
+
+        return (
+            LearningDatasetReviewService()
+            .status(
+                bounded_int(
+                    payload,
+                    "limit",
+                    100,
+                    1,
+                    200,
+                )
+            )
+        )
+
+
+    if action == "learning_dataset_versions":
+        from learning_engine_runtime import (
+            LearningDatasetReviewService,
+        )
+
+        service = (
+            LearningDatasetReviewService()
+        )
+
+        dataset_type = optional_text(
+            payload,
+            "dataset_type",
+            maximum=100,
+        )
+
+        return {
+            "items": (
+                service.factory
+                .list_versions(
+                    dataset_type=(
+                        dataset_type
+                    ),
+                    limit=bounded_int(
+                        payload,
+                        "limit",
+                        50,
+                        1,
+                        200,
+                    ),
+                )
+            ),
+            "automatic_training": False,
+            "automatic_promotion": False,
+            "external_export": False,
+        }
+
+
+    if action == "learning_dataset_review":
+        from learning_engine_runtime import (
+            LearningDatasetReviewService,
+        )
+
+        version_id = required_text(
+            payload,
+            "version_id",
+            300,
+        )
+
+        return (
+            LearningDatasetReviewService()
+            .review(
+                version_id
+            )
+        )
+
+
+    if action == "learning_dataset_request_export":
+        from learning_engine_runtime import (
+            LearningDatasetReviewService,
+        )
+
+        version_id = required_text(
+            payload,
+            "version_id",
+            300,
+        )
+
+        return (
+            LearningDatasetReviewService()
+            .request_export(
+                version_id
+            )
+        )
+
+
+    if action == "learning_dataset_approve_export":
+        from learning_engine_runtime import (
+            LearningDatasetReviewService,
+        )
+
+        version_id = required_text(
+            payload,
+            "version_id",
+            300,
+        )
+
+        approval_id = required_text(
+            payload,
+            "approval_id",
+            200,
+        )
+
+        return (
+            LearningDatasetReviewService()
+            .approve_export(
+                version_id,
+                approval_id,
+            )
+        )
+
+
+    if action == "learning_dataset_review_history":
+        from learning_engine_runtime import (
+            LearningDatasetReviewService,
+        )
+
+        version_id = required_text(
+            payload,
+            "version_id",
+            300,
+        )
+
+        service = (
+            LearningDatasetReviewService()
+        )
+
+        return {
+            "version_id": version_id,
+            "items": (
+                service.factory
+                .review_history(
+                    version_id,
+                    limit=bounded_int(
+                        payload,
+                        "limit",
+                        50,
+                        1,
+                        200,
+                    ),
+                )
+            ),
+        }
+
+
+    if action == "learning_export_status":
+        from learning_export_runtime import (
+            LearningDatasetExportService,
+        )
+
+        return (
+            LearningDatasetExportService()
+            .status()
+        )
+
+
+    if action == "learning_export_list":
+        from learning_export_runtime import (
+            LearningDatasetExportService,
+        )
+
+        service = (
+            LearningDatasetExportService()
+        )
+
+        return {
+            "items": (
+                service.exporter
+                .list_exports(
+                    bounded_int(
+                        payload,
+                        "limit",
+                        50,
+                        1,
+                        200,
+                    )
+                )
+            ),
+            "automatic_training": False,
+            "external_export": False,
+        }
+
+
+    if action == "learning_export_plan":
+        from learning_export_runtime import (
+            LearningDatasetExportService,
+        )
+        from rachel_core.dataset_export import (
+            DEFAULT_SPLIT_SEED,
+        )
+
+        version_id = required_text(
+            payload,
+            "version_id",
+            300,
+        )
+
+        split_seed = (
+            optional_text(
+                payload,
+                "split_seed",
+                maximum=200,
+            )
+            or DEFAULT_SPLIT_SEED
+        )
+
+        return (
+            LearningDatasetExportService()
+            .plan(
+                version_id,
+                eval_percent=(
+                    bounded_int(
+                        payload,
+                        "eval_percent",
+                        10,
+                        0,
+                        50,
+                    )
+                ),
+                split_seed=(
+                    split_seed
+                ),
+            )
+        )
+
+
+    if action == "learning_export_request":
+        from learning_export_runtime import (
+            LearningDatasetExportService,
+        )
+        from rachel_core.dataset_export import (
+            DEFAULT_SPLIT_SEED,
+        )
+
+        version_id = required_text(
+            payload,
+            "version_id",
+            300,
+        )
+
+        split_seed = (
+            optional_text(
+                payload,
+                "split_seed",
+                maximum=200,
+            )
+            or DEFAULT_SPLIT_SEED
+        )
+
+        return (
+            LearningDatasetExportService()
+            .request_local_export(
+                version_id,
+                eval_percent=(
+                    bounded_int(
+                        payload,
+                        "eval_percent",
+                        10,
+                        0,
+                        50,
+                    )
+                ),
+                split_seed=(
+                    split_seed
+                ),
+            )
+        )
+
+
+    if action == "learning_export_execute":
+        from learning_export_runtime import (
+            LearningDatasetExportService,
+        )
+        from rachel_core.dataset_export import (
+            DEFAULT_SPLIT_SEED,
+        )
+
+        version_id = required_text(
+            payload,
+            "version_id",
+            300,
+        )
+
+        approval_id = required_text(
+            payload,
+            "approval_id",
+            200,
+        )
+
+        split_seed = (
+            optional_text(
+                payload,
+                "split_seed",
+                maximum=200,
+            )
+            or DEFAULT_SPLIT_SEED
+        )
+
+        return (
+            LearningDatasetExportService()
+            .export_local(
+                version_id,
+                approval_id,
+                eval_percent=(
+                    bounded_int(
+                        payload,
+                        "eval_percent",
+                        10,
+                        0,
+                        50,
+                    )
+                ),
+                split_seed=(
+                    split_seed
+                ),
+            )
+        )
+
+
+    if action == "learning_export_verify":
+        from learning_export_runtime import (
+            LearningDatasetExportService,
+        )
+
+        export_id = required_text(
+            payload,
+            "export_id",
+            300,
+        )
+
+        service = (
+            LearningDatasetExportService()
+        )
+
+        return (
+            service.exporter
+            .verify_export(
+                export_id
+            )
+        )
+
+
+    if action == "training_compiled_status":
+        from training_dataset_runtime import (
+            TrainingDatasetService,
+        )
+
+        return (
+            TrainingDatasetService()
+            .status()
+        )
+
+
+    if action == "training_compiled_list":
+        from training_dataset_runtime import (
+            TrainingDatasetService,
+        )
+
+        service = (
+            TrainingDatasetService()
+        )
+
+        return {
+            "items": (
+                service.compiler
+                .list(
+                    bounded_int(
+                        payload,
+                        "limit",
+                        50,
+                        1,
+                        200,
+                    )
+                )
+            ),
+            "automatic_training": False,
+            "checkpoint_created": False,
+            "external_export": False,
+        }
+
+
+    if action == "training_compile_plan":
+        from training_dataset_runtime import (
+            TrainingDatasetService,
+        )
+
+        export_id = required_text(
+            payload,
+            "export_id",
+            300,
+        )
+
+        training_format = optional_text(
+            payload,
+            "training_format",
+            maximum=50,
+        )
+
+        return (
+            TrainingDatasetService()
+            .plan(
+                export_id,
+                training_format=(
+                    training_format
+                ),
+            )
+        )
+
+
+    if action == "training_compile_request":
+        from training_dataset_runtime import (
+            TrainingDatasetService,
+        )
+
+        export_id = required_text(
+            payload,
+            "export_id",
+            300,
+        )
+
+        training_format = optional_text(
+            payload,
+            "training_format",
+            maximum=50,
+        )
+
+        return (
+            TrainingDatasetService()
+            .request_compile(
+                export_id,
+                training_format=(
+                    training_format
+                ),
+            )
+        )
+
+
+    if action == "training_compile_execute":
+        from training_dataset_runtime import (
+            TrainingDatasetService,
+        )
+
+        export_id = required_text(
+            payload,
+            "export_id",
+            300,
+        )
+
+        approval_id = required_text(
+            payload,
+            "approval_id",
+            200,
+        )
+
+        training_format = optional_text(
+            payload,
+            "training_format",
+            maximum=50,
+        )
+
+        return (
+            TrainingDatasetService()
+            .compile(
+                export_id,
+                approval_id,
+                training_format=(
+                    training_format
+                ),
+            )
+        )
+
+
+    if action == "training_compiled_verify":
+        from training_dataset_runtime import (
+            TrainingDatasetService,
+        )
+
+        compiled_id = required_text(
+            payload,
+            "compiled_id",
+            300,
+        )
+
+        service = (
+            TrainingDatasetService()
+        )
+
+        return (
+            service.compiler
+            .verify(
+                compiled_id
+            )
+        )
+
+
+    if action == "training_preflight":
+        from training_preflight_runtime import (
+            TrainingPreflight,
+        )
+
+        return (
+            TrainingPreflight()
+            .report(
+                limit=bounded_int(
+                    payload,
+                    "limit",
+                    100,
+                    1,
+                    200,
+                )
+            )
+        )
+
+
+    if action == "training_litgpt_preflight":
+        from training_preflight_runtime import (
+            TrainingPreflight,
+        )
+
+        return (
+            TrainingPreflight()
+            .litgpt()
+        )
+
+
+    if action == "training_catalog":
+        from training_preflight_runtime import (
+            TrainingPreflight,
+        )
+
+        return (
+            TrainingPreflight()
+            .catalog(
+                limit=bounded_int(
+                    payload,
+                    "limit",
+                    100,
+                    1,
+                    200,
+                )
+            )
+        )
 
 
     if action == "memory_status":

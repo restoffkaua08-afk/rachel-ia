@@ -219,6 +219,12 @@ def dashboard() -> dict[str, Any]:
     from learning_export_runtime import (
         LearningDatasetExportService,
     )
+    from training_dataset_runtime import (
+        TrainingDatasetService,
+    )
+    from training_preflight_runtime import (
+        TrainingPreflight,
+    )
 
     return {
         "runtime": NedCognitiveBridge().status(),
@@ -237,6 +243,16 @@ def dashboard() -> dict[str, Any]:
         "learning_exports": (
             LearningDatasetExportService()
             .status()
+        ),
+        "training_datasets": (
+            TrainingDatasetService()
+            .status()
+        ),
+        "training_preflight": (
+            TrainingPreflight()
+            .report(
+                limit=50
+            )
         ),
         "health": health_snapshot(),
     }
@@ -856,6 +872,208 @@ def execute(
             service.exporter
             .verify_export(
                 export_id
+            )
+        )
+
+
+    if action == "training_compiled_status":
+        from training_dataset_runtime import (
+            TrainingDatasetService,
+        )
+
+        return (
+            TrainingDatasetService()
+            .status()
+        )
+
+
+    if action == "training_compiled_list":
+        from training_dataset_runtime import (
+            TrainingDatasetService,
+        )
+
+        service = (
+            TrainingDatasetService()
+        )
+
+        return {
+            "items": (
+                service.compiler
+                .list(
+                    bounded_int(
+                        payload,
+                        "limit",
+                        50,
+                        1,
+                        200,
+                    )
+                )
+            ),
+            "automatic_training": False,
+            "checkpoint_created": False,
+            "external_export": False,
+        }
+
+
+    if action == "training_compile_plan":
+        from training_dataset_runtime import (
+            TrainingDatasetService,
+        )
+
+        export_id = required_text(
+            payload,
+            "export_id",
+            300,
+        )
+
+        training_format = optional_text(
+            payload,
+            "training_format",
+            maximum=50,
+        )
+
+        return (
+            TrainingDatasetService()
+            .plan(
+                export_id,
+                training_format=(
+                    training_format
+                ),
+            )
+        )
+
+
+    if action == "training_compile_request":
+        from training_dataset_runtime import (
+            TrainingDatasetService,
+        )
+
+        export_id = required_text(
+            payload,
+            "export_id",
+            300,
+        )
+
+        training_format = optional_text(
+            payload,
+            "training_format",
+            maximum=50,
+        )
+
+        return (
+            TrainingDatasetService()
+            .request_compile(
+                export_id,
+                training_format=(
+                    training_format
+                ),
+            )
+        )
+
+
+    if action == "training_compile_execute":
+        from training_dataset_runtime import (
+            TrainingDatasetService,
+        )
+
+        export_id = required_text(
+            payload,
+            "export_id",
+            300,
+        )
+
+        approval_id = required_text(
+            payload,
+            "approval_id",
+            200,
+        )
+
+        training_format = optional_text(
+            payload,
+            "training_format",
+            maximum=50,
+        )
+
+        return (
+            TrainingDatasetService()
+            .compile(
+                export_id,
+                approval_id,
+                training_format=(
+                    training_format
+                ),
+            )
+        )
+
+
+    if action == "training_compiled_verify":
+        from training_dataset_runtime import (
+            TrainingDatasetService,
+        )
+
+        compiled_id = required_text(
+            payload,
+            "compiled_id",
+            300,
+        )
+
+        service = (
+            TrainingDatasetService()
+        )
+
+        return (
+            service.compiler
+            .verify(
+                compiled_id
+            )
+        )
+
+
+    if action == "training_preflight":
+        from training_preflight_runtime import (
+            TrainingPreflight,
+        )
+
+        return (
+            TrainingPreflight()
+            .report(
+                limit=bounded_int(
+                    payload,
+                    "limit",
+                    100,
+                    1,
+                    200,
+                )
+            )
+        )
+
+
+    if action == "training_litgpt_preflight":
+        from training_preflight_runtime import (
+            TrainingPreflight,
+        )
+
+        return (
+            TrainingPreflight()
+            .litgpt()
+        )
+
+
+    if action == "training_catalog":
+        from training_preflight_runtime import (
+            TrainingPreflight,
+        )
+
+        return (
+            TrainingPreflight()
+            .catalog(
+                limit=bounded_int(
+                    payload,
+                    "limit",
+                    100,
+                    1,
+                    200,
+                )
             )
         )
 

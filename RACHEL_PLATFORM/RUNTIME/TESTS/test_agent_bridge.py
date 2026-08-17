@@ -368,21 +368,21 @@ class AgentBridgeTests(
         )
 
         self.assertEqual(
-            3,
+            4,
             readiness[
                 "ready_phase_count"
             ],
         )
 
         self.assertEqual(
-            2,
+            1,
             readiness[
                 "blocked_phase_count"
             ],
         )
 
         self.assertEqual(
-            6,
+            5,
             readiness[
                 "blocker_count"
             ],
@@ -403,7 +403,7 @@ class AgentBridgeTests(
         )
 
         self.assertEqual(
-            6,
+            5,
             blockers[
                 "count"
             ],
@@ -430,7 +430,6 @@ class AgentBridgeTests(
         expected = {
             "agent-loop-execution-disabled",
             "agent-runtime-execution-disabled",
-            "autonomy-budgets-not-defined",
             "goal-decomposition-disabled",
             "task-execution-by-agent-disabled",
             "tool-execution-by-agent-disabled",

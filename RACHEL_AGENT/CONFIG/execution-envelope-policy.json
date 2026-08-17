@@ -1,0 +1,62 @@
+{
+  "authorization": {
+    "approval_binding_preserved": true,
+    "approval_inheritance_allowed": false,
+    "approval_reuse_allowed": false,
+    "cyber_remains_authority": true,
+    "self_approval_allowed": false,
+    "single_use_approval_preserved": true
+  },
+  "continuation": {
+    "authorization_revalidation_required": true,
+    "automatic_continue": false,
+    "budget_revalidation_required": true,
+    "checkpoint_required": true,
+    "dependency_revalidation_required": true,
+    "observation_required": true,
+    "state_revalidation_required": true
+  },
+  "execution": {
+    "background_execution_enabled": false,
+    "browser_execution_enabled": false,
+    "credential_use_enabled": false,
+    "envelope_enforcement_enabled": false,
+    "external_publish_enabled": false,
+    "goal_decomposition_enabled": false,
+    "goal_execution_enabled": false,
+    "self_modification_enabled": false,
+    "task_execution_enabled": false,
+    "tool_execution_enabled": false,
+    "training_execution_enabled": false,
+    "unattended_execution_enabled": false,
+    "weights_modified": false
+  },
+  "external_effects": {
+    "automatic_credential_use_allowed": false,
+    "automatic_payment_allowed": false,
+    "automatic_publish_allowed": false,
+    "implicit_external_effect_allowed": false
+  },
+  "failure": {
+    "automatic_budget_increase": false,
+    "automatic_replan": false,
+    "automatic_retry": false,
+    "stop_on_failed_dependency": true,
+    "stop_on_failed_step": true,
+    "stop_on_unknown_state": true
+  },
+  "id": "rachel-agent-execution-envelope-v1",
+  "owner": "rachel",
+  "purpose": "Define the boundary for a future governed Agent execution without enabling execution.",
+  "schema_version": 1,
+  "stage": 14,
+  "state": "contract-defined-execution-disabled",
+  "task_executor": {
+    "existing_limit_parameter": "maximum_steps",
+    "existing_runtime": "RACHEL_PLATFORM/RUNTIME/SRC/task_executor.py",
+    "maximum_completed_steps_per_slice": 1,
+    "new_executor_required": false,
+    "reason": "Force observation and checkpoint between task execution slices.",
+    "single_step_slice_required": true
+  }
+}

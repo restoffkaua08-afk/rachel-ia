@@ -1,0 +1,44 @@
+{
+  "agent": {
+    "authority_ready": true,
+    "blocked_phases": 2,
+    "blockers": 6,
+    "default_tool_policy": "deny",
+    "dependencies_available": 5,
+    "dependencies_total": 5,
+    "effect_policies": 14,
+    "forbidden_actions_accepted": 0,
+    "forbidden_actions_tested": 9,
+    "read_action_mutations": 0,
+    "read_actions": 5,
+    "readiness_phases": 5,
+    "ready_phases": 3,
+    "registered_tools": 22
+  },
+  "execution": {
+    "approval_mutation": false,
+    "background_execution": false,
+    "browser_execution": false,
+    "goal_execution": false,
+    "task_execution": false,
+    "tool_execution": false,
+    "training_execution": false,
+    "weights_modified": false
+  },
+  "historical_proof": true,
+  "id": "rachel-stage-14-frozen-validation-1d",
+  "note": "This proof belongs to source commit 9595d01c. Source changes after 14/1D require a new frozen rebuild before portable validation can be considered current.",
+  "portable_runtime": {
+    "agent_desktop_policy_bundled": true,
+    "agent_runtime_policy_bundled": true,
+    "self_contained": true,
+    "sha256": "6CEDDF1EA2626AF2CED3E531883B4EAED50F31ED97F0C52954DAE1C6A1F866F1",
+    "size_mb": 405.46,
+    "stage_13_sha_reused": false
+  },
+  "schema_version": 1,
+  "source_commit": "9595d01c179745b1cd7aae07a8079abb8fd163fc",
+  "stage": 14,
+  "state": "validated",
+  "step": "14/1D"
+}

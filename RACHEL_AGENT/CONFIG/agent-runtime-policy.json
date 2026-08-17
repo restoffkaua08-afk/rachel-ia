@@ -79,11 +79,16 @@
     "session_mutation_enabled": false
   },
   "budgets": {
+    "execution_envelope_id": "rachel-agent-execution-envelope-v1",
+    "explicit_per_goal_budget_required": true,
+    "goal_budget_resolved": false,
     "invent_defaults_allowed": false,
     "maximum_consecutive_failures": null,
     "maximum_iterations": null,
     "maximum_tool_calls": null,
-    "state": "not-defined",
+    "policy_id": "rachel-agent-autonomy-budget-policy-v1",
+    "state": "contract-defined-explicit-per-goal",
+    "values_materialized": false,
     "wall_clock_limit_seconds": null
   },
   "effects": {
@@ -116,8 +121,8 @@
   "mode": "governed-autonomy",
   "next": {
     "execution_required": false,
-    "goal": "Criar Agent Runtime read-only para readiness, authority e blocker inspection.",
-    "step": "14/1B"
+    "goal": "Expose budget and execution-envelope inspection through the Desktop Bridge.",
+    "step": "14/1F"
   },
   "observability": {
     "audit_trail_required": true,

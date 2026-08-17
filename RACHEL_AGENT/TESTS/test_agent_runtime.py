@@ -380,21 +380,20 @@ class AgentRuntimeTests(
         )
 
         self.assertEqual(
-            3,
+            4,
             readiness[
                 "ready_phase_count"
             ],
         )
 
         self.assertEqual(
-            2,
+            1,
             readiness[
                 "blocked_phase_count"
             ],
         )
 
         for blocker in (
-            "autonomy-budgets-not-defined",
             "agent-runtime-execution-disabled",
             "agent-loop-execution-disabled",
             "goal-decomposition-disabled",

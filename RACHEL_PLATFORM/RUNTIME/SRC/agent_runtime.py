@@ -80,6 +80,18 @@ class AgentRuntime:
             / "approval.policy.json"
         )
 
+        self.autonomy_budget_policy_path = (
+            self.agent_root
+            / "CONFIG"
+            / "autonomy-budget-policy.json"
+        )
+
+        self.execution_envelope_policy_path = (
+            self.agent_root
+            / "CONFIG"
+            / "execution-envelope-policy.json"
+        )
+
         self.policy = self._load_json(
             self.policy_path
         )
@@ -90,6 +102,18 @@ class AgentRuntime:
 
         self.approval_policy = self._load_json(
             self.approval_policy_path
+        )
+
+        self.autonomy_budget_policy = (
+            self._load_json(
+                self.autonomy_budget_policy_path
+            )
+        )
+
+        self.execution_envelope_policy = (
+            self._load_json(
+                self.execution_envelope_policy_path
+            )
         )
 
         self._validate_policy()
@@ -356,6 +380,351 @@ class AgentRuntime:
                 raise AgentRuntimeError(
                     f"Execution unexpectedly enabled: {key}"
                 )
+
+        self._validate_budget_policy()
+        self._validate_execution_envelope_policy()
+
+    def _validate_budget_policy(
+        self,
+    ) -> None:
+
+        policy = (
+            self.autonomy_budget_policy
+        )
+
+        if (
+            policy.get(
+                "schema_version"
+            )
+            != 1
+        ):
+            raise AgentRuntimeError(
+                "Autonomy budget schema is invalid."
+            )
+
+        if (
+            policy.get(
+                "owner"
+            )
+            != "rachel"
+        ):
+            raise AgentRuntimeError(
+                "Autonomy budget owner must be Rachel."
+            )
+
+        if (
+            policy.get(
+                "state"
+            )
+            != "contract-defined"
+        ):
+            raise AgentRuntimeError(
+                "Autonomy budget contract is not defined."
+            )
+
+        if (
+            policy.get(
+                "strategy"
+            )
+            != "explicit-per-goal-no-default"
+        ):
+            raise AgentRuntimeError(
+                "Autonomy budget strategy is invalid."
+            )
+
+        if (
+            policy.get(
+                "defaults_allowed"
+            )
+            is not False
+        ):
+            raise AgentRuntimeError(
+                "Autonomy budget defaults must be disabled."
+            )
+
+        if (
+            policy.get(
+                "goal_budget_required_before_execution"
+            )
+            is not True
+        ):
+            raise AgentRuntimeError(
+                "Explicit goal budget must be required."
+            )
+
+        dimensions = (
+            policy.get(
+                "dimensions"
+            )
+        )
+
+        if not isinstance(
+            dimensions,
+            list,
+        ):
+            raise AgentRuntimeError(
+                "Autonomy budget dimensions are invalid."
+            )
+
+        expected = {
+            "maximum_iterations",
+            "maximum_tool_calls",
+            "wall_clock_limit_seconds",
+            "maximum_consecutive_failures",
+        }
+
+        actual = {
+            str(
+                item.get(
+                    "id",
+                    "",
+                )
+            )
+            for item
+            in dimensions
+            if isinstance(
+                item,
+                dict,
+            )
+        }
+
+        if actual != expected:
+            raise AgentRuntimeError(
+                "Autonomy budget dimensions are incomplete."
+            )
+
+        for item in dimensions:
+
+            if (
+                item.get(
+                    "required"
+                )
+                is not True
+            ):
+                raise AgentRuntimeError(
+                    "Every budget dimension must be required."
+                )
+
+            if (
+                item.get(
+                    "default"
+                )
+                is not None
+            ):
+                raise AgentRuntimeError(
+                    "Budget dimensions cannot have defaults."
+                )
+
+    def _validate_execution_envelope_policy(
+        self,
+    ) -> None:
+
+        policy = (
+            self.execution_envelope_policy
+        )
+
+        if (
+            policy.get(
+                "schema_version"
+            )
+            != 1
+        ):
+            raise AgentRuntimeError(
+                "Execution envelope schema is invalid."
+            )
+
+        if (
+            policy.get(
+                "owner"
+            )
+            != "rachel"
+        ):
+            raise AgentRuntimeError(
+                "Execution envelope owner must be Rachel."
+            )
+
+        if (
+            policy.get(
+                "state"
+            )
+            != "contract-defined-execution-disabled"
+        ):
+            raise AgentRuntimeError(
+                "Execution envelope state is invalid."
+            )
+
+        task_executor = (
+            policy.get(
+                "task_executor"
+            )
+        )
+
+        if not isinstance(
+            task_executor,
+            dict,
+        ):
+            raise AgentRuntimeError(
+                "Execution envelope task executor contract is missing."
+            )
+
+        if (
+            task_executor.get(
+                "existing_limit_parameter"
+            )
+            != "maximum_steps"
+        ):
+            raise AgentRuntimeError(
+                "Execution envelope must reuse maximum_steps."
+            )
+
+        if (
+            task_executor.get(
+                "maximum_completed_steps_per_slice"
+            )
+            != 1
+        ):
+            raise AgentRuntimeError(
+                "Execution slice must remain one completed step."
+            )
+
+        if (
+            task_executor.get(
+                "new_executor_required"
+            )
+            is not False
+        ):
+            raise AgentRuntimeError(
+                "Execution envelope cannot require another executor."
+            )
+
+        execution = (
+            policy.get(
+                "execution"
+            )
+        )
+
+        if not isinstance(
+            execution,
+            dict,
+        ):
+            raise AgentRuntimeError(
+                "Execution envelope execution flags are missing."
+            )
+
+        for key, value in execution.items():
+
+            if value is not False:
+                raise AgentRuntimeError(
+                    f"Execution envelope unexpectedly enabled: {key}"
+                )
+
+    def budgets(
+        self,
+    ) -> dict[str, Any]:
+
+        policy = (
+            self.autonomy_budget_policy
+        )
+
+        dimensions = [
+            {
+                "id": str(
+                    item[
+                        "id"
+                    ]
+                ),
+                "required": bool(
+                    item[
+                        "required"
+                    ]
+                ),
+                "default": (
+                    item.get(
+                        "default"
+                    )
+                ),
+                "unit": str(
+                    item[
+                        "unit"
+                    ]
+                ),
+            }
+            for item
+            in policy[
+                "dimensions"
+            ]
+        ]
+
+        return {
+            "id": policy[
+                "id"
+            ],
+            "state": policy[
+                "state"
+            ],
+            "strategy": policy[
+                "strategy"
+            ],
+            "contract_ready": True,
+            "defaults_allowed": False,
+            "explicit_per_goal_budget_required": True,
+            "goal_budget_resolved": False,
+            "goal_budget_materialized": False,
+            "dimension_count": len(
+                dimensions
+            ),
+            "dimensions": dimensions,
+            "runtime_accounting_enabled": False,
+            "budget_enforcement_enabled": False,
+            "execution_enabled": False,
+            "read_only": True,
+        }
+
+    def execution_envelope(
+        self,
+    ) -> dict[str, Any]:
+
+        policy = (
+            self.execution_envelope_policy
+        )
+
+        task_executor = (
+            policy[
+                "task_executor"
+            ]
+        )
+
+        return {
+            "id": policy[
+                "id"
+            ],
+            "state": policy[
+                "state"
+            ],
+            "contract_ready": True,
+            "existing_limit_parameter": (
+                task_executor[
+                    "existing_limit_parameter"
+                ]
+            ),
+            "maximum_completed_steps_per_slice": (
+                task_executor[
+                    "maximum_completed_steps_per_slice"
+                ]
+            ),
+            "single_step_slice_required": True,
+            "new_executor_required": False,
+            "checkpoint_required": True,
+            "observation_required": True,
+            "state_revalidation_required": True,
+            "authorization_revalidation_required": True,
+            "budget_revalidation_required": True,
+            "automatic_continue": False,
+            "automatic_retry": False,
+            "automatic_replan": False,
+            "execution_enabled": False,
+            "read_only": True,
+        }
 
     def dependencies(
         self,
@@ -1062,18 +1431,32 @@ class AgentRuntime:
             str
         ] = []
 
-        budgets = self.policy[
-            "budgets"
-        ]
+        budget_contract = (
+            self.budgets()
+        )
+
+        execution_envelope = (
+            self.execution_envelope()
+        )
 
         if (
-            budgets.get(
-                "state"
+            budget_contract.get(
+                "contract_ready"
             )
-            != "defined"
+            is not True
         ):
             budget_blockers.append(
-                "autonomy-budgets-not-defined"
+                "autonomy-budget-contract-not-ready"
+            )
+
+        if (
+            execution_envelope.get(
+                "contract_ready"
+            )
+            is not True
+        ):
+            budget_blockers.append(
+                "execution-envelope-contract-not-ready"
             )
 
         execution = self.policy[
@@ -1325,6 +1708,40 @@ class AgentRuntime:
                         "integration_state"
                     ]
                 ),
+                "execution_enabled": False,
+            },
+            "budgets": {
+                "contract_ready": (
+                    self.budgets()[
+                        "contract_ready"
+                    ]
+                ),
+                "strategy": (
+                    self.budgets()[
+                        "strategy"
+                    ]
+                ),
+                "dimension_count": (
+                    self.budgets()[
+                        "dimension_count"
+                    ]
+                ),
+                "defaults_allowed": False,
+                "goal_budget_resolved": False,
+                "execution_enabled": False,
+            },
+            "execution_envelope": {
+                "contract_ready": (
+                    self.execution_envelope()[
+                        "contract_ready"
+                    ]
+                ),
+                "maximum_completed_steps_per_slice": (
+                    self.execution_envelope()[
+                        "maximum_completed_steps_per_slice"
+                    ]
+                ),
+                "automatic_continue": False,
                 "execution_enabled": False,
             },
             "readiness": {

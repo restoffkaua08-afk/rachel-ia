@@ -340,7 +340,7 @@ class AgentRuntimePolicyTests(
         )
 
         self.assertEqual(
-            "not-defined",
+            "contract-defined-explicit-per-goal",
             budgets[
                 "state"
             ],

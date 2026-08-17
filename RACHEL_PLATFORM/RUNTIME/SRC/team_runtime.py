@@ -194,6 +194,12 @@ class NedRouter:
         "arya": {"codigo", "terminal", "programar", "navegador", "automacao"},
         "bran": {"lembrar", "memoria", "conhecimento", "recordar", "buscar"},
         "cyber": {"seguranca", "permissao", "privacidade", "risco", "credencial"},
+        "samwell": {
+            "dependencia", "dependencias", "dependência", "dependências",
+            "ambiente", "ambientes", "python", "node", "rust", "cargo",
+            "ffmpeg", "ollama", "portable", "frozen", "empacotamento",
+            "pyinstaller", "cuda", "pytorch", "torch", "instalacao",
+        },
         "dany": {"teste", "avaliar", "qualidade", "comparar", "feedback"},
         "jhon": {"erro", "log", "status", "desempenho", "diagnostico"},
         "tyrion": {"iniciar", "parar", "reiniciar", "orgao", "servico"},

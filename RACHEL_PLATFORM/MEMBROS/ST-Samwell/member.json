@@ -1,0 +1,15 @@
+{
+    "schema_version": "1.0",
+    "id": "samwell",
+    "nome": "Samwell",
+    "setor": "ST-Samwell",
+    "cargo": "Gestor de dependencias, ambientes e portabilidade",
+    "responsabilidade": "Auditar e planejar dependencias, ambientes, compatibilidade, empacotamento e portabilidade da Rachel sem executar mutacoes automaticamente.",
+    "orgaos": [
+        "todos"
+    ],
+    "estado": "operacional",
+    "executavel": true,
+    "health": "available",
+    "requer_autorizacao": true
+}

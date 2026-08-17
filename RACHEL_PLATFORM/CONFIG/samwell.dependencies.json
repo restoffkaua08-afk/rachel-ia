@@ -1,0 +1,249 @@
+{
+  "dependencies": [
+    {
+      "environment": "development",
+      "id": "development-python",
+      "type": "environment-python"
+    },
+    {
+      "environment": "packaging",
+      "id": "packaging-python",
+      "type": "environment-python"
+    },
+    {
+      "environment": "training",
+      "id": "training-python",
+      "type": "environment-python"
+    },
+    {
+      "distribution": "pyinstaller",
+      "environment": "packaging",
+      "id": "packaging-pyinstaller",
+      "module": "PyInstaller",
+      "type": "environment-package"
+    },
+    {
+      "distribution": "torch",
+      "environment": "packaging",
+      "id": "packaging-torch",
+      "informational_only": true,
+      "module": "torch",
+      "type": "environment-package"
+    },
+    {
+      "distribution": "torch",
+      "environment": "training",
+      "id": "training-torch",
+      "module": "torch",
+      "type": "environment-package"
+    },
+    {
+      "distribution": "lightning",
+      "environment": "training",
+      "id": "training-lightning",
+      "module": "lightning",
+      "type": "environment-package"
+    },
+    {
+      "distribution": "bitsandbytes",
+      "environment": "training",
+      "id": "training-bitsandbytes",
+      "module": "bitsandbytes",
+      "type": "environment-package"
+    },
+    {
+      "args": [
+        "--version"
+      ],
+      "id": "git",
+      "names": [
+        "git"
+      ],
+      "type": "command"
+    },
+    {
+      "args": [
+        "--version"
+      ],
+      "id": "uv",
+      "names": [
+        "uv"
+      ],
+      "type": "command"
+    },
+    {
+      "args": [
+        "--version"
+      ],
+      "id": "node",
+      "names": [
+        "node"
+      ],
+      "type": "command"
+    },
+    {
+      "args": [
+        "--version"
+      ],
+      "id": "pnpm",
+      "names": [
+        "pnpm"
+      ],
+      "type": "command"
+    },
+    {
+      "args": [
+        "--version"
+      ],
+      "id": "rustc",
+      "names": [
+        "rustc"
+      ],
+      "type": "command"
+    },
+    {
+      "args": [
+        "--version"
+      ],
+      "id": "cargo",
+      "names": [
+        "cargo"
+      ],
+      "type": "command"
+    },
+    {
+      "args": [
+        "-version"
+      ],
+      "id": "ffmpeg",
+      "names": [
+        "ffmpeg"
+      ],
+      "type": "command"
+    },
+    {
+      "args": [
+        "--version"
+      ],
+      "id": "ollama",
+      "localappdata_candidates": [
+        "Programs/Ollama/ollama.exe"
+      ],
+      "names": [
+        "ollama"
+      ],
+      "type": "command"
+    },
+    {
+      "args": [
+        "--query-gpu=name,memory.total",
+        "--format=csv,noheader"
+      ],
+      "id": "nvidia-smi",
+      "names": [
+        "nvidia-smi"
+      ],
+      "type": "command"
+    },
+    {
+      "id": "portable-sidecar",
+      "type": "portable-sidecar"
+    },
+    {
+      "alias": "litgpt",
+      "id": "litgpt-source",
+      "type": "organ-source"
+    }
+  ],
+  "environments": {
+    "development": {
+      "kind": "python-environment",
+      "python_relative": "AMBIENTES/runtime/Scripts/python.exe"
+    },
+    "inference": {
+      "kind": "service-runtime"
+    },
+    "packaging": {
+      "kind": "python-environment",
+      "python_relative": "AMBIENTES/desktop-sidecar/Scripts/python.exe"
+    },
+    "portable": {
+      "kind": "portable-runtime"
+    },
+    "training": {
+      "kind": "python-environment",
+      "python_relative": "AMBIENTES/training/Scripts/python.exe"
+    }
+  },
+  "member": "samwell",
+  "modes": {
+    "development": {
+      "required": [
+        "development-python",
+        "git",
+        "uv",
+        "node",
+        "pnpm",
+        "rustc",
+        "cargo"
+      ]
+    },
+    "inference": {
+      "required": [
+        "ollama"
+      ]
+    },
+    "media": {
+      "required": [
+        "ffmpeg"
+      ]
+    },
+    "packaging": {
+      "required": [
+        "packaging-python",
+        "packaging-pyinstaller",
+        "portable-sidecar",
+        "node",
+        "pnpm",
+        "rustc",
+        "cargo"
+      ]
+    },
+    "portable": {
+      "required": [
+        "portable-sidecar"
+      ]
+    },
+    "training": {
+      "optional": [
+        "training-bitsandbytes"
+      ],
+      "required": [
+        "training-python",
+        "training-torch",
+        "training-lightning",
+        "litgpt-source",
+        "nvidia-smi"
+      ]
+    }
+  },
+  "mutation_policy": {
+    "audit": "allowed",
+    "automatic_driver_change": false,
+    "automatic_install": false,
+    "automatic_path_change": false,
+    "automatic_remove": false,
+    "automatic_repair": false,
+    "automatic_update": false,
+    "cyber_required_for_mutation": true,
+    "planning": "allowed"
+  },
+  "portable_runtime": {
+    "display_name": "Portable Runtime",
+    "external_python_required": false,
+    "internal_term": "frozen",
+    "managed_by": "samwell"
+  },
+  "schema_version": 2,
+  "sector": "dependencies-environments-portability"
+}

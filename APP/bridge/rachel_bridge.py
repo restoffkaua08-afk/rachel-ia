@@ -153,6 +153,47 @@ def optional_text(
     return value
 
 
+def required_object(
+    payload: dict[str, Any],
+    key: str,
+) -> dict[str, Any]:
+    value = payload.get(
+        key
+    )
+
+    if not isinstance(
+        value,
+        dict,
+    ):
+        raise ValueError(
+            f"{key} must be an object"
+        )
+
+    return value
+
+
+def optional_object(
+    payload: dict[str, Any],
+    key: str,
+) -> dict[str, Any] | None:
+    value = payload.get(
+        key
+    )
+
+    if value is None:
+        return None
+
+    if not isinstance(
+        value,
+        dict,
+    ):
+        raise ValueError(
+            f"{key} must be an object or null"
+        )
+
+    return value
+
+
 def bounded_int(
     payload: dict[str, Any],
     key: str,
@@ -225,6 +266,21 @@ def dashboard() -> dict[str, Any]:
     from training_preflight_runtime import (
         TrainingPreflight,
     )
+    from model_runtime import (
+        RachelModelRuntime,
+    )
+    from training_run_runtime import (
+        TrainingRunRuntime,
+    )
+    from training_execution_gate import (
+        TrainingExecutionGate,
+    )
+    from samwell_runtime import (
+        SamwellRuntime,
+    )
+    from training_backend_provisioning import (
+        TrainingBackendProvisioning,
+    )
 
     return {
         "runtime": NedCognitiveBridge().status(),
@@ -253,6 +309,26 @@ def dashboard() -> dict[str, Any]:
             .report(
                 limit=50
             )
+        ),
+        "rachel_model": (
+            RachelModelRuntime()
+            .status()
+        ),
+        "training_run": (
+            TrainingRunRuntime()
+            .status()
+        ),
+        "training_execution_gate": (
+            TrainingExecutionGate()
+            .status()
+        ),
+        "samwell": (
+            SamwellRuntime()
+            .status()
+        ),
+        "training_backend_provisioning": (
+            TrainingBackendProvisioning()
+            .status()
         ),
         "health": health_snapshot(),
     }
@@ -1074,6 +1150,281 @@ def execute(
                     1,
                     200,
                 )
+            )
+        )
+
+
+    if action == "samwell_training_backend_status":
+        from training_backend_provisioning import (
+            TrainingBackendProvisioning,
+        )
+
+        return (
+            TrainingBackendProvisioning()
+            .status()
+        )
+
+
+    if action == "samwell_training_backend_plan":
+        from training_backend_provisioning import (
+            TrainingBackendProvisioning,
+        )
+
+        return (
+            TrainingBackendProvisioning()
+            .plan()
+        )
+
+
+    if action == "samwell_status":
+        from samwell_runtime import (
+            SamwellRuntime,
+        )
+
+        return (
+            SamwellRuntime()
+            .status()
+        )
+
+
+    if action == "samwell_audit":
+        from samwell_runtime import (
+            SamwellRuntime,
+        )
+
+        return (
+            SamwellRuntime()
+            .audit()
+        )
+
+
+    if action == "samwell_provision_plan":
+        from samwell_runtime import (
+            SamwellRuntime,
+        )
+
+        mode = (
+            optional_text(
+                payload,
+                "mode",
+                maximum=100,
+            )
+            or "development"
+        )
+
+        return (
+            SamwellRuntime()
+            .provision_plan(
+                mode
+            )
+        )
+
+
+    if action == "model_status":
+        from model_runtime import (
+            RachelModelRuntime,
+        )
+
+        return (
+            RachelModelRuntime()
+            .status()
+        )
+
+
+    if action == "training_run_status":
+        from training_run_runtime import (
+            TrainingRunRuntime,
+        )
+
+        return (
+            TrainingRunRuntime()
+            .status()
+        )
+
+
+    if action == "training_run_preview":
+        from training_run_runtime import (
+            TrainingRunRuntime,
+        )
+
+        profile_id = (
+            optional_text(
+                payload,
+                "profile_id",
+                maximum=200,
+            )
+            or (
+                "qwen3-1.7b-lora-minimum"
+            )
+        )
+
+        return (
+            TrainingRunRuntime()
+            .preview(
+                profile_id
+            )
+        )
+
+
+    if action == "training_dry_run_status":
+        from training_execution_gate import (
+            TrainingExecutionGate,
+        )
+
+        return (
+            TrainingExecutionGate()
+            .status()
+        )
+
+
+    if action == "training_dry_run_review":
+        from training_execution_gate import (
+            TrainingExecutionGate,
+        )
+
+        compiled_dataset = (
+            required_object(
+                payload,
+                "compiled_dataset",
+            )
+        )
+
+        profile_id = (
+            optional_text(
+                payload,
+                "profile_id",
+                maximum=200,
+            )
+            or (
+                "qwen3-1.7b-lora-minimum"
+            )
+        )
+
+        observed_hardware = (
+            optional_object(
+                payload,
+                "observed_hardware",
+            )
+        )
+
+        return (
+            TrainingExecutionGate()
+            .review(
+                compiled_dataset,
+                profile_id=profile_id,
+                observed_hardware=(
+                    observed_hardware
+                ),
+            )
+        )
+
+
+    if action == "training_dry_run_request":
+        from training_execution_gate import (
+            TrainingExecutionGate,
+        )
+
+        compiled_dataset = (
+            required_object(
+                payload,
+                "compiled_dataset",
+            )
+        )
+
+        profile_id = (
+            optional_text(
+                payload,
+                "profile_id",
+                maximum=200,
+            )
+            or (
+                "qwen3-1.7b-lora-minimum"
+            )
+        )
+
+        observed_hardware = (
+            optional_object(
+                payload,
+                "observed_hardware",
+            )
+        )
+
+        return (
+            TrainingExecutionGate()
+            .request_dry_run(
+                compiled_dataset,
+                profile_id=profile_id,
+                observed_hardware=(
+                    observed_hardware
+                ),
+            )
+        )
+
+
+    if action == "training_dry_run_materialize":
+        from training_execution_gate import (
+            TrainingExecutionGate,
+        )
+
+        compiled_dataset = (
+            required_object(
+                payload,
+                "compiled_dataset",
+            )
+        )
+
+        approval_id = required_text(
+            payload,
+            "approval_id",
+            200,
+        )
+
+        profile_id = (
+            optional_text(
+                payload,
+                "profile_id",
+                maximum=200,
+            )
+            or (
+                "qwen3-1.7b-lora-minimum"
+            )
+        )
+
+        observed_hardware = (
+            optional_object(
+                payload,
+                "observed_hardware",
+            )
+        )
+
+        return (
+            TrainingExecutionGate()
+            .materialize_dry_run(
+                compiled_dataset,
+                approval_id,
+                profile_id=profile_id,
+                observed_hardware=(
+                    observed_hardware
+                ),
+            )
+        )
+
+
+    if action == "training_dry_run_verify":
+        from training_execution_gate import (
+            TrainingExecutionGate,
+        )
+
+        run_id = required_text(
+            payload,
+            "run_id",
+            300,
+        )
+
+        return (
+            TrainingExecutionGate()
+            .verify_manifest(
+                run_id
             )
         )
 

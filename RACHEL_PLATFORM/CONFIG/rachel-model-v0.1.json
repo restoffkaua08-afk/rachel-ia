@@ -1,0 +1,136 @@
+{
+  "artifact_policy": {
+    "adapter_is_primary_artifact": true,
+    "adapter_root": "STATE/model-adapters/rachel-model-v0.1",
+    "checkpoint_promotion_automatic": false,
+    "checkpoint_root": "STATE/model-checkpoints/rachel-model-v0.1",
+    "external_export_automatic": false,
+    "merged_weights_created_by_default": false,
+    "run_root": "STATE/training-runs/rachel-model-v0.1"
+  },
+  "base_model": {
+    "architecture": "qwen3",
+    "checkpoint_state": "not-created",
+    "conversion_required": true,
+    "download_requires_explicit_stage": true,
+    "family": "Qwen3",
+    "license": "apache-2.0",
+    "license_state": "verified",
+    "litgpt_support": {
+      "config_probe": "Qwen3-1.7B",
+      "pinned_commit": "7bf2960dfb26bae8e815c9a16a22732974824ac1",
+      "verified": true
+    },
+    "parameter_scale_b": 1.7,
+    "provider": "huggingface",
+    "repository": "Qwen/Qwen3-1.7B-Base",
+    "selected_for": "rachel-model-v0.1",
+    "selection_reason": "Qwen3 dense base de pequeno porte, familia reconhecida pelo LitGPT fixado, licenca Apache-2.0 e alinhamento arquitetural com o runtime temporario Qwen3 da Rachel.",
+    "selection_requires_explicit_validation": true,
+    "selection_state": "selected",
+    "source_weights_state": "not-downloaded",
+    "training_checkpoint": null,
+    "training_checkpoint_format": "litgpt-native",
+    "training_checkpoint_required": true,
+    "variant": "base",
+    "weights_download_allowed": false
+  },
+  "current_inference_runtime": {
+    "is_rachel_model": false,
+    "is_training_base": false,
+    "model": "qwen3:1.7b",
+    "ollama_artifact_trainable_as_litgpt_source": false,
+    "provider": "ollama",
+    "role": "temporary-inference-provider"
+  },
+  "current_machine_audit": {
+    "captured_for_architecture_decision": true,
+    "cpu": "12th Gen Intel(R) Core(TM) i3-1215U",
+    "decision": "training-execution-blocked-on-current-machine",
+    "disk_free_gb_at_audit": 36.56,
+    "full_finetune_recommended": false,
+    "gpu": "Intel(R) UHD Graphics",
+    "local_weight_training_allowed": false,
+    "nvidia_cuda_gpu": false,
+    "ram_free_gb_at_audit": 1.0,
+    "ram_gb": 7.68,
+    "torch_cuda_available": false,
+    "torch_installed": false
+  },
+  "dataset_policy": {
+    "phase_1_trainable_formats": [
+      "sft"
+    ],
+    "required_integrity": true,
+    "required_source_state": "compiled-local",
+    "supported_compiled_formats": [
+      "sft",
+      "preference",
+      "tool-use"
+    ],
+    "training_data_required": true
+  },
+  "execution_policy": {
+    "automatic_checkpoint_creation": false,
+    "automatic_external_export": false,
+    "automatic_model_promotion": false,
+    "automatic_training": false,
+    "automatic_weight_merge": false,
+    "cyber_approval_required_for_checkpoint_promotion": true,
+    "cyber_approval_required_for_training": true,
+    "dany_post_training_evaluation_required": true,
+    "dany_preflight_required": true,
+    "stage12_execution_enabled": false,
+    "training_execution_enabled": false
+  },
+  "execution_requirements": {
+    "base_model_selected": true,
+    "cyber_training_approval_consumed": true,
+    "dany_preflight_passed": true,
+    "hardware_profile_approved": true,
+    "ml_stack_provisioned": true,
+    "training_backend_available": true,
+    "training_data_available": true
+  },
+  "model_id": "rachel-model-v0.1",
+  "model_kind": "specialized-adapter",
+  "ownership": {
+    "artifact_role": "first-specialized-model",
+    "foundation_model_from_scratch": false,
+    "system": "RACHEL"
+  },
+  "safety_invariants": {
+    "dataset_compilation_is_not_training": true,
+    "memory_is_not_training": true,
+    "no_raw_hidden_chain_of_thought_training": true,
+    "ollama_runtime_is_not_rachel_model": true,
+    "private_data_external_export_default": false,
+    "rag_is_not_training": true
+  },
+  "schema_version": 1,
+  "specialization": {
+    "automatic_weight_updates": false,
+    "future_curricula": [
+      "preference",
+      "tool-use"
+    ],
+    "phase_1": {
+      "enabled": false,
+      "name": "sft-lora",
+      "training_format": "sft"
+    },
+    "strategy": "adapter-first"
+  },
+  "status": "base-selected-training-blocked",
+  "training_backend": {
+    "full_finetune_allowed": false,
+    "name": "LitGPT",
+    "organ": "rachel.litgpt",
+    "pinned_commit": "7bf2960dfb26bae8e815c9a16a22732974824ac1",
+    "primary_method": "lora",
+    "supported_fallback_methods": [
+      "adapter",
+      "adapter_v2"
+    ]
+  }
+}

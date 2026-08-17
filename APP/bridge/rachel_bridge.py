@@ -79,7 +79,22 @@ os.environ.setdefault(
 
 os.environ.setdefault(
     "RACHEL_MODEL_PROVIDER",
-    "mock",
+    "openai-compatible",
+)
+
+os.environ.setdefault(
+    "RACHEL_MODEL_NAME",
+    "qwen3:1.7b",
+)
+
+os.environ.setdefault(
+    "RACHEL_MODEL_BASE_URL",
+    "http://127.0.0.1:11434/v1",
+)
+
+os.environ.setdefault(
+    "RACHEL_MODEL_TIMEOUT_SECONDS",
+    "120",
 )
 
 

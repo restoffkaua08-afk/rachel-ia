@@ -146,11 +146,56 @@ class ChatService:
             duration_ms=duration_ms,
         )
 
-    def status(self) -> dict[str, object]:
+    def status(
+        self,
+    ) -> dict[str, object]:
+        try:
+            provider_health = (
+                self.model
+                .health()
+            )
+
+        except Exception as exc:
+            provider_health = {
+                "available": False,
+                "reachable": False,
+                "provider": (
+                    self.model
+                    .provider_name
+                ),
+                "model": (
+                    self.model
+                    .model_name
+                ),
+                "model_available": False,
+                "error_type": (
+                    type(exc).__name__
+                ),
+            }
+
+        available = bool(
+            provider_health.get(
+                "available"
+            )
+        )
+
         return {
-            "status": "ok",
-            "provider": self.model.provider_name,
-            "model": self.model.model_name,
+            "status": (
+                "ok"
+                if available
+                else "degraded"
+            ),
+            "provider": (
+                self.model
+                .provider_name
+            ),
+            "model": (
+                self.model
+                .model_name
+            ),
+            "provider_health": (
+                provider_health
+            ),
             "capabilities": {
                 "chat": True,
                 "persistence": True,

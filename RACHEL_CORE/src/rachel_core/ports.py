@@ -9,10 +9,20 @@ class ModelPort(Protocol):
     provider_name: str
     model_name: str
 
-    def generate(self, messages: Sequence[Message], system_prompt: str | None) -> ModelResponse: ...
+    def health(
+        self,
+    ) -> dict[str, object]: ...
+
+    def generate(
+        self,
+        messages: Sequence[Message],
+        system_prompt: str | None,
+    ) -> ModelResponse: ...
 
     def generate_stream(
-        self, messages: Sequence[Message], system_prompt: str | None
+        self,
+        messages: Sequence[Message],
+        system_prompt: str | None,
     ) -> Iterable[str]: ...
 
 

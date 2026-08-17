@@ -281,6 +281,9 @@ def dashboard() -> dict[str, Any]:
     from training_backend_provisioning import (
         TrainingBackendProvisioning,
     )
+    from evaluation_runtime import (
+        EvaluationRuntime,
+    )
 
     return {
         "runtime": NedCognitiveBridge().status(),
@@ -328,6 +331,10 @@ def dashboard() -> dict[str, Any]:
         ),
         "training_backend_provisioning": (
             TrainingBackendProvisioning()
+            .status()
+        ),
+        "evaluation": (
+            EvaluationRuntime()
             .status()
         ),
         "health": health_snapshot(),
@@ -1151,6 +1158,61 @@ def execute(
                     200,
                 )
             )
+        )
+
+
+    if action == "evaluation_status":
+        from evaluation_runtime import (
+            EvaluationRuntime,
+        )
+
+        return (
+            EvaluationRuntime()
+            .status()
+        )
+
+
+    if action == "evaluation_suites":
+        from evaluation_runtime import (
+            EvaluationRuntime,
+        )
+
+        return {
+            "items": (
+                EvaluationRuntime()
+                .list_suites()
+            ),
+            "execution_enabled": False,
+        }
+
+
+    if action == "evaluation_suite":
+        from evaluation_runtime import (
+            EvaluationRuntime,
+        )
+
+        suite_id = required_text(
+            payload,
+            "suite_id",
+            200,
+        )
+
+        return (
+            EvaluationRuntime()
+            .suite(
+                suite_id
+            )
+        )
+
+
+    if action == "evaluation_promotion_eligibility":
+        from evaluation_runtime import (
+            EvaluationRuntime,
+        )
+
+        return (
+            EvaluationRuntime()
+            .promotion_eligibility()
         )
 
 

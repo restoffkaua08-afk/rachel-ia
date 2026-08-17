@@ -83,6 +83,18 @@ class EvaluationRuntime:
             .resolve()
         )
 
+        self.baseline_path = (
+            evaluation_root
+            / "CONFIG"
+            / "evaluation-baseline.json"
+        ).resolve()
+
+        self.candidate_path = (
+            evaluation_root
+            / "CONFIG"
+            / "evaluation-candidate.json"
+        ).resolve()
+
         self.dany_manifest_path = (
             Path(
                 dany_manifest_path
@@ -109,6 +121,20 @@ class EvaluationRuntime:
             self._load_json(
                 self.registry_path,
                 "Evaluation suite registry",
+            )
+        )
+
+        self.baseline = (
+            self._load_json(
+                self.baseline_path,
+                "Baseline manifest",
+            )
+        )
+
+        self.candidate = (
+            self._load_json(
+                self.candidate_path,
+                "Candidate manifest",
             )
         )
 
@@ -200,6 +226,30 @@ class EvaluationRuntime:
                 "Suite registry owner precisa ser Dany."
             )
 
+        for label, manifest in (
+            ("baseline", self.baseline),
+            ("candidate", self.candidate),
+        ):
+            if (
+                manifest.get(
+                    "schema_version"
+                )
+                != 1
+            ):
+                raise EvaluationRuntimeError(
+                    f"Schema invalido: {label}"
+                )
+
+            if (
+                manifest.get(
+                    "owner"
+                )
+                != "dany"
+            ):
+                raise EvaluationRuntimeError(
+                    f"Owner invalido: {label}"
+                )
+
         if (
             self.dany.get(
                 "id"
@@ -227,6 +277,107 @@ class EvaluationRuntime:
                 raise EvaluationRuntimeError(
                     f"Dany sem orgao requerido: {required}"
                 )
+
+        policy_baseline = (
+            self.policy[
+                "subjects"
+            ][
+                "temporary_runtime"
+            ]
+        )
+
+        policy_candidate = (
+            self.policy[
+                "subjects"
+            ][
+                "rachel_model"
+            ]
+        )
+
+        if (
+            self.baseline[
+                "subject_id"
+            ]
+            != policy_baseline[
+                "id"
+            ]
+        ):
+            raise EvaluationRuntimeError(
+                "Baseline manifest diverge da policy."
+            )
+
+        if (
+            self.baseline[
+                "promotable_as_rachel_model"
+            ]
+            is not False
+        ):
+            raise EvaluationRuntimeError(
+                "Baseline temporario nao pode ser "
+                "promovido como Rachel Model."
+            )
+
+        if (
+            self.candidate[
+                "model_id"
+            ]
+            != policy_candidate[
+                "id"
+            ]
+        ):
+            raise EvaluationRuntimeError(
+                "Candidate manifest diverge da policy."
+            )
+
+        if (
+            self.candidate[
+                "base_repository"
+            ]
+            != policy_candidate[
+                "base_repository"
+            ]
+        ):
+            raise EvaluationRuntimeError(
+                "Candidate base diverge da policy."
+            )
+
+        if (
+            self.candidate[
+                "checkpoint"
+            ][
+                "state"
+            ]
+            != policy_candidate[
+                "checkpoint_state"
+            ]
+        ):
+            raise EvaluationRuntimeError(
+                "Candidate checkpoint diverge."
+            )
+
+        if (
+            self.candidate[
+                "candidate_available"
+            ]
+            != policy_candidate[
+                "candidate_available"
+            ]
+        ):
+            raise EvaluationRuntimeError(
+                "Candidate availability diverge."
+            )
+
+        if (
+            self.candidate[
+                "training"
+            ][
+                "weights_modified"
+            ]
+            is not False
+        ):
+            raise EvaluationRuntimeError(
+                "Candidate weights_modified invalido."
+            )
 
         layers = self.policy.get(
             "evaluation_layers"
@@ -484,25 +635,159 @@ class EvaluationRuntime:
             f"Suite desconhecida: {clean}"
         )
 
+    def baseline_status(
+        self,
+    ) -> dict[str, Any]:
+
+        return {
+            "manifest_id": (
+                self.baseline[
+                    "id"
+                ]
+            ),
+            "subject_id": (
+                self.baseline[
+                    "subject_id"
+                ]
+            ),
+            "id": (
+                self.baseline[
+                    "subject_id"
+                ]
+            ),
+            "provider": (
+                self.baseline[
+                    "provider"
+                ]
+            ),
+            "role": (
+                self.baseline[
+                    "role"
+                ]
+            ),
+            "state": (
+                self.baseline[
+                    "state"
+                ]
+            ),
+            "promotable_as_rachel_model": False,
+            "metrics_available": (
+                self.baseline[
+                    "metrics_available"
+                ]
+            ),
+            "suite_results_available": (
+                self.baseline[
+                    "suite_results_available"
+                ]
+            ),
+            "model_execution_enabled": False,
+        }
+
+    def candidate_status(
+        self,
+    ) -> dict[str, Any]:
+
+        return {
+            # "id" preserva compatibilidade com 13/1B.
+            "id": (
+                self.candidate[
+                    "model_id"
+                ]
+            ),
+
+            # "model_id" e a chave explicita nova.
+            "model_id": (
+                self.candidate[
+                    "model_id"
+                ]
+            ),
+
+            "manifest_id": (
+                self.candidate[
+                    "id"
+                ]
+            ),
+
+            "base_repository": (
+                self.candidate[
+                    "base_repository"
+                ]
+            ),
+
+            "state": (
+                self.candidate[
+                    "state"
+                ]
+            ),
+
+            "checkpoint_state": (
+                self.candidate[
+                    "checkpoint"
+                ][
+                    "state"
+                ]
+            ),
+
+            # "available" preserva compatibilidade 13/1B.
+            "available": (
+                self.candidate[
+                    "candidate_available"
+                ]
+            ),
+
+            "candidate_available": (
+                self.candidate[
+                    "candidate_available"
+                ]
+            ),
+
+            "checkpoint": dict(
+                self.candidate[
+                    "checkpoint"
+                ]
+            ),
+
+            "training": dict(
+                self.candidate[
+                    "training"
+                ]
+            ),
+
+            "evaluation": dict(
+                self.candidate[
+                    "evaluation"
+                ]
+            ),
+
+            "promotion": dict(
+                self.candidate[
+                    "promotion"
+                ]
+            ),
+        }
+
     def promotion_eligibility(
         self,
     ) -> dict[str, Any]:
 
-        candidate = self.policy[
-            "subjects"
-        ][
-            "rachel_model"
-        ]
+        promotion = (
+            self.policy[
+                "promotion_policy"
+            ]
+        )
 
-        promotion = self.policy[
-            "promotion_policy"
-        ]
+        checkpoint = (
+            self.candidate[
+                "checkpoint"
+            ]
+        )
 
         blockers: list[str] = []
 
         if (
-            candidate[
-                "checkpoint_state"
+            checkpoint[
+                "state"
             ]
             != "created"
         ):
@@ -510,11 +795,30 @@ class EvaluationRuntime:
                 "candidate-checkpoint-not-created"
             )
 
-        if not candidate[
+        if not self.candidate[
             "candidate_available"
         ]:
             blockers.append(
                 "candidate-unavailable"
+            )
+
+        if not checkpoint[
+            "verified"
+        ]:
+            blockers.append(
+                "candidate-checkpoint-unverified"
+            )
+
+        if (
+            self.candidate[
+                "evaluation"
+            ][
+                "suite_results_available"
+            ]
+            is not True
+        ):
+            blockers.append(
+                "evaluation-results-unavailable"
             )
 
         if (
@@ -538,8 +842,8 @@ class EvaluationRuntime:
             "eligible": False,
             "state": "blocked",
             "candidate": (
-                candidate[
-                    "id"
+                self.candidate[
+                    "model_id"
                 ]
             ),
             "blockers": sorted(
@@ -556,21 +860,19 @@ class EvaluationRuntime:
         self,
     ) -> dict[str, Any]:
 
-        execution = self.registry[
-            "execution"
-        ]
+        execution = (
+            self.registry[
+                "execution"
+            ]
+        )
 
-        temporary = self.policy[
-            "subjects"
-        ][
-            "temporary_runtime"
-        ]
+        baseline = (
+            self.baseline_status()
+        )
 
-        candidate = self.policy[
-            "subjects"
-        ][
-            "rachel_model"
-        ]
+        candidate = (
+            self.candidate_status()
+        )
 
         return {
             "member": {
@@ -617,35 +919,27 @@ class EvaluationRuntime:
                 ),
             },
 
+            # Alias legado 13/1B.
             "temporary_baseline": {
-                "id": temporary[
-                    "id"
+                "id": baseline[
+                    "subject_id"
                 ],
-                "role": temporary[
+                "role": baseline[
                     "role"
                 ],
                 "promotable_as_rachel_model": (
-                    temporary[
+                    baseline[
                         "promotable_as_rachel_model"
                     ]
                 ),
             },
 
-            "candidate": {
-                "id": candidate[
-                    "id"
-                ],
-                "checkpoint_state": (
-                    candidate[
-                        "checkpoint_state"
-                    ]
-                ),
-                "available": (
-                    candidate[
-                        "candidate_available"
-                    ]
-                ),
-            },
+            # Contrato detalhado novo.
+            "baseline": baseline,
+
+            # Candidate preserva "id"/"available"
+            # e adiciona model_id/manifest/checkpoint.
+            "candidate": candidate,
 
             "suites": (
                 self.list_suites()
@@ -657,6 +951,8 @@ class EvaluationRuntime:
 
             "capabilities": {
                 "read_policy": True,
+                "read_baseline_manifest": True,
+                "read_candidate_manifest": True,
                 "list_suites": True,
                 "describe_suite": True,
                 "inspect_promotion_eligibility": True,

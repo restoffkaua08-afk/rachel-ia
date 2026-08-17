@@ -1,0 +1,29 @@
+{
+  "artifact": {
+    "checkpoint_id": null,
+    "checkpoint_managed_by_rachel": false,
+    "external_weights_managed_by_rachel": false
+  },
+  "evaluation_execution_enabled": false,
+  "id": "qwen3-1.7b-ollama-baseline-v1",
+  "metrics": null,
+  "metrics_available": false,
+  "model_execution_enabled": false,
+  "owner": "dany",
+  "promotable_as_rachel_model": false,
+  "provider": "ollama",
+  "report_id": null,
+  "role": "temporary-baseline",
+  "schema_version": 1,
+  "security": {
+    "automatic_execution": false,
+    "automatic_promotion": false,
+    "automatic_report_write": false,
+    "weights_modified": false
+  },
+  "state": "registered-not-evaluated",
+  "subject_id": "qwen3:1.7b",
+  "subject_type": "temporary-baseline",
+  "suite_results": null,
+  "suite_results_available": false
+}

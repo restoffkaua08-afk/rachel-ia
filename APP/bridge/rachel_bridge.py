@@ -216,6 +216,9 @@ def dashboard() -> dict[str, Any]:
     from learning_engine_runtime import (
         LearningDatasetReviewService,
     )
+    from learning_export_runtime import (
+        LearningDatasetExportService,
+    )
 
     return {
         "runtime": NedCognitiveBridge().status(),
@@ -229,6 +232,10 @@ def dashboard() -> dict[str, Any]:
         ),
         "learning_datasets": (
             LearningDatasetReviewService()
+            .status()
+        ),
+        "learning_exports": (
+            LearningDatasetExportService()
             .status()
         ),
         "health": health_snapshot(),
@@ -654,6 +661,203 @@ def execute(
                 )
             ),
         }
+
+
+    if action == "learning_export_status":
+        from learning_export_runtime import (
+            LearningDatasetExportService,
+        )
+
+        return (
+            LearningDatasetExportService()
+            .status()
+        )
+
+
+    if action == "learning_export_list":
+        from learning_export_runtime import (
+            LearningDatasetExportService,
+        )
+
+        service = (
+            LearningDatasetExportService()
+        )
+
+        return {
+            "items": (
+                service.exporter
+                .list_exports(
+                    bounded_int(
+                        payload,
+                        "limit",
+                        50,
+                        1,
+                        200,
+                    )
+                )
+            ),
+            "automatic_training": False,
+            "external_export": False,
+        }
+
+
+    if action == "learning_export_plan":
+        from learning_export_runtime import (
+            LearningDatasetExportService,
+        )
+        from rachel_core.dataset_export import (
+            DEFAULT_SPLIT_SEED,
+        )
+
+        version_id = required_text(
+            payload,
+            "version_id",
+            300,
+        )
+
+        split_seed = (
+            optional_text(
+                payload,
+                "split_seed",
+                maximum=200,
+            )
+            or DEFAULT_SPLIT_SEED
+        )
+
+        return (
+            LearningDatasetExportService()
+            .plan(
+                version_id,
+                eval_percent=(
+                    bounded_int(
+                        payload,
+                        "eval_percent",
+                        10,
+                        0,
+                        50,
+                    )
+                ),
+                split_seed=(
+                    split_seed
+                ),
+            )
+        )
+
+
+    if action == "learning_export_request":
+        from learning_export_runtime import (
+            LearningDatasetExportService,
+        )
+        from rachel_core.dataset_export import (
+            DEFAULT_SPLIT_SEED,
+        )
+
+        version_id = required_text(
+            payload,
+            "version_id",
+            300,
+        )
+
+        split_seed = (
+            optional_text(
+                payload,
+                "split_seed",
+                maximum=200,
+            )
+            or DEFAULT_SPLIT_SEED
+        )
+
+        return (
+            LearningDatasetExportService()
+            .request_local_export(
+                version_id,
+                eval_percent=(
+                    bounded_int(
+                        payload,
+                        "eval_percent",
+                        10,
+                        0,
+                        50,
+                    )
+                ),
+                split_seed=(
+                    split_seed
+                ),
+            )
+        )
+
+
+    if action == "learning_export_execute":
+        from learning_export_runtime import (
+            LearningDatasetExportService,
+        )
+        from rachel_core.dataset_export import (
+            DEFAULT_SPLIT_SEED,
+        )
+
+        version_id = required_text(
+            payload,
+            "version_id",
+            300,
+        )
+
+        approval_id = required_text(
+            payload,
+            "approval_id",
+            200,
+        )
+
+        split_seed = (
+            optional_text(
+                payload,
+                "split_seed",
+                maximum=200,
+            )
+            or DEFAULT_SPLIT_SEED
+        )
+
+        return (
+            LearningDatasetExportService()
+            .export_local(
+                version_id,
+                approval_id,
+                eval_percent=(
+                    bounded_int(
+                        payload,
+                        "eval_percent",
+                        10,
+                        0,
+                        50,
+                    )
+                ),
+                split_seed=(
+                    split_seed
+                ),
+            )
+        )
+
+
+    if action == "learning_export_verify":
+        from learning_export_runtime import (
+            LearningDatasetExportService,
+        )
+
+        export_id = required_text(
+            payload,
+            "export_id",
+            300,
+        )
+
+        service = (
+            LearningDatasetExportService()
+        )
+
+        return (
+            service.exporter
+            .verify_export(
+                export_id
+            )
+        )
 
 
     if action == "memory_status":

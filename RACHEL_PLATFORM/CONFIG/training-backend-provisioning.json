@@ -1,0 +1,201 @@
+{
+  "checkpoint": {
+    "automatic_conversion": false,
+    "conversion_required": true,
+    "conversion_requires_cyber": true,
+    "format": "litgpt-native",
+    "required_files": [
+      "model_config.yaml",
+      "lit_model.pth"
+    ],
+    "root_relative": "STATE/model-training/rachel-model-v0.1/base/litgpt",
+    "source_format": "huggingface",
+    "state": "not-created"
+  },
+  "environment": {
+    "creation_state": "not-created",
+    "id": "training",
+    "isolated_from": [
+      "development",
+      "packaging",
+      "portable",
+      "inference"
+    ],
+    "provisioning_state": "not-provisioned",
+    "python_relative": "AMBIENTES/training/Scripts/python.exe",
+    "root_relative": "AMBIENTES/training",
+    "use_packaging_python": false,
+    "use_packaging_torch": false
+  },
+  "execution": {
+    "checkpoint_created": false,
+    "command_generation_enabled": false,
+    "contract_only": true,
+    "provisioning_execution_enabled": false,
+    "training_execution_enabled": false,
+    "weights_modified": false
+  },
+  "hardware_policy": {
+    "current_machine_weight_training": "blocked",
+    "exact_cuda_required_before_version_lock": true,
+    "exact_gpu_required_before_provisioning": true,
+    "future_training_host_required": true,
+    "nvidia_cuda_required": true
+  },
+  "id": "rachel-model-v0.1-training-backend",
+  "litgpt": {
+    "commit": "7bf2960dfb26bae8e815c9a16a22732974824ac1",
+    "core_constraints": [
+      "huggingface-hub>=0.30,<1.4",
+      "jsonargparse[signatures]>=4.37,<=4.41; python_version>='3.10'",
+      "lightning>=2.6.1",
+      "psutil==7.2.2",
+      "safetensors>=0.4.3",
+      "tokenizers>=0.21",
+      "torch>=2.7",
+      "tqdm>4.66"
+    ],
+    "optional_constraints": [
+      "bitsandbytes>=0.45.2,<0.50",
+      "datasets>=2.18,<4",
+      "transformers>=4.51.3,<4.57",
+      "tensorboard>=2.14",
+      "torchmetrics>=1.3.1"
+    ],
+    "portable_runtime_source_required": false,
+    "repository": "Lightning-AI/litgpt",
+    "requires_python": ">=3.10",
+    "source_required": true,
+    "version": "0.5.13"
+  },
+  "model": {
+    "base_family": "Qwen3",
+    "base_parameters_b": 1.7,
+    "base_repository": "Qwen/Qwen3-1.7B-Base",
+    "base_variant": "base",
+    "license": "apache-2.0",
+    "model_id": "rachel-model-v0.1"
+  },
+  "outputs": {
+    "adapters_root_relative": "STATE/model-training/rachel-model-v0.1/adapters",
+    "external_upload": false,
+    "manifests_root_relative": "STATE/model-training/rachel-model-v0.1/manifests",
+    "runs_root_relative": "STATE/model-training/rachel-model-v0.1/runs"
+  },
+  "owner": "samwell",
+  "provisioning_phases": [
+    {
+      "effect": "inspect",
+      "id": "select-host",
+      "mutation": false,
+      "requires_cyber": false
+    },
+    {
+      "effect": "inspect",
+      "id": "validate-hardware",
+      "mutation": false,
+      "requires_cyber": false
+    },
+    {
+      "effect": "create",
+      "id": "create-training-environment",
+      "mutation": true,
+      "requires_cyber": true
+    },
+    {
+      "effect": "install",
+      "id": "install-training-dependencies",
+      "mutation": true,
+      "requires_cyber": true
+    },
+    {
+      "effect": "write",
+      "id": "lock-resolved-versions",
+      "mutation": true,
+      "requires_cyber": true
+    },
+    {
+      "effect": "external",
+      "id": "download-base-weights",
+      "mutation": true,
+      "requires_cyber": true
+    },
+    {
+      "effect": "execute",
+      "id": "convert-hf-to-litgpt",
+      "mutation": true,
+      "requires_cyber": true
+    },
+    {
+      "effect": "inspect",
+      "id": "verify-checkpoint",
+      "mutation": false,
+      "requires_cyber": false
+    },
+    {
+      "effect": "inspect",
+      "id": "validate-training-data",
+      "mutation": false,
+      "requires_cyber": false
+    },
+    {
+      "effect": "inspect",
+      "id": "dany-preflight",
+      "mutation": false,
+      "requires_cyber": false
+    },
+    {
+      "effect": "execute",
+      "id": "training-execution-gate",
+      "mutation": true,
+      "requires_cyber": true
+    }
+  ],
+  "schema_version": 1,
+  "security": {
+    "automatic_conversion": false,
+    "automatic_download": false,
+    "automatic_environment_create": false,
+    "automatic_install": false,
+    "automatic_training": false,
+    "cyber_required_for_conversion": true,
+    "cyber_required_for_download": true,
+    "cyber_required_for_environment_create": true,
+    "cyber_required_for_install": true,
+    "cyber_required_for_training": true,
+    "dany_preflight_required": true,
+    "training_execution_enabled": false
+  },
+  "source_weights": {
+    "automatic_download": false,
+    "download_requires_cyber": true,
+    "provider": "huggingface",
+    "repository": "Qwen/Qwen3-1.7B-Base",
+    "root_relative": "STATE/model-training/rachel-model-v0.1/base/huggingface",
+    "source_format": "huggingface",
+    "state": "not-downloaded"
+  },
+  "state": "contract-defined-unprovisioned",
+  "target_host": {
+    "bitsandbytes_version": null,
+    "cuda_version": null,
+    "driver_version": null,
+    "exact_versions_locked": false,
+    "execution_location": "future-gpu-host",
+    "gpu_model": null,
+    "gpu_vendor_policy": "nvidia",
+    "lightning_version": null,
+    "lockfile_state": "not-created",
+    "os": null,
+    "python_version": null,
+    "resolution_policy": "resolve exact compatible versions only after target GPU host inventory",
+    "selection_state": "unselected",
+    "torch_version": null
+  },
+  "training_strategy": {
+    "method": "lora",
+    "phase": "sft",
+    "planner_version": "rachel-training-run-planner-v1",
+    "training_format": "sft"
+  }
+}

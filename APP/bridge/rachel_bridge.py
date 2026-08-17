@@ -278,6 +278,9 @@ def dashboard() -> dict[str, Any]:
     from samwell_runtime import (
         SamwellRuntime,
     )
+    from training_backend_provisioning import (
+        TrainingBackendProvisioning,
+    )
 
     return {
         "runtime": NedCognitiveBridge().status(),
@@ -321,6 +324,10 @@ def dashboard() -> dict[str, Any]:
         ),
         "samwell": (
             SamwellRuntime()
+            .status()
+        ),
+        "training_backend_provisioning": (
+            TrainingBackendProvisioning()
             .status()
         ),
         "health": health_snapshot(),
@@ -1144,6 +1151,28 @@ def execute(
                     200,
                 )
             )
+        )
+
+
+    if action == "samwell_training_backend_status":
+        from training_backend_provisioning import (
+            TrainingBackendProvisioning,
+        )
+
+        return (
+            TrainingBackendProvisioning()
+            .status()
+        )
+
+
+    if action == "samwell_training_backend_plan":
+        from training_backend_provisioning import (
+            TrainingBackendProvisioning,
+        )
+
+        return (
+            TrainingBackendProvisioning()
+            .plan()
         )
 
 

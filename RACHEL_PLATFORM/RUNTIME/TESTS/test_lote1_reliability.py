@@ -1,6 +1,12 @@
 from __future__ import annotations
 
+import sys
 import unittest
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[3]
+sys.path.insert(0, str(ROOT / "RACHEL_CORE" / "src"))
+sys.path.insert(0, str(ROOT / "RACHEL_PLATFORM" / "RUNTIME" / "SRC"))
 
 from cognitive_runtime import NedCognitiveBridge, NedToolPlanner, ToolPlan
 

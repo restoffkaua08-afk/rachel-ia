@@ -1,0 +1,85 @@
+{
+  "architecture_closure_gate": {
+    "architecture_closed": false,
+    "closure_blockers": 0,
+    "eligible_for_closure": true,
+    "pass": true
+  },
+  "host_reconciliation": {
+    "ffmpeg_absence_does_not_change_current_matrix": true,
+    "ffmpeg_available": false,
+    "npm_available": true,
+    "npm_version": "11.12.1",
+    "nvidia_runtime_available": false,
+    "packaging_pip_absence_is_not_broken_requirements": true,
+    "packaging_pip_module_present": false,
+    "pyinstaller_available": true,
+    "stage_1c_npm_false_negative_resolved": true,
+    "training_runtime_expected_state": "unavailable"
+  },
+  "id": "rachel-stage-15-system-readiness-gate",
+  "next": {
+    "goal": "Produce the final architecture closure for all fifteen stages without claiming production readiness or enabling blocked capabilities.",
+    "step": "15/1E"
+  },
+  "portable_runtime": {
+    "sha256": "7CA02072E67E60871A2D6ED06BBEAEFE4637875B44A216362D44CFE97C6F7AA9",
+    "size_mb": 405.47,
+    "source_commit": "4964412ccde5b4cb1f9db2b60aad03088bcd4314",
+    "validated": true
+  },
+  "production_readiness": {
+    "claim_production_ready": false,
+    "non_ready_domains": 8,
+    "production_blockers": 8,
+    "ready": false
+  },
+  "readiness_matrix": {
+    "blocked": 3,
+    "deferred": 1,
+    "domain_count": 20,
+    "not_applicable": 0,
+    "ready": 12,
+    "reserved": 3,
+    "unavailable": 1
+  },
+  "regression": {
+    "all_passed": true,
+    "all_pre_gate_passed": true,
+    "cargo_check_locked_offline": true,
+    "final_stage15_passed": true,
+    "frontend_build": true,
+    "rachel_core_tests": 59,
+    "runtime_tests": 248,
+    "stage13_closure_tests": 11,
+    "stage14_closure_tests": 12,
+    "stage15_final_tests": 67,
+    "stage15_final_tests_expected": 67,
+    "stage15_pre_gate_tests": 54
+  },
+  "repository_integrity": {
+    "absolute_machine_paths": 0,
+    "registry_junctions": 23,
+    "registry_organs": 23,
+    "registry_sources": 23,
+    "runtime_consumers_compatible": true,
+    "stage_1c_recommendation_resolved": true,
+    "state": "ready"
+  },
+  "safety": {
+    "agent_execution": false,
+    "background_execution": false,
+    "browser_execution": false,
+    "goal_execution": false,
+    "model_promotion": false,
+    "task_execution": false,
+    "tool_execution": false,
+    "training_execution": false,
+    "unattended_execution": false,
+    "weights_modified": false
+  },
+  "schema_version": 1,
+  "stage": 15,
+  "state": "pass-for-architecture-closure",
+  "step": "15/1D-C"
+}

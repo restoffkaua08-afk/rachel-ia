@@ -1,0 +1,35 @@
+{
+  "bundle_validation": {
+    "agent_desktop_bridge": true,
+    "agent_runtime_policy": true,
+    "autonomy_budget_policy": true,
+    "available": 6,
+    "execution_envelope_policy": true,
+    "organs_registry": true,
+    "required": 6,
+    "stage15_policy": true
+  },
+  "historical_sha_reused": false,
+  "historical_stage14_sha256": "D386A244E70C75F2486BCD0FC8406249431677BA870084E1073B4223FC5A655D",
+  "id": "rachel-stage-15-final-portable-runtime",
+  "offline_build": true,
+  "portable_validation": {
+    "agent_read_actions": 7,
+    "dashboard_validated": true,
+    "execution_enabled": false,
+    "forbidden_actions_accepted": 0,
+    "forbidden_actions_tested": 9,
+    "portable_mode": true,
+    "registry_available": 23,
+    "registry_failed": 0,
+    "registry_total": 23,
+    "state_mutations": 0
+  },
+  "schema_version": 1,
+  "sha256": "7CA02072E67E60871A2D6ED06BBEAEFE4637875B44A216362D44CFE97C6F7AA9",
+  "size_mb": 405.47,
+  "source_commit": "4964412ccde5b4cb1f9db2b60aad03088bcd4314",
+  "stage": 15,
+  "state": "validated",
+  "step": "15/1D-C"
+}

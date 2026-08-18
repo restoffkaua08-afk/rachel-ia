@@ -1,0 +1,190 @@
+{
+  "architecture_closed": false,
+  "domain_count": 20,
+  "domains": [
+    {
+      "evidence_count": 3,
+      "id": "repository-integrity",
+      "operational_at_current_scope": true,
+      "reason": "Stage 15 started from the validated Stage 14 merge and the working tree was clean before inventory generation.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    },
+    {
+      "evidence_count": 2,
+      "id": "core-runtime",
+      "operational_at_current_scope": true,
+      "reason": "Core source and test surfaces are present.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    },
+    {
+      "evidence_count": 4,
+      "id": "desktop-runtime",
+      "operational_at_current_scope": true,
+      "reason": "Desktop bridge, Tauri packaging contract and validated Portable Runtime are present.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    },
+    {
+      "evidence_count": 3,
+      "id": "security-authorization",
+      "operational_at_current_scope": true,
+      "reason": "Cyber/security runtime, approval tests and the approval contract are present.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    },
+    {
+      "evidence_count": 3,
+      "id": "memory",
+      "operational_at_current_scope": false,
+      "reason": "Dedicated memory capability is not evidenced by both runtime source and tests; reserved structure is preserved.",
+      "required_for_architecture_closure": false,
+      "state": "reserved"
+    },
+    {
+      "evidence_count": 3,
+      "id": "knowledge",
+      "operational_at_current_scope": true,
+      "reason": "Knowledge/document retrieval runtime and tests are present.",
+      "required_for_architecture_closure": false,
+      "state": "ready"
+    },
+    {
+      "evidence_count": 3,
+      "id": "voice",
+      "operational_at_current_scope": true,
+      "reason": "Voice runtime and tests were detected.",
+      "required_for_architecture_closure": false,
+      "state": "ready"
+    },
+    {
+      "evidence_count": 3,
+      "id": "model",
+      "operational_at_current_scope": false,
+      "reason": "Rachel Model v0.1 contract exists, but the target checkpoint has not been created and no model promotion has occurred.",
+      "required_for_architecture_closure": false,
+      "state": "blocked"
+    },
+    {
+      "evidence_count": 2,
+      "id": "learning",
+      "operational_at_current_scope": false,
+      "reason": "Learning Engine runtime exists, but actual weight training remains intentionally deferred.",
+      "required_for_architecture_closure": false,
+      "state": "deferred"
+    },
+    {
+      "evidence_count": 3,
+      "id": "evaluation-promotion",
+      "operational_at_current_scope": false,
+      "reason": "Evaluation runtime exists, but Stage 13 closed without a candidate checkpoint, calibrated thresholds or a promotion decision.",
+      "required_for_architecture_closure": false,
+      "state": "blocked"
+    },
+    {
+      "evidence_count": 3,
+      "id": "agent-runtime",
+      "operational_at_current_scope": false,
+      "reason": "Read-only Agent Runtime is validated, but the Agent execution phase remains intentionally blocked.",
+      "required_for_architecture_closure": false,
+      "state": "blocked"
+    },
+    {
+      "evidence_count": 2,
+      "id": "browser",
+      "operational_at_current_scope": false,
+      "reason": "Browser namespace is reserved, but Agent/browser integration and browser execution remain disabled.",
+      "required_for_architecture_closure": false,
+      "state": "reserved"
+    },
+    {
+      "evidence_count": 3,
+      "id": "tools",
+      "operational_at_current_scope": true,
+      "reason": "Arya/tools runtime and tests are present.",
+      "required_for_architecture_closure": false,
+      "state": "ready"
+    },
+    {
+      "evidence_count": 3,
+      "id": "privacy",
+      "operational_at_current_scope": false,
+      "reason": "Dedicated privacy namespace is reserved; runtime plus test evidence is incomplete.",
+      "required_for_architecture_closure": false,
+      "state": "reserved"
+    },
+    {
+      "evidence_count": 3,
+      "id": "permissions",
+      "operational_at_current_scope": true,
+      "reason": "Permission enforcement is evidenced through Cyber/security approval infrastructure.",
+      "required_for_architecture_closure": false,
+      "state": "ready"
+    },
+    {
+      "evidence_count": 2,
+      "id": "training-runtime",
+      "operational_at_current_scope": false,
+      "reason": "Training Runtime is not provisioned on this host and a usable NVIDIA runtime was not established.",
+      "required_for_architecture_closure": false,
+      "state": "unavailable"
+    },
+    {
+      "evidence_count": 2,
+      "id": "portable-packaging",
+      "operational_at_current_scope": true,
+      "reason": "Portable Runtime matches the final validated Stage 14 SHA.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    },
+    {
+      "evidence_count": 2,
+      "id": "external-dependencies",
+      "operational_at_current_scope": true,
+      "reason": "All declared Git submodules are initialized at their recorded commits.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    },
+    {
+      "evidence_count": 1,
+      "id": "documentation",
+      "operational_at_current_scope": true,
+      "reason": "Required architecture and stage documentation is present.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    },
+    {
+      "evidence_count": 2,
+      "id": "regression-safety",
+      "operational_at_current_scope": true,
+      "reason": "The last frozen Stage 14 regression report records all suites passing; Stage 15 contract and Stage 14 closure were revalidated before this inventory command proceeded.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    }
+  ],
+  "id": "rachel-stage-15-readiness-matrix",
+  "production_ready": false,
+  "schema_version": 1,
+  "stage": 15,
+  "stage_progress": {
+    "architecture_closed": false,
+    "blockers_registered": true,
+    "full_regression_completed": false,
+    "inventory_completed": true,
+    "matrix_completed": true,
+    "stage15_portable_validation_completed": false,
+    "stage_ready": false
+  },
+  "step": "15/1B",
+  "summary": {
+    "blocked": 3,
+    "deferred": 1,
+    "non_ready_total": 8,
+    "not_applicable": 0,
+    "ready": 12,
+    "reserved": 3,
+    "unavailable": 1
+  },
+  "system_state": "architecture-baseline-partially-ready"
+}

@@ -158,7 +158,11 @@ class ToolCoordinator:
             or spec.name.startswith("project.")
             or spec.name == "process.start"
         )
-        scope_free = {"filesystem.status"}
+        scope_free = {
+            "filesystem.status",
+            "filesystem.scope.grant",
+            "filesystem.scope.revoke",
+        }
         if scoped_family and spec.name not in scope_free:
             scope = str(arguments.get("scope", "workspace")).strip().casefold()
             self.filesystem.root(scope)
@@ -260,6 +264,14 @@ class ToolCoordinator:
 
         if name == "filesystem.status":
             return self.filesystem.describe()
+        if name == "filesystem.scope.grant":
+            return self.filesystem.grant_scope(
+                _require_text(args, "name", 64),
+                _require_text(args, "root", 2_000),
+                authorized,
+            )
+        if name == "filesystem.scope.revoke":
+            return self.filesystem.revoke_scope(_require_text(args, "name", 64), authorized)
         if name == "filesystem.list":
             return self.filesystem.list(scope(), path())
         if name == "filesystem.stat":

@@ -1,0 +1,48 @@
+{
+  "all_consumers_compatible": true,
+  "consumer_count": 4,
+  "consumers": [
+    {
+      "compatible": true,
+      "loads_registry": true,
+      "path": "RACHEL_PLATFORM/RUNTIME/SRC/member_control.py",
+      "path_field_access_count": 0,
+      "path_field_accesses": []
+    },
+    {
+      "compatible": true,
+      "loads_registry": true,
+      "path": "RACHEL_PLATFORM/RUNTIME/SRC/supervisor.py",
+      "path_field_access_count": 0,
+      "path_field_accesses": []
+    },
+    {
+      "compatible": true,
+      "loads_registry": true,
+      "path": "RACHEL_PLATFORM/RUNTIME/SRC/team_runtime.py",
+      "path_field_access_count": 0,
+      "path_field_accesses": []
+    },
+    {
+      "compatible": true,
+      "loads_registry": true,
+      "path": "RACHEL_PLATFORM/RUNTIME/SRC/training_preflight_runtime.py",
+      "path_field_access_count": 0,
+      "path_field_accesses": []
+    }
+  ],
+  "id": "rachel-stage-15-registry-consumer-compatibility",
+  "method": "AST field-access audit plus direct runtime consumer probes",
+  "path_field_access_count": 0,
+  "portable_path_fields": [
+    "ambiente",
+    "conexao",
+    "fonte",
+    "raiz"
+  ],
+  "runtime_changes_required": false,
+  "schema_version": 1,
+  "stage": 15,
+  "step": "15/1D-B2-R2",
+  "unsafe_consumers": []
+}

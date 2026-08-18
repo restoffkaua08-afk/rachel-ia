@@ -1,0 +1,152 @@
+{
+  "architecture": {
+    "capability_activation_complete": false,
+    "closed": true,
+    "closure_blockers": 0,
+    "closure_gate_passed": true,
+    "stages_closed": 15,
+    "stages_total": 15,
+    "technical_foundation_closed": true
+  },
+  "closure_scope": {
+    "agent_config_changed": false,
+    "browser_changed": false,
+    "closure_artifacts_bundled_in_frozen": false,
+    "evidence_only": true,
+    "frozen_payload_changed_after_validation": false,
+    "model_changed": false,
+    "platform_config_changed": false,
+    "runtime_source_changed": false
+  },
+  "execution_safety": {
+    "agent_execution": false,
+    "background_execution": false,
+    "browser_execution": false,
+    "goal_execution": false,
+    "model_promotion": false,
+    "task_execution": false,
+    "tool_execution": false,
+    "training_execution": false,
+    "unattended_execution": false,
+    "weights_modified": false
+  },
+  "id": "rachel-stage-15-architecture-closure",
+  "interpretation": {
+    "architecture_closed_does_not_mean": [
+      "production ready",
+      "all capabilities activated",
+      "agent execution enabled",
+      "browser execution enabled",
+      "training runtime available",
+      "model checkpoint created",
+      "model promoted",
+      "private memory exported"
+    ],
+    "architecture_closed_means": "The fifteen-stage architecture and its current safety/readiness contracts are technically closed with explicit unresolved capability states."
+  },
+  "next_lifecycle": {
+    "architecture_program_complete": true,
+    "automatic_stage_16": false,
+    "future_work_requires_new_explicit_scope": true,
+    "stage": null
+  },
+  "portable_runtime": {
+    "agent": {
+      "execution_enabled": false,
+      "forbidden_actions_accepted": 0,
+      "forbidden_actions_tested": 9,
+      "read_actions": 7,
+      "state_mutations": 0
+    },
+    "evidence_commit": "3840f9750d388c805ea761015069b8a5cbeab294",
+    "portable_mode": true,
+    "registry": {
+      "available": 23,
+      "failed": 0,
+      "total": 23
+    },
+    "sha256": "7CA02072E67E60871A2D6ED06BBEAEFE4637875B44A216362D44CFE97C6F7AA9",
+    "size_mb": 405.47,
+    "source_commit": "4964412ccde5b4cb1f9db2b60aad03088bcd4314",
+    "validated": true
+  },
+  "production": {
+    "blocker_count": 8,
+    "claim_production_ready": false,
+    "non_ready_domain_count": 8,
+    "ready": false
+  },
+  "readiness": {
+    "blocked": 3,
+    "deferred": 1,
+    "domain_count": 20,
+    "non_ready": [
+      {
+        "evidence": null,
+        "id": "memory",
+        "reason": "Dedicated memory capability is not evidenced by both runtime source and tests; reserved structure is preserved.",
+        "state": "reserved"
+      },
+      {
+        "evidence": null,
+        "id": "model",
+        "reason": "Rachel Model v0.1 contract exists, but the target checkpoint has not been created and no model promotion has occurred.",
+        "state": "blocked"
+      },
+      {
+        "evidence": null,
+        "id": "learning",
+        "reason": "Learning Engine runtime exists, but actual weight training remains intentionally deferred.",
+        "state": "deferred"
+      },
+      {
+        "evidence": null,
+        "id": "evaluation-promotion",
+        "reason": "Evaluation runtime exists, but Stage 13 closed without a candidate checkpoint, calibrated thresholds or a promotion decision.",
+        "state": "blocked"
+      },
+      {
+        "evidence": null,
+        "id": "agent-runtime",
+        "reason": "Read-only Agent Runtime is validated, but the Agent execution phase remains intentionally blocked.",
+        "state": "blocked"
+      },
+      {
+        "evidence": null,
+        "id": "browser",
+        "reason": "Browser namespace is reserved, but Agent/browser integration and browser execution remain disabled.",
+        "state": "reserved"
+      },
+      {
+        "evidence": null,
+        "id": "privacy",
+        "reason": "Dedicated privacy namespace is reserved; runtime plus test evidence is incomplete.",
+        "state": "reserved"
+      },
+      {
+        "evidence": null,
+        "id": "training-runtime",
+        "reason": "Training Runtime is not provisioned on this host and a usable NVIDIA runtime was not established.",
+        "state": "unavailable"
+      }
+    ],
+    "not_applicable": 0,
+    "ready": 12,
+    "reserved": 3,
+    "unavailable": 1
+  },
+  "regression": {
+    "all_passed": true,
+    "cargo_locked_offline": true,
+    "frontend_build": true,
+    "rachel_core_tests": 59,
+    "runtime_tests": 248,
+    "stage13_closure_tests": 11,
+    "stage14_closure_tests": 12,
+    "stage15_tests": 67
+  },
+  "schema_version": 1,
+  "stage": 15,
+  "state": "architecture-closed-production-not-ready",
+  "total_stages": 15
+}

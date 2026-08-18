@@ -1,0 +1,21 @@
+{
+  "all_passed": true,
+  "all_pre_gate_passed": true,
+  "cargo_check_locked_offline": true,
+  "final_stage15_passed": true,
+  "frontend_build": true,
+  "id": "rachel-stage-15-final-regression",
+  "portable_runtime_validated": true,
+  "rachel_core_tests": 59,
+  "runtime_tests": 248,
+  "schema_version": 1,
+  "source_commit": "4964412ccde5b4cb1f9db2b60aad03088bcd4314",
+  "stage": 15,
+  "stage13_closure_tests": 11,
+  "stage14_closure_tests": 12,
+  "stage15_final_tests": 67,
+  "stage15_final_tests_expected": 67,
+  "stage15_gate_tests_expected": 13,
+  "stage15_pre_gate_tests": 54,
+  "step": "15/1D-C"
+}

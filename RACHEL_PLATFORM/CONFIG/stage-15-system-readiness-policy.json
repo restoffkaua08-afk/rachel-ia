@@ -1,0 +1,196 @@
+{
+  "audit_domains": [
+    {
+      "id": "repository-integrity",
+      "required": true
+    },
+    {
+      "id": "core-runtime",
+      "required": true
+    },
+    {
+      "id": "desktop-runtime",
+      "required": true
+    },
+    {
+      "id": "security-authorization",
+      "required": true
+    },
+    {
+      "id": "memory",
+      "required": true
+    },
+    {
+      "id": "knowledge",
+      "required": true
+    },
+    {
+      "id": "voice",
+      "required": true
+    },
+    {
+      "id": "model",
+      "required": true
+    },
+    {
+      "id": "learning",
+      "required": true
+    },
+    {
+      "id": "evaluation-promotion",
+      "required": true
+    },
+    {
+      "id": "agent-runtime",
+      "required": true
+    },
+    {
+      "id": "browser",
+      "required": true
+    },
+    {
+      "id": "tools",
+      "required": true
+    },
+    {
+      "id": "privacy",
+      "required": true
+    },
+    {
+      "id": "permissions",
+      "required": true
+    },
+    {
+      "id": "training-runtime",
+      "required": true
+    },
+    {
+      "id": "portable-packaging",
+      "required": true
+    },
+    {
+      "id": "external-dependencies",
+      "required": true
+    },
+    {
+      "id": "documentation",
+      "required": true
+    },
+    {
+      "id": "regression-safety",
+      "required": true
+    }
+  ],
+  "classification": {
+    "allowed_states": [
+      "ready",
+      "blocked",
+      "reserved",
+      "deferred",
+      "unavailable",
+      "not-applicable"
+    ],
+    "blocked_requires_reason": true,
+    "ready_requires_evidence": true,
+    "reserved_requires_future_scope": true,
+    "unknown_defaults_to_ready": false
+  },
+  "closure_gate": {
+    "agent_execution_required": false,
+    "all_capabilities_ready_required": false,
+    "blocker_register_required": true,
+    "browser_execution_required": false,
+    "main_sync_required": true,
+    "model_checkpoint_required": false,
+    "portable_validation_required": true,
+    "readiness_matrix_required": true,
+    "regression_required": true,
+    "repository_clean_required": true,
+    "system_inventory_required": true,
+    "training_required": false,
+    "zero_blockers_required": false
+  },
+  "id": "rachel-stage-15-system-readiness-policy-v1",
+  "initial_readiness": {
+    "architecture_closed": false,
+    "audit_completed": false,
+    "blockers_registered": false,
+    "inventory_completed": false,
+    "matrix_completed": false,
+    "portable_validated": false,
+    "regression_completed": false,
+    "stage_ready": false
+  },
+  "known_constraints": {
+    "agent_execution_enabled": false,
+    "agent_goal_execution_enabled": false,
+    "agent_task_execution_enabled": false,
+    "agent_tool_execution_enabled": false,
+    "background_agent_execution_enabled": false,
+    "browser_agent_integration_enabled": false,
+    "evaluation_promotion_decided": false,
+    "rachel_model_checkpoint_created": false,
+    "self_modification_enabled": false,
+    "training_execution_enabled": false,
+    "training_runtime_provisioned": false,
+    "unattended_agent_execution_enabled": false,
+    "weights_modified": false
+  },
+  "next": {
+    "goal": "Build an evidence-backed inventory of the entire Rachel repository and classify each architectural domain without changing runtime behavior.",
+    "step": "15/1B"
+  },
+  "owner": "rachel",
+  "planned_outputs": [
+    "system inventory",
+    "readiness matrix",
+    "blocker register",
+    "dependency integrity report",
+    "regression report",
+    "portable runtime proof",
+    "architecture closure report",
+    "final project status"
+  ],
+  "principles": {
+    "architecture_closure_is_not_capability_activation": true,
+    "blocked_is_valid_state": true,
+    "deferred_is_valid_state": true,
+    "evidence_required": true,
+    "no_false_ready": true,
+    "reserved_is_valid_state": true,
+    "technical_closure_is_not_production_readiness": true,
+    "truthful_readiness": true,
+    "unknown_must_not_be_inferred_ready": true
+  },
+  "purpose": "Close the fifteen-stage architecture cycle by producing a truthful system maturity baseline. The stage must classify what is ready, blocked, reserved, unavailable or deferred without enabling new operational capabilities.",
+  "schema_version": 1,
+  "stage": 15,
+  "stage_14_baseline": {
+    "agent_execution_actions": 0,
+    "agent_execution_phase": "blocked",
+    "agent_read_actions": 7,
+    "agent_readiness_ready_phases": 4,
+    "agent_readiness_total_phases": 5,
+    "merge_commit": "57b52f8cd9061ff43c2f44411d55234cff6fa057",
+    "portable_sha256": "D386A244E70C75F2486BCD0FC8406249431677BA870084E1073B4223FC5A655D"
+  },
+  "stage_15_rules": {
+    "may_claim_all_modules_ready": false,
+    "may_claim_production_ready_without_evidence": false,
+    "may_create_global_approval": false,
+    "may_delete_historical_branches": false,
+    "may_delete_stashes": false,
+    "may_download_model_weights": false,
+    "may_enable_agent_execution": false,
+    "may_enable_browser_execution": false,
+    "may_expand_permissions": false,
+    "may_modify_model_weights": false,
+    "may_promote_model": false,
+    "may_provision_training_runtime": false,
+    "may_remove_cyber_authority": false,
+    "may_train_model": false
+  },
+  "stage_count": 15,
+  "state": "contract-defined-audit-pending",
+  "title": "System Readiness & Architecture Closure"
+}

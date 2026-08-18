@@ -1,0 +1,622 @@
+{
+  "domains": [
+    {
+      "evidence": [
+        {
+          "branch": "agent/etapa-15-system-readiness-architecture-closure",
+          "head": "3cd40abbc573e847c5a99a7c23a920869312c5a0",
+          "kind": "git",
+          "stage14_merge": "57b52f8cd9061ff43c2f44411d55234cff6fa057",
+          "working_tree_clean": true
+        },
+        {
+          "exists": true,
+          "kind": "repository-config",
+          "path": ".gitmodules"
+        },
+        {
+          "exists": true,
+          "kind": "repository-config",
+          "path": ".gitignore"
+        }
+      ],
+      "id": "repository-integrity",
+      "notes": [],
+      "operational_at_current_scope": true,
+      "reason": "Stage 15 started from the validated Stage 14 merge and the working tree was clean before inventory generation.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    },
+    {
+      "evidence": [
+        {
+          "count": 28,
+          "kind": "source-set",
+          "sample": [
+            "RACHEL_CORE/src/rachel_core/__init__.py",
+            "RACHEL_CORE/src/rachel_core/__main__.py",
+            "RACHEL_CORE/src/rachel_core/adapters/__init__.py",
+            "RACHEL_CORE/src/rachel_core/adapters/audit_jsonl.py",
+            "RACHEL_CORE/src/rachel_core/adapters/knowledge_null.py",
+            "RACHEL_CORE/src/rachel_core/adapters/learning_sqlite.py",
+            "RACHEL_CORE/src/rachel_core/adapters/memory_sqlite.py",
+            "RACHEL_CORE/src/rachel_core/adapters/model_mock.py",
+            "RACHEL_CORE/src/rachel_core/adapters/model_openai_compatible.py",
+            "RACHEL_CORE/src/rachel_core/adapters/policy.py"
+          ]
+        },
+        {
+          "count": 11,
+          "kind": "test-set",
+          "sample": [
+            "RACHEL_CORE/tests/test_api.py",
+            "RACHEL_CORE/tests/test_core.py",
+            "RACHEL_CORE/tests/test_dataset_export.py",
+            "RACHEL_CORE/tests/test_dataset_factory.py",
+            "RACHEL_CORE/tests/test_learning.py",
+            "RACHEL_CORE/tests/test_learning_curator.py",
+            "RACHEL_CORE/tests/test_learning_events.py",
+            "RACHEL_CORE/tests/test_model_contract.py",
+            "RACHEL_CORE/tests/test_provider_health.py",
+            "RACHEL_CORE/tests/test_training_dataset_compiler.py"
+          ]
+        }
+      ],
+      "id": "core-runtime",
+      "notes": [],
+      "operational_at_current_scope": true,
+      "reason": "Core source and test surfaces are present.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    },
+    {
+      "evidence": [
+        {
+          "exists": true,
+          "kind": "desktop-runtime",
+          "path": "APP/bridge/rachel_bridge.py"
+        },
+        {
+          "exists": true,
+          "kind": "desktop-runtime",
+          "path": "APP/sidecar/rachel_backend.spec"
+        },
+        {
+          "exists": true,
+          "kind": "desktop-runtime",
+          "path": "APP/src-tauri/tauri.conf.json"
+        },
+        {
+          "exists": true,
+          "expected_sha256": "D386A244E70C75F2486BCD0FC8406249431677BA870084E1073B4223FC5A655D",
+          "kind": "portable-runtime",
+          "sha256": "D386A244E70C75F2486BCD0FC8406249431677BA870084E1073B4223FC5A655D",
+          "validated": true
+        }
+      ],
+      "id": "desktop-runtime",
+      "notes": [],
+      "operational_at_current_scope": true,
+      "reason": "Desktop bridge, Tauri packaging contract and validated Portable Runtime are present.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    },
+    {
+      "evidence": [
+        {
+          "count": 2,
+          "kind": "runtime-sources",
+          "paths": [
+            "RACHEL_PLATFORM/RUNTIME/SRC/security_panel.py",
+            "RACHEL_PLATFORM/RUNTIME/SRC/security_runtime.py"
+          ]
+        },
+        {
+          "count": 3,
+          "kind": "tests",
+          "paths": [
+            "RACHEL_PLATFORM/RUNTIME/TESTS/test_security_contract.py",
+            "RACHEL_PLATFORM/RUNTIME/TESTS/test_security_panel.py",
+            "RACHEL_PLATFORM/RUNTIME/TESTS/test_security_runtime.py"
+          ]
+        },
+        {
+          "exists": true,
+          "kind": "contract",
+          "path": "RACHEL_PLATFORM/SECURITY-APPROVAL-CONTRACT.md"
+        }
+      ],
+      "id": "security-authorization",
+      "notes": [],
+      "operational_at_current_scope": true,
+      "reason": "Cyber/security runtime, approval tests and the approval contract are present.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    },
+    {
+      "evidence": [
+        {
+          "count": 0,
+          "kind": "runtime-sources",
+          "paths": []
+        },
+        {
+          "count": 0,
+          "kind": "tests",
+          "paths": []
+        },
+        {
+          "kind": "reserved-tree",
+          "paths": [
+            "RACHEL_MEMORY/.gitkeep",
+            "RACHEL_MEMORY/DATA/.gitkeep",
+            "RACHEL_MEMORY/VERSIONS/.gitkeep"
+          ]
+        }
+      ],
+      "id": "memory",
+      "notes": [],
+      "operational_at_current_scope": false,
+      "reason": "Dedicated memory capability is not evidenced by both runtime source and tests; reserved structure is preserved.",
+      "required_for_architecture_closure": false,
+      "state": "reserved"
+    },
+    {
+      "evidence": [
+        {
+          "count": 3,
+          "kind": "runtime-sources",
+          "paths": [
+            "RACHEL_PLATFORM/RUNTIME/SRC/docling_adapter.py",
+            "RACHEL_PLATFORM/RUNTIME/SRC/document_runtime.py",
+            "RACHEL_PLATFORM/RUNTIME/SRC/knowledge_runtime.py"
+          ]
+        },
+        {
+          "count": 3,
+          "kind": "tests",
+          "paths": [
+            "RACHEL_PLATFORM/RUNTIME/TESTS/test_docling_adapter.py",
+            "RACHEL_PLATFORM/RUNTIME/TESTS/test_document_runtime.py",
+            "RACHEL_PLATFORM/RUNTIME/TESTS/test_knowledge.py"
+          ]
+        },
+        {
+          "kind": "tree",
+          "paths": [
+            "RACHEL_KNOWLEDGE/.gitkeep",
+            "RACHEL_KNOWLEDGE/INDEXES/.gitkeep",
+            "RACHEL_KNOWLEDGE/VECTOR_STORE/.gitkeep"
+          ]
+        }
+      ],
+      "id": "knowledge",
+      "notes": [],
+      "operational_at_current_scope": true,
+      "reason": "Knowledge/document retrieval runtime and tests are present.",
+      "required_for_architecture_closure": false,
+      "state": "ready"
+    },
+    {
+      "evidence": [
+        {
+          "count": 3,
+          "kind": "runtime-sources",
+          "paths": [
+            "RACHEL_PLATFORM/RUNTIME/SRC/realtime_voice.py",
+            "RACHEL_PLATFORM/RUNTIME/SRC/voice_diagnostics.py",
+            "RACHEL_PLATFORM/RUNTIME/SRC/voice_session.py"
+          ]
+        },
+        {
+          "count": 3,
+          "kind": "tests",
+          "paths": [
+            "RACHEL_PLATFORM/RUNTIME/TESTS/test_realtime_voice.py",
+            "RACHEL_PLATFORM/RUNTIME/TESTS/test_voice_diagnostics.py",
+            "RACHEL_PLATFORM/RUNTIME/TESTS/test_voice_session.py"
+          ]
+        },
+        {
+          "kind": "reserved-tree",
+          "paths": [
+            "RACHEL_VOICE/.gitkeep",
+            "RACHEL_VOICE/AUDIO/.gitkeep",
+            "RACHEL_VOICE/MODELS/.gitkeep",
+            "RACHEL_VOICE/WAKE_WORD/MODELS/.gitkeep"
+          ]
+        }
+      ],
+      "id": "voice",
+      "notes": [],
+      "operational_at_current_scope": true,
+      "reason": "Voice runtime and tests were detected.",
+      "required_for_architecture_closure": false,
+      "state": "ready"
+    },
+    {
+      "evidence": [
+        {
+          "exists": true,
+          "kind": "stage-contract",
+          "path": "RACHEL_PLATFORM/DOCS/ETAPA-12-RACHEL-MODEL-V0.1.md"
+        },
+        {
+          "checkpoint_created": false,
+          "kind": "known-constraint",
+          "weights_modified": false
+        },
+        {
+          "kind": "model-tree",
+          "paths": [
+            "RACHEL_MODEL/.gitkeep",
+            "RACHEL_MODEL/MODELS/.gitkeep"
+          ]
+        }
+      ],
+      "id": "model",
+      "notes": [],
+      "operational_at_current_scope": false,
+      "reason": "Rachel Model v0.1 contract exists, but the target checkpoint has not been created and no model promotion has occurred.",
+      "required_for_architecture_closure": false,
+      "state": "blocked"
+    },
+    {
+      "evidence": [
+        {
+          "count": 3,
+          "kind": "runtime-sources",
+          "paths": [
+            "RACHEL_PLATFORM/RUNTIME/SRC/learning_engine_runtime.py",
+            "RACHEL_PLATFORM/RUNTIME/SRC/learning_export_runtime.py",
+            "RACHEL_PLATFORM/RUNTIME/SRC/training_dataset_runtime.py"
+          ]
+        },
+        {
+          "kind": "known-constraint",
+          "training_execution_enabled": false,
+          "weights_modified": false
+        }
+      ],
+      "id": "learning",
+      "notes": [],
+      "operational_at_current_scope": false,
+      "reason": "Learning Engine runtime exists, but actual weight training remains intentionally deferred.",
+      "required_for_architecture_closure": false,
+      "state": "deferred"
+    },
+    {
+      "evidence": [
+        {
+          "count": 2,
+          "kind": "runtime-sources",
+          "paths": [
+            "RACHEL_PLATFORM/RUNTIME/SRC/evaluation_plan_runtime.py",
+            "RACHEL_PLATFORM/RUNTIME/SRC/evaluation_runtime.py"
+          ]
+        },
+        {
+          "exists": true,
+          "kind": "stage-contract",
+          "path": "RACHEL_PLATFORM/DOCS/ETAPA-13-DANY-EVALUATION-PROMOTION.md"
+        },
+        {
+          "checkpoint_created": false,
+          "kind": "known-constraint",
+          "promotion_decided": false
+        }
+      ],
+      "id": "evaluation-promotion",
+      "notes": [],
+      "operational_at_current_scope": false,
+      "reason": "Evaluation runtime exists, but Stage 13 closed without a candidate checkpoint, calibrated thresholds or a promotion decision.",
+      "required_for_architecture_closure": false,
+      "state": "blocked"
+    },
+    {
+      "evidence": [
+        {
+          "count": 1,
+          "kind": "runtime-sources",
+          "paths": [
+            "RACHEL_PLATFORM/RUNTIME/SRC/agent_runtime.py"
+          ]
+        },
+        {
+          "exists": true,
+          "kind": "closure-report",
+          "path": "RACHEL_AGENT/REPORTS/stage-14-closure.json"
+        },
+        {
+          "blockers": 5,
+          "execution_enabled": false,
+          "kind": "stage14-readiness",
+          "ready_phases": 4,
+          "total_phases": 5
+        }
+      ],
+      "id": "agent-runtime",
+      "notes": [],
+      "operational_at_current_scope": false,
+      "reason": "Read-only Agent Runtime is validated, but the Agent execution phase remains intentionally blocked.",
+      "required_for_architecture_closure": false,
+      "state": "blocked"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "reserved-tree",
+          "paths": [
+            "RACHEL_BROWSER/.gitkeep",
+            "RACHEL_BROWSER/DOWNLOADS/.gitkeep",
+            "RACHEL_BROWSER/SESSIONS/.gitkeep"
+          ]
+        },
+        {
+          "agent_browser_integration_enabled": false,
+          "browser_execution_enabled": false,
+          "kind": "known-constraint"
+        }
+      ],
+      "id": "browser",
+      "notes": [],
+      "operational_at_current_scope": false,
+      "reason": "Browser namespace is reserved, but Agent/browser integration and browser execution remain disabled.",
+      "required_for_architecture_closure": false,
+      "state": "reserved"
+    },
+    {
+      "evidence": [
+        {
+          "count": 2,
+          "kind": "runtime-sources",
+          "paths": [
+            "RACHEL_PLATFORM/RUNTIME/SRC/arya_runtime.py",
+            "RACHEL_PLATFORM/RUNTIME/SRC/tools_runtime.py"
+          ]
+        },
+        {
+          "count": 2,
+          "kind": "tests",
+          "paths": [
+            "RACHEL_PLATFORM/RUNTIME/TESTS/test_arya.py",
+            "RACHEL_PLATFORM/RUNTIME/TESTS/test_tools_runtime.py"
+          ]
+        },
+        {
+          "default_policy": "deny",
+          "kind": "stage14-authority",
+          "registered_tools": 22
+        }
+      ],
+      "id": "tools",
+      "notes": [],
+      "operational_at_current_scope": true,
+      "reason": "Arya/tools runtime and tests are present.",
+      "required_for_architecture_closure": false,
+      "state": "ready"
+    },
+    {
+      "evidence": [
+        {
+          "count": 0,
+          "kind": "runtime-sources",
+          "paths": []
+        },
+        {
+          "count": 0,
+          "kind": "tests",
+          "paths": []
+        },
+        {
+          "kind": "reserved-tree",
+          "paths": [
+            "RACHEL_PRIVACY/.gitkeep"
+          ]
+        }
+      ],
+      "id": "privacy",
+      "notes": [],
+      "operational_at_current_scope": false,
+      "reason": "Dedicated privacy namespace is reserved; runtime plus test evidence is incomplete.",
+      "required_for_architecture_closure": false,
+      "state": "reserved"
+    },
+    {
+      "evidence": [
+        {
+          "exists": true,
+          "kind": "authorization-contract",
+          "path": "RACHEL_PLATFORM/SECURITY-APPROVAL-CONTRACT.md"
+        },
+        {
+          "kind": "security-runtime",
+          "paths": [
+            "RACHEL_PLATFORM/RUNTIME/SRC/security_panel.py",
+            "RACHEL_PLATFORM/RUNTIME/SRC/security_runtime.py"
+          ]
+        },
+        {
+          "kind": "namespace",
+          "paths": [
+            "RACHEL_PERMISSIONS/.gitkeep"
+          ]
+        }
+      ],
+      "id": "permissions",
+      "notes": [],
+      "operational_at_current_scope": true,
+      "reason": "Permission enforcement is evidenced through Cyber/security approval infrastructure.",
+      "required_for_architecture_closure": false,
+      "state": "ready"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "host",
+          "nvidia_smi": null,
+          "training_environment_exists": false
+        },
+        {
+          "kind": "known-constraint",
+          "training_execution_enabled": false
+        }
+      ],
+      "id": "training-runtime",
+      "notes": [],
+      "operational_at_current_scope": false,
+      "reason": "Training Runtime is not provisioned on this host and a usable NVIDIA runtime was not established.",
+      "required_for_architecture_closure": false,
+      "state": "unavailable"
+    },
+    {
+      "evidence": [
+        {
+          "exists": true,
+          "expected_sha256": "D386A244E70C75F2486BCD0FC8406249431677BA870084E1073B4223FC5A655D",
+          "kind": "portable-runtime",
+          "path": "APP/src-tauri/binaries/rachel-backend-x86_64-pc-windows-msvc.exe",
+          "sha256": "D386A244E70C75F2486BCD0FC8406249431677BA870084E1073B4223FC5A655D"
+        },
+        {
+          "exists": true,
+          "kind": "frozen-validation-report",
+          "path": "RACHEL_AGENT/REPORTS/stage-14-final-frozen-validation.json"
+        }
+      ],
+      "id": "portable-packaging",
+      "notes": [],
+      "operational_at_current_scope": true,
+      "reason": "Portable Runtime matches the final validated Stage 14 SHA.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    },
+    {
+      "evidence": [
+        {
+          "conflicted": 0,
+          "declared": 23,
+          "diverged": 0,
+          "kind": "git-submodules",
+          "observed": 23,
+          "uninitialized": 0
+        },
+        {
+          "exists": true,
+          "kind": "dependency-manifest",
+          "path": ".gitmodules"
+        }
+      ],
+      "id": "external-dependencies",
+      "notes": [],
+      "operational_at_current_scope": true,
+      "reason": "All declared Git submodules are initialized at their recorded commits.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    },
+    {
+      "evidence": [
+        {
+          "kind": "required-documents",
+          "paths": [
+            {
+              "exists": true,
+              "path": "README.md"
+            },
+            {
+              "exists": true,
+              "path": "SECURITY.md"
+            },
+            {
+              "exists": true,
+              "path": "RACHEL_PLATFORM/DOCS/ETAPA-12-RACHEL-MODEL-V0.1.md"
+            },
+            {
+              "exists": true,
+              "path": "RACHEL_PLATFORM/DOCS/ETAPA-13-DANY-EVALUATION-PROMOTION.md"
+            },
+            {
+              "exists": true,
+              "path": "RACHEL_PLATFORM/DOCS/ETAPA-14-AGENT-RUNTIME.md"
+            },
+            {
+              "exists": true,
+              "path": "RACHEL_PLATFORM/DOCS/ETAPA-15-SYSTEM-READINESS.md"
+            }
+          ]
+        }
+      ],
+      "id": "documentation",
+      "notes": [],
+      "operational_at_current_scope": true,
+      "reason": "Required architecture and stage documentation is present.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    },
+    {
+      "evidence": [
+        {
+          "all_passed": true,
+          "details": {
+            "agent_bridge_tests": 10,
+            "all_passed": true,
+            "rachel_core_tests": 59,
+            "runtime_tests": 248,
+            "stage_13_closure_tests": 11,
+            "stage_14_tests": 41
+          },
+          "kind": "stage14-regression"
+        },
+        {
+          "kind": "current-command-preflight",
+          "stage14_closure_tests": "passed",
+          "stage15_contract_tests": "passed"
+        }
+      ],
+      "id": "regression-safety",
+      "notes": [],
+      "operational_at_current_scope": true,
+      "reason": "The last frozen Stage 14 regression report records all suites passing; Stage 15 contract and Stage 14 closure were revalidated before this inventory command proceeded.",
+      "required_for_architecture_closure": true,
+      "state": "ready"
+    }
+  ],
+  "id": "rachel-stage-15-system-inventory",
+  "method": {
+    "classification_states": [
+      "blocked",
+      "deferred",
+      "not-applicable",
+      "ready",
+      "reserved",
+      "unavailable"
+    ],
+    "network_execution_required": false,
+    "ready_requires_evidence": true,
+    "runtime_behavior_modified": false,
+    "type": "local-static-and-contract-evidence-audit",
+    "unknown_defaults_to_ready": false
+  },
+  "portable_runtime": {
+    "exists": true,
+    "expected_sha256": "D386A244E70C75F2486BCD0FC8406249431677BA870084E1073B4223FC5A655D",
+    "matches_stage14_frozen": true,
+    "sha256": "D386A244E70C75F2486BCD0FC8406249431677BA870084E1073B4223FC5A655D"
+  },
+  "repository": {
+    "git_submodules_declared": 23,
+    "git_submodules_observed": 23,
+    "runtime_source_count": 39,
+    "runtime_test_count": 57,
+    "tracked_file_count": 602
+  },
+  "schema_version": 1,
+  "source": {
+    "branch": "agent/etapa-15-system-readiness-architecture-closure",
+    "head": "3cd40abbc573e847c5a99a7c23a920869312c5a0",
+    "stage14_merge": "57b52f8cd9061ff43c2f44411d55234cff6fa057",
+    "working_tree_clean_before_generation": true
+  },
+  "stage": 15,
+  "step": "15/1B"
+}

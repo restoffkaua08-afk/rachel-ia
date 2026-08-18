@@ -1,0 +1,52 @@
+{
+  "compatibility": {
+    "direct_consumer_probes": "pending-command-validation",
+    "path_field_consumers": 0,
+    "runtime_changes_required": false,
+    "runtime_consumers": 4
+  },
+  "frozen": {
+    "artifact_modified": false,
+    "current_source_frozen_state": "stale-after-config-change",
+    "historical_stage14_sha256": "D386A244E70C75F2486BCD0FC8406249431677BA870084E1073B4223FC5A655D",
+    "rebuild_required": true
+  },
+  "id": "rachel-stage-15-portability-repair-1db2",
+  "readiness": {
+    "automatic_classification_change": false,
+    "cause_resolved": true,
+    "matrix_changed": false,
+    "post_repair_repository_integrity_recommendation": "ready",
+    "stage_1c_repository_integrity_recommendation": "blocked"
+  },
+  "registry": {
+    "absolute_values_after": 0,
+    "absolute_values_before": 70,
+    "environment_paths_present": 23,
+    "functional_metadata_preserved": true,
+    "junction_paths_resolved": 23,
+    "mojibake_present_after": false,
+    "organs": 23,
+    "path_base": "repository-root",
+    "path_format": "posix-relative",
+    "source_paths_resolved": 23
+  },
+  "safety": {
+    "agent_execution": false,
+    "browser_execution": false,
+    "training_execution": false,
+    "weights_modified": false
+  },
+  "schema_version": 1,
+  "stage": 15,
+  "step": "15/1D-B2-R2",
+  "timeout_diagnostic": {
+    "agent_bridge_passed": true,
+    "agent_bridge_tests": 10,
+    "isolated_dashboard_max_seconds": 9.65,
+    "isolated_dashboard_passed": 3,
+    "isolated_dashboard_runs": 3,
+    "previous_runtime_regression_timeout": "host-temporal-not-reproduced",
+    "runtime_code_change_required": false
+  }
+}

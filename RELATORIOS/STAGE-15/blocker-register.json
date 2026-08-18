@@ -1,0 +1,84 @@
+{
+  "bypass_allowed": false,
+  "closure_blocker_count": 0,
+  "entries": [
+    {
+      "bypass_allowed": false,
+      "closure_blocking": false,
+      "domain": "memory",
+      "id": "memory:reserved",
+      "production_readiness_blocking": true,
+      "reason": "Dedicated memory capability is not evidenced by both runtime source and tests; reserved structure is preserved.",
+      "state": "reserved"
+    },
+    {
+      "bypass_allowed": false,
+      "closure_blocking": false,
+      "domain": "model",
+      "id": "model:blocked",
+      "production_readiness_blocking": true,
+      "reason": "Rachel Model v0.1 contract exists, but the target checkpoint has not been created and no model promotion has occurred.",
+      "state": "blocked"
+    },
+    {
+      "bypass_allowed": false,
+      "closure_blocking": false,
+      "domain": "learning",
+      "id": "learning:deferred",
+      "production_readiness_blocking": true,
+      "reason": "Learning Engine runtime exists, but actual weight training remains intentionally deferred.",
+      "state": "deferred"
+    },
+    {
+      "bypass_allowed": false,
+      "closure_blocking": false,
+      "domain": "evaluation-promotion",
+      "id": "evaluation-promotion:blocked",
+      "production_readiness_blocking": true,
+      "reason": "Evaluation runtime exists, but Stage 13 closed without a candidate checkpoint, calibrated thresholds or a promotion decision.",
+      "state": "blocked"
+    },
+    {
+      "bypass_allowed": false,
+      "closure_blocking": false,
+      "domain": "agent-runtime",
+      "id": "agent-runtime:blocked",
+      "production_readiness_blocking": true,
+      "reason": "Read-only Agent Runtime is validated, but the Agent execution phase remains intentionally blocked.",
+      "state": "blocked"
+    },
+    {
+      "bypass_allowed": false,
+      "closure_blocking": false,
+      "domain": "browser",
+      "id": "browser:reserved",
+      "production_readiness_blocking": true,
+      "reason": "Browser namespace is reserved, but Agent/browser integration and browser execution remain disabled.",
+      "state": "reserved"
+    },
+    {
+      "bypass_allowed": false,
+      "closure_blocking": false,
+      "domain": "privacy",
+      "id": "privacy:reserved",
+      "production_readiness_blocking": true,
+      "reason": "Dedicated privacy namespace is reserved; runtime plus test evidence is incomplete.",
+      "state": "reserved"
+    },
+    {
+      "bypass_allowed": false,
+      "closure_blocking": false,
+      "domain": "training-runtime",
+      "id": "training-runtime:unavailable",
+      "production_readiness_blocking": true,
+      "reason": "Training Runtime is not provisioned on this host and a usable NVIDIA runtime was not established.",
+      "state": "unavailable"
+    }
+  ],
+  "entry_count": 8,
+  "id": "rachel-stage-15-blocker-register",
+  "production_readiness_blocker_count": 8,
+  "schema_version": 1,
+  "stage": 15,
+  "step": "15/1B"
+}

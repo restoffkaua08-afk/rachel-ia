@@ -50,7 +50,7 @@ CORE = (
 BRIDGE = (
     APP
     / "bridge"
-    / "rachel_bridge.py"
+    / "rachel_server.py"
 )
 
 
@@ -333,6 +333,9 @@ a = Analysis(
         ),
         str(
             CORE
+        ),
+        str(
+            APP / "bridge"
         ),
     ],
     binaries=binaries,

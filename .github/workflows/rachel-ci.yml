@@ -83,6 +83,7 @@ jobs:
             "test_filesystem_runtime.py",
             "test_git_runtime.py",
             "test_dev_runtime.py",
+            "test_process_runtime.py",
             "test_bran_cognitive.py",
             "test_security_contract.py",
             "test_security_runtime.py",

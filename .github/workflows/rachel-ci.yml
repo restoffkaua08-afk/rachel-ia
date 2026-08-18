@@ -161,5 +161,16 @@ jobs:
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
 
+      - name: Create ephemeral sidecar placeholder
+        shell: pwsh
+        run: |
+          # The real PyInstaller sidecar is a generated local/release artifact and is not
+          # committed to Git. Tauri only requires the declared externalBin path to exist
+          # while evaluating build metadata during `cargo check`.
+          $target = "APP/src-tauri/binaries/rachel-backend-x86_64-pc-windows-msvc.exe"
+          New-Item -ItemType Directory -Force -Path (Split-Path $target) | Out-Null
+          [IO.File]::WriteAllBytes($target, [byte[]]@())
+          Write-Host "Created CI-only placeholder: $target"
+
       - name: Cargo check
         run: cargo check --manifest-path APP/src-tauri/Cargo.toml --locked

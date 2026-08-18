@@ -16,6 +16,7 @@ from runtime_paths import CONFIG
 from arya_runtime import run as arya_run, safe_cwd
 from bran_cognitive import CognitiveMemory
 from cognitive_runtime import DanyEvaluator
+from filesystem_runtime import FilesystemRuntime
 from knowledge_runtime import VisaoIngestor, status as knowledge_status
 from project_generator import ProjectGenerator
 from project_quality import ProjectQuality
@@ -69,6 +70,20 @@ def _require_text(
     return value.strip()
 
 
+def _optional_text(
+    arguments: dict[str, Any],
+    key: str,
+    default: str,
+    maximum: int = 5_000,
+) -> str:
+    value = arguments.get(key, default)
+    if not isinstance(value, str):
+        raise ToolError(f"'{key}' must be a string")
+    if len(value) > maximum:
+        raise ToolError(f"'{key}' exceeds {maximum} characters")
+    return value.strip() or default
+
+
 def _bounded_int(
     arguments: dict[str, Any],
     key: str,
@@ -87,6 +102,7 @@ class ToolCoordinator:
         self,
         memory: CognitiveMemory | None = None,
         approvals: ApprovalStore | None = None,
+        filesystem: FilesystemRuntime | None = None,
     ) -> None:
         self.registry = _load_registry()
         self.cyber = CyberPolicy()
@@ -94,6 +110,7 @@ class ToolCoordinator:
         self.jhon = JhonLogger()
         self.bran = memory or CognitiveMemory()
         self.approvals = approvals or ApprovalStore()
+        self.filesystem = filesystem or FilesystemRuntime()
 
     def list_tools(self) -> list[dict[str, Any]]:
         return [asdict(spec) for spec in self.registry.values()]
@@ -103,6 +120,31 @@ class ToolCoordinator:
         if spec is None:
             raise ToolError(f"Unknown tool: {name}")
         return asdict(spec)
+
+    def _effective_effect(
+        self,
+        spec: ToolSpec,
+        arguments: dict[str, Any],
+    ) -> str:
+        """Return the effect Cyber must authorize for this exact target.
+
+        Static tool effects remain the default. Read-like filesystem operations
+        outside the internal workspace are upgraded to `external`, preventing a
+        nominally read-only tool from silently inspecting personal user folders.
+        """
+        if spec.name.startswith("filesystem.") and spec.name != "filesystem.status":
+            scope = str(arguments.get("scope", "workspace")).strip().casefold()
+            # Validate the named scope before creating an approval request.
+            self.filesystem.root(scope)
+            if scope != "workspace" and spec.effect in {
+                "read",
+                "inspect",
+                "list",
+                "search",
+                "status",
+            }:
+                return "external"
+        return spec.effect
 
     def invoke(
         self,
@@ -118,24 +160,30 @@ class ToolCoordinator:
         if not isinstance(args, dict):
             raise ToolError("Tool arguments must be a JSON object")
 
+        try:
+            effective_effect = self._effective_effect(spec, args)
+        except Exception as error:
+            raise ToolError(str(error)) from error
+
         consumed_approval = None
         authorized = False
         if approval_id:
             consumed_approval = self.approvals.consume(
                 approval_id,
                 name,
-                spec.effect,
+                effective_effect,
                 args,
             )
             authorized = True
 
-        decision = self.cyber.check(spec.effect, authorized)
+        decision = self.cyber.check(effective_effect, authorized)
         request_event = self.king.publish(
             "tool.requested",
             {
                 "tool": name,
                 "member": spec.member,
-                "effect": spec.effect,
+                "effect": effective_effect,
+                "declared_effect": spec.effect,
             },
             sender="ned",
             recipient=spec.member,
@@ -146,6 +194,7 @@ class ToolCoordinator:
             "tool.requested",
             tool=name,
             member=spec.member,
+            effect=effective_effect,
             authorized=authorized,
         )
 
@@ -156,12 +205,13 @@ class ToolCoordinator:
                 "tool.blocked",
                 tool=name,
                 risk=decision.risk,
+                effect=effective_effect,
             )
             approval = None
             if decision.approval_required:
                 approval = self.approvals.request(
                     name,
-                    spec.effect,
+                    effective_effect,
                     decision.risk,
                     args,
                     decision.reason,
@@ -172,6 +222,7 @@ class ToolCoordinator:
                         "approval_id": approval["id"],
                         "tool": name,
                         "risk": decision.risk,
+                        "effect": effective_effect,
                     },
                     sender="cyber",
                     recipient="user",
@@ -236,6 +287,7 @@ class ToolCoordinator:
             "member": spec.member,
             "result": result,
             "policy": asdict(decision),
+            "effective_effect": effective_effect,
             "request_event_id": request_event["id"],
             "completion_event_id": completion["id"],
             "approval": consumed_approval,
@@ -244,6 +296,71 @@ class ToolCoordinator:
         }
 
     def _execute(self, name: str, args: dict[str, Any], authorized: bool) -> Any:
+        if name == "filesystem.status":
+            return self.filesystem.describe()
+        if name == "filesystem.list":
+            return self.filesystem.list(
+                _require_text(args, "scope", 50),
+                _optional_text(args, "path", ".", 1_000),
+            )
+        if name == "filesystem.stat":
+            return self.filesystem.stat(
+                _require_text(args, "scope", 50),
+                _require_text(args, "path", 1_000),
+            )
+        if name == "filesystem.read":
+            return self.filesystem.read(
+                _require_text(args, "scope", 50),
+                _require_text(args, "path", 1_000),
+            )
+        if name == "filesystem.search":
+            return self.filesystem.search(
+                _require_text(args, "scope", 50),
+                _require_text(args, "query", 2_000),
+                _optional_text(args, "path", ".", 1_000),
+                _bounded_int(args, "limit", 50, 1, 200),
+            )
+        if name == "filesystem.mkdir":
+            return self.filesystem.mkdir(
+                _require_text(args, "scope", 50),
+                _require_text(args, "path", 1_000),
+                authorized,
+            )
+        if name == "filesystem.write":
+            return self.filesystem.write(
+                _require_text(args, "scope", 50),
+                _require_text(args, "path", 1_000),
+                _require_text(args, "content", 1_000_000),
+                authorized,
+            )
+        if name == "filesystem.patch":
+            return self.filesystem.patch(
+                _require_text(args, "scope", 50),
+                _require_text(args, "path", 1_000),
+                _require_text(args, "old", 500_000),
+                str(args.get("new", "")),
+                authorized,
+            )
+        if name == "filesystem.copy":
+            return self.filesystem.copy(
+                _require_text(args, "scope", 50),
+                _require_text(args, "source", 1_000),
+                _require_text(args, "destination", 1_000),
+                authorized,
+            )
+        if name == "filesystem.move":
+            return self.filesystem.move(
+                _require_text(args, "scope", 50),
+                _require_text(args, "source", 1_000),
+                _require_text(args, "destination", 1_000),
+                authorized,
+            )
+        if name == "filesystem.delete":
+            return self.filesystem.delete(
+                _require_text(args, "scope", 50),
+                _require_text(args, "path", 1_000),
+                authorized,
+            )
         if name == "arya.project.review":
             result = ProjectQuality().review(_require_text(args, "project", 80))
             result["dany"] = asdict(

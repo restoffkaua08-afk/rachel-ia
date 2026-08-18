@@ -1,6 +1,6 @@
 # RACHEL Professional Agent Evolution
 
-Status inicial: **Lote 0 concluído e validado no CI**
+Status atual: **Lotes 0 e 1 concluídos e validados no CI; Lote 2 em implementação**
 
 Base do ciclo: `main@69efdc5ce239b03098f02eb613e00cc02cd8c88d`
 
@@ -112,15 +112,30 @@ Validação do Lote 0:
 
 ### Lote 1 — Cérebro único e confiabilidade
 
-- [ ] Definir uma entrada cognitiva canônica.
-- [ ] Remover/absorver fluxos de chat duplicados sem quebrar contratos públicos.
-- [ ] Intent routing natural sem exigir nomes internos.
-- [ ] Fast path para conversa normal sem planner LLM desnecessário.
-- [ ] Retomada exata do plano vinculado ao approval Cyber.
-- [ ] Grounding obrigatório de claims de execução.
-- [ ] Resposta de ferramenta baseada somente em evidência real.
-- [ ] Dany declarar claramente escopo estrutural vs. semântico.
-- [ ] Testes E2E de linguagem natural para pesquisa, memória e ações.
+- [x] Definir uma entrada cognitiva canônica.
+- [x] Remover/absorver fluxos de chat duplicados sem quebrar contratos públicos.
+- [x] Intent routing natural sem exigir nomes internos.
+- [x] Fast path para conversa normal sem planner LLM desnecessário.
+- [x] Retomada exata do plano vinculado ao approval Cyber.
+- [x] Grounding obrigatório de claims de execução.
+- [x] Resposta de ferramenta baseada somente em evidência real.
+- [x] Dany declarar claramente escopo estrutural vs. semântico.
+- [x] Testes E2E de linguagem natural para pesquisa, memória e ações.
+
+Validação do Lote 1:
+
+- entrada canônica: `NedCognitiveBridge.handle`; `assist` preservado como alias compatível
+- fast path de conversa normal: PASS, sem chamada extra ao planner de ferramentas
+- retomada Cyber: plano exato, sem replanning, aprovação de uso único preservada
+- transporte desktop da retomada: memória de processo; argumentos não persistidos no arquivo IPC temporário
+- execução grounded: somente `state=completed` pode produzir `executed=true`
+- Dany do chat: escopo declarado como estrutural, sem falsa alegação de verificação factual
+- testes de confiabilidade: 14/14 PASS
+- E2E natural governado: pesquisa, projeto e memória 3/3 PASS
+- regressão cognitiva legada: 10/10 PASS
+- Python Core + Runtime contracts: PASS
+- Desktop frontend build: PASS
+- Tauri Rust check: PASS
 
 ### Lote 2 — Runtime persistente e streaming
 

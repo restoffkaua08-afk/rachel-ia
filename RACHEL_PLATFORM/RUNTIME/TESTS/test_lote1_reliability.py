@@ -17,6 +17,7 @@ from cognitive_runtime import (
     NedToolPlanner,
     ToolPlan,
     resume_plan_from_environment,
+    should_use_tool_planner,
 )
 
 
@@ -35,7 +36,9 @@ class FakePlanner:
 
     def heuristic_plan(self, content: str) -> ToolPlan | None:
         self.heuristic_calls += 1
-        return self.heuristic
+        if self.heuristic is not None:
+            return self.heuristic
+        return NedToolPlanner.heuristic_plan(content)
 
 
 class FakeTools:
@@ -43,7 +46,9 @@ class FakeTools:
         self.result = result
         self.registry = {
             "arya.project.create": object(),
+            "arya.project.generate": object(),
             "bran.remember": object(),
+            "bran.search": object(),
             "web.research": object(),
         }
         self.calls: list[tuple[str, dict, str | None]] = []
@@ -76,6 +81,39 @@ class CognitiveReliabilityTests(unittest.TestCase):
             "approval": {"id": "approval-1"},
         })
 
+    def test_canonical_entry_is_handle_and_assist_is_alias(self) -> None:
+        tools = FakeTools({})
+        planner = FakePlanner()
+        bridge = self.bridge(planner=planner, tools=tools)
+        direct = bridge.handle("Explique recursão")
+        alias = bridge.assist("Explique recursão")
+        self.assertEqual(direct["tool_plan"]["source"], "fast-chat")
+        self.assertEqual(alias["tool_plan"]["source"], "fast-chat")
+        self.assertEqual(planner.plan_calls, 0)
+
+    def test_normal_conversation_uses_fast_path_without_model_planner(self) -> None:
+        self.assertFalse(should_use_tool_planner("Qual a diferença entre RAM e SSD?"))
+        tools = FakeTools({})
+        planner = FakePlanner()
+        result = self.bridge(planner=planner, tools=tools).handle(
+            "Qual a diferença entre RAM e SSD?"
+        )
+        self.assertEqual(result["tool_plan"]["source"], "fast-chat")
+        self.assertEqual(planner.plan_calls, 0)
+        self.assertEqual(tools.calls, [])
+        self.assertFalse(result["execution"]["executed"])
+
+    def test_action_like_unknown_request_may_consult_model_planner(self) -> None:
+        self.assertTrue(should_use_tool_planner("Execute a tarefa necessária nesse projeto"))
+        plan = ToolPlan("chat", None, {}, "Sem ferramenta adequada.", "model")
+        tools = FakeTools({})
+        planner = FakePlanner(planned=plan)
+        result = self.bridge(planner=planner, tools=tools).handle(
+            "Execute a tarefa necessária nesse projeto"
+        )
+        self.assertEqual(planner.plan_calls, 1)
+        self.assertEqual(result["tool_plan"]["source"], "model")
+
     def test_approval_required_exposes_exact_resume_plan_and_no_execution_claim(self) -> None:
         plan = ToolPlan(
             "tool",
@@ -91,7 +129,7 @@ class CognitiveReliabilityTests(unittest.TestCase):
             "request_event_id": "request-1",
         })
         planner = FakePlanner(planned=plan)
-        result = self.bridge(planner=planner, tools=tools).assist("crie isso")
+        result = self.bridge(planner=planner, tools=tools).handle("execute essa criação")
 
         self.assertEqual(result["state"], "approval_required")
         self.assertEqual(result["resume_plan"], result["tool_plan"])
@@ -112,7 +150,7 @@ class CognitiveReliabilityTests(unittest.TestCase):
         planner = FakePlanner()
         bridge = self.bridge(planner=planner, tools=tools)
 
-        result = bridge.assist(
+        result = bridge.handle(
             "texto original",
             approval_id="approval-1",
             resume_plan={
@@ -149,7 +187,7 @@ class CognitiveReliabilityTests(unittest.TestCase):
 
         with patch.dict(os.environ, {RESUME_PLAN_ENV: json.dumps(plan)}, clear=False):
             self.assertEqual(resume_plan_from_environment(), plan)
-            result = bridge.assist("texto original", approval_id="approval-1")
+            result = bridge.handle("texto original", approval_id="approval-1")
 
         self.assertEqual(planner.plan_calls, 0)
         self.assertEqual(planner.heuristic_calls, 0)
@@ -161,7 +199,7 @@ class CognitiveReliabilityTests(unittest.TestCase):
         bridge = self.bridge(planner=FakePlanner(), tools=FakeTools({}))
         with patch.dict(os.environ, {RESUME_PLAN_ENV: "not-json"}, clear=False):
             with self.assertRaisesRegex(ValueError, "environment payload"):
-                bridge.assist("texto original", approval_id="approval-1")
+                bridge.handle("texto original", approval_id="approval-1")
 
     def test_legacy_approval_resume_uses_only_deterministic_route_never_model_planner(self) -> None:
         deterministic = ToolPlan(
@@ -182,7 +220,7 @@ class CognitiveReliabilityTests(unittest.TestCase):
         })
         bridge = self.bridge(planner=planner, tools=tools)
 
-        result = bridge.assist(
+        result = bridge.handle(
             "lembre que prefiro respostas curtas",
             approval_id="approval-2",
         )
@@ -193,11 +231,12 @@ class CognitiveReliabilityTests(unittest.TestCase):
 
     def test_legacy_approval_without_deterministic_route_fails_closed_instead_of_replanning(self) -> None:
         planner = FakePlanner(heuristic=None)
+        planner.heuristic_plan = lambda content: None
         tools = FakeTools({})
         bridge = self.bridge(planner=planner, tools=tools)
 
         with self.assertRaisesRegex(ValueError, "resume_plan"):
-            bridge.assist("faça uma ação ambígua", approval_id="approval-model")
+            bridge.handle("faça uma ação ambígua", approval_id="approval-model")
 
         self.assertEqual(planner.plan_calls, 0)
         self.assertEqual(tools.calls, [])
@@ -208,7 +247,7 @@ class CognitiveReliabilityTests(unittest.TestCase):
             "arya.project.create",
             {"project": "faculdade"},
             "Criar projeto solicitado.",
-            "deterministic",
+            "model",
         )
         planner = FakePlanner(planned=plan)
         tools = FakeTools({
@@ -222,7 +261,7 @@ class CognitiveReliabilityTests(unittest.TestCase):
             AssertionError("chat must not synthesize a success response for denied tools")
         )
 
-        result = bridge.assist("crie isso")
+        result = bridge.handle("execute essa criação")
 
         self.assertEqual(result["state"], "denied")
         self.assertFalse(result["execution"]["executed"])
@@ -232,7 +271,7 @@ class CognitiveReliabilityTests(unittest.TestCase):
     def test_resume_plan_requires_approval_id(self) -> None:
         bridge = self.bridge(planner=FakePlanner(), tools=FakeTools({}))
         with self.assertRaisesRegex(ValueError, "requires approval_id"):
-            bridge.assist(
+            bridge.handle(
                 "qualquer coisa",
                 resume_plan={
                     "action": "tool",
@@ -243,13 +282,30 @@ class CognitiveReliabilityTests(unittest.TestCase):
                 },
             )
 
-    def test_natural_research_intent_does_not_require_internal_tool_name(self) -> None:
+    def test_natural_research_intent_routes_without_internal_name(self) -> None:
         plan = NedToolPlanner.heuristic_plan("Pesquise a versão mais recente do Python")
         self.assertIsNotNone(plan)
         assert plan is not None
         self.assertEqual(plan.tool, "web.research")
         self.assertEqual(plan.arguments["query"], "a versão mais recente do Python")
         self.assertEqual(plan.source, "deterministic")
+
+    def test_natural_memory_intent_routes_without_internal_name(self) -> None:
+        plan = NedToolPlanner.heuristic_plan("Lembre que eu prefiro respostas curtas")
+        self.assertIsNotNone(plan)
+        assert plan is not None
+        self.assertEqual(plan.tool, "bran.remember")
+        self.assertEqual(plan.arguments["content"], "eu prefiro respostas curtas")
+
+    def test_natural_project_action_routes_without_internal_name(self) -> None:
+        plan = NedToolPlanner.heuristic_plan(
+            "Crie um site chamado portfolio: uma página pessoal simples"
+        )
+        self.assertIsNotNone(plan)
+        assert plan is not None
+        self.assertEqual(plan.tool, "arya.project.generate")
+        self.assertEqual(plan.arguments["project"], "portfolio")
+        self.assertEqual(plan.arguments["project_type"], "site")
 
 
 if __name__ == "__main__":

@@ -45,6 +45,16 @@ TASK_REQUEST_PATTERN = re.compile(
     re.I | re.S,
 )
 
+ACTION_HINT_PATTERN = re.compile(
+    r"\b(?:pesquise|procure|investigue|busque|acesse|abra|navegue|"
+    r"execute|rode|instale|desinstale|apague|delete|remova|mova|copie|"
+    r"edite|altere|modifique|escreva|grave|salve|crie|gere|construa|"
+    r"desenvolva|importe|processe|leia\s+(?:o|um|uma)\s+(?:arquivo|documento)|"
+    r"lembre|memorize|guarde|verifique|diagnostique|liste|inspecione|"
+    r"commit|branch|checkout|merge|build|lint|typecheck|teste|testes)\b",
+    re.I,
+)
+
 RESUME_PLAN_ENV = "RACHEL_APPROVED_RESUME_PLAN_JSON"
 
 
@@ -61,6 +71,13 @@ def should_propose_memory(content: str) -> bool:
     if len(text) < 8 or len(text) > 4_000:
         return False
     return any(pattern.search(text) for pattern in MEMORY_CANDIDATE_PATTERNS)
+
+
+def should_use_tool_planner(content: str) -> bool:
+    text = " ".join(content.strip().split())
+    if not text:
+        return False
+    return ACTION_HINT_PATTERN.search(text) is not None
 
 
 def resume_plan_from_environment() -> dict[str, Any] | None:
@@ -363,6 +380,8 @@ class NedCognitiveBridge:
         status["execution_grounding"] = "tool-result-required"
         status["resume_contract"] = "exact-plan-envelope"
         status["desktop_resume_transport"] = "process-environment"
+        status["canonical_entry"] = "handle"
+        status["fast_chat_path"] = True
         return status
 
     def chat(
@@ -423,7 +442,7 @@ class NedCognitiveBridge:
         }
         return payload
 
-    def assist(
+    def handle(
         self,
         content: str,
         conversation_id: str | None = None,
@@ -478,7 +497,20 @@ class NedCognitiveBridge:
                         verified=False,
                     ),
                 }
-            plan = self.planner.plan(content)
+
+            deterministic = self.planner.heuristic_plan(content)
+            if deterministic is not None:
+                plan = deterministic
+            elif should_use_tool_planner(content):
+                plan = self.planner.plan(content)
+            else:
+                plan = ToolPlan(
+                    "chat",
+                    None,
+                    {},
+                    "Conversa normal; fast path sem planner de ferramentas.",
+                    "fast-chat",
+                )
 
         plan_event_id = self._capture_learning_event(
             "planner_decision" if not resumed else "planner_resume",
@@ -487,6 +519,7 @@ class NedCognitiveBridge:
                 "plan": asdict(plan),
                 "approval_supplied": resumed,
                 "resumed_without_replanning": resumed,
+                "fast_chat": plan.source == "fast-chat",
             },
             conversation_id=conversation_id,
         )
@@ -634,6 +667,21 @@ class NedCognitiveBridge:
         }
         return response
 
+    def assist(
+        self,
+        content: str,
+        conversation_id: str | None = None,
+        approval_id: str | None = None,
+        resume_plan: dict[str, Any] | None = None,
+    ) -> dict[str, Any]:
+        """Backward-compatible public alias for the canonical cognitive entry."""
+        return self.handle(
+            content,
+            conversation_id,
+            approval_id=approval_id,
+            resume_plan=resume_plan,
+        )
+
 
 def decode_text(value: str) -> str:
     try:
@@ -685,7 +733,7 @@ def main() -> int:
         try:
             bridge = NedCognitiveBridge()
             payload = (
-                bridge.assist(
+                bridge.handle(
                     content,
                     args.conversation_id,
                     approval_id=args.approval_id,

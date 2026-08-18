@@ -96,6 +96,7 @@ jobs:
             "test_lote1_natural_e2e.py",
             "test_desktop_resident_runtime.py",
             "test_desktop_streaming_runtime.py",
+            "test_filesystem_runtime.py",
             "test_bran_cognitive.py",
             "test_security_contract.py",
             "test_security_runtime.py",

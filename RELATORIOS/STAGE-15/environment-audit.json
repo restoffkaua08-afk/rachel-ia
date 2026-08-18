@@ -1,0 +1,43 @@
+{
+  "desktop_build_environment_ready": false,
+  "desktop_sidecar_python": {
+    "exists": true,
+    "path": "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\desktop-sidecar\\Scripts\\python.exe",
+    "pip_check": {
+      "healthy": false,
+      "output": "C:\\Users\\Kau�\\Desktop\\Rachel IA\\AMBIENTES\\desktop-sidecar\\Scripts\\python.exe: No module named pip",
+      "returncode": 1
+    },
+    "pyinstaller": {
+      "available": true,
+      "version": "6.21.0"
+    },
+    "version": "3.12.13"
+  },
+  "id": "rachel-stage-15-environment-audit",
+  "nvidia_runtime_available": false,
+  "runtime_python": {
+    "exists": true,
+    "path": "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\runtime\\Scripts\\python.exe",
+    "pip_check": {
+      "healthy": true,
+      "output": "No broken requirements found.",
+      "returncode": 0
+    },
+    "pyinstaller": null,
+    "version": "3.12.10"
+  },
+  "schema_version": 1,
+  "stage": 15,
+  "step": "15/1C",
+  "training_execution_enabled": false,
+  "training_python": {
+    "exists": false,
+    "path": "C:\\Users\\Kauã\\Desktop\\Rachel IA\\AMBIENTES\\training\\Scripts\\python.exe",
+    "pip_check": null,
+    "pyinstaller": null,
+    "version": null
+  },
+  "training_runtime_provisioned": false,
+  "weights_modified": false
+}

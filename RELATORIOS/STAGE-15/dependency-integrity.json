@@ -1,0 +1,148 @@
+{
+  "id": "rachel-stage-15-dependency-integrity",
+  "manifests": {
+    "dependency_locking_ready": true,
+    "inventory": {
+      "desktop": [
+        "APP/sidecar/rachel_backend.spec",
+        "APP/src-tauri/tauri.conf.json"
+      ],
+      "node": [
+        "APP/package.json",
+        "APP/pnpm-lock.yaml"
+      ],
+      "python": [
+        "APP/sidecar/requirements.txt",
+        "RACHEL_CORE/pyproject.toml",
+        "RACHEL_CORE/uv.lock",
+        "RACHEL_PLATFORM/RUNTIME/pyproject.toml"
+      ],
+      "rust": [
+        "APP/src-tauri/Cargo.lock",
+        "APP/src-tauri/Cargo.toml"
+      ]
+    },
+    "node_lock_available": true,
+    "required": [
+      {
+        "exists": true,
+        "path": ".gitmodules"
+      },
+      {
+        "exists": true,
+        "path": "APP/package.json"
+      },
+      {
+        "exists": true,
+        "path": "APP/src-tauri/Cargo.toml"
+      },
+      {
+        "exists": true,
+        "path": "APP/src-tauri/tauri.conf.json"
+      },
+      {
+        "exists": true,
+        "path": "APP/sidecar/rachel_backend.spec"
+      }
+    ],
+    "required_present": true,
+    "rust_lock_available": true
+  },
+  "schema_version": 1,
+  "source": {
+    "branch": "agent/etapa-15-system-readiness-architecture-closure",
+    "head": "033624b407558b971129f6c051353e9f6035ffa1"
+  },
+  "stage": 15,
+  "step": "15/1C",
+  "submodules": {
+    "conflicted": 0,
+    "declared": 23,
+    "diverged": 0,
+    "expected": 23,
+    "healthy": true,
+    "missing_directories": 0,
+    "observed": 23,
+    "uninitialized": 0
+  },
+  "summary": {
+    "dependency_locking_ready": true,
+    "fully_reproducible_on_current_host": false,
+    "required_manifests_ready": true,
+    "required_toolchain_ready": false,
+    "submodules_healthy": true
+  },
+  "toolchain": {
+    "required": [
+      "git",
+      "node",
+      "pnpm",
+      "rustc",
+      "cargo",
+      "ffmpeg"
+    ],
+    "required_ready": false,
+    "tools": {
+      "cargo": {
+        "available": true,
+        "output": "cargo 1.97.1 (c980f4866 2026-06-30)",
+        "path": "C:\\Users\\Kauã\\.cargo\\bin\\cargo.EXE",
+        "returncode": 0
+      },
+      "ffmpeg": {
+        "available": false,
+        "output": null,
+        "path": null,
+        "returncode": null
+      },
+      "gh": {
+        "available": true,
+        "output": "gh version 2.97.0 (2026-07-31)",
+        "path": "C:\\Program Files\\GitHub CLI\\gh.EXE",
+        "returncode": 0
+      },
+      "git": {
+        "available": true,
+        "output": "git version 2.53.0.windows.3",
+        "path": "C:\\Program Files\\Git\\cmd\\git.EXE",
+        "returncode": 0
+      },
+      "node": {
+        "available": true,
+        "output": "v25.9.0",
+        "path": "C:\\Program Files\\nodejs\\node.EXE",
+        "returncode": 0
+      },
+      "npm": {
+        "available": false,
+        "output": "'C:\\Program' n�o � reconhecido como um comando interno",
+        "path": "C:\\Program Files\\nodejs\\npm.CMD",
+        "returncode": 1
+      },
+      "nvidia_smi": {
+        "available": false,
+        "output": null,
+        "path": null,
+        "returncode": null
+      },
+      "ollama": {
+        "available": true,
+        "output": "ollama version is 0.32.14",
+        "path": "C:\\Users\\Kauã\\AppData\\Local\\Programs\\Ollama\\ollama.EXE",
+        "returncode": 0
+      },
+      "pnpm": {
+        "available": true,
+        "output": "11.21.0",
+        "path": "C:\\Users\\Kauã\\AppData\\Roaming\\npm\\pnpm.CMD",
+        "returncode": 0
+      },
+      "rustc": {
+        "available": true,
+        "output": "rustc 1.97.1 (8bab26f4f 2026-07-14)",
+        "path": "C:\\Users\\Kauã\\.cargo\\bin\\rustc.EXE",
+        "returncode": 0
+      }
+    }
+  }
+}

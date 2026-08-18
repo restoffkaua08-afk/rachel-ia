@@ -1,0 +1,49 @@
+{
+  "id": "rachel-stage-15-portability-audit",
+  "machine_path_scan": {
+    "count": 1,
+    "operational_absolute_path_references": [
+      {
+        "matches": [
+          "C:\\\\Users\\\\KauÃ£\\\\Desktop\\\\Rachel IA\\\\AMBIENTES\\\\chatterbox",
+          "C:\\\\Users\\\\KauÃ£\\\\Desktop\\\\Rachel IA\\\\AMBIENTES\\\\docling",
+          "C:\\\\Users\\\\KauÃ£\\\\Desktop\\\\Rachel IA\\\\AMBIENTES\\\\dspy",
+          "C:\\\\Users\\\\KauÃ£\\\\Desktop\\\\Rachel IA\\\\AMBIENTES\\\\huggingface-speech-to-speech",
+          "C:\\\\Users\\\\KauÃ£\\\\Desktop\\\\Rachel IA\\\\AMBIENTES\\\\letta-code",
+          "C:\\\\Users\\\\KauÃ£\\\\Desktop\\\\Rachel IA\\\\AMBIENTES\\\\litgpt",
+          "C:\\\\Users\\\\KauÃ£\\\\Desktop\\\\Rachel IA\\\\AMBIENTES\\\\livekit-agent-starter",
+          "C:\\\\Users\\\\KauÃ£\\\\Desktop\\\\Rachel IA\\\\AMBIENTES\\\\livekit-agents",
+          "C:\\\\Users\\\\KauÃ£\\\\Desktop\\\\Rachel IA\\\\AMBIENTES\\\\mcp-python-sdk",
+          "C:\\\\Users\\\\KauÃ£\\\\Desktop\\\\Rachel IA\\\\AMBIENTES\\\\open-policy-agent"
+        ],
+        "path": "RACHEL_PLATFORM/CONFIG/organs.registry.json"
+      }
+    ]
+  },
+  "packaging_contract": {
+    "agent_config_bundle_declared": true,
+    "pyinstaller_available": true,
+    "pyinstaller_spec_exists": true,
+    "runtime_bundle_declared": true,
+    "tauri_config_exists": true,
+    "tauri_sidecar_declared": true
+  },
+  "portable_runtime": {
+    "exists": true,
+    "expected_sha256": "D386A244E70C75F2486BCD0FC8406249431677BA870084E1073B4223FC5A655D",
+    "hash_valid": true,
+    "sha256": "D386A244E70C75F2486BCD0FC8406249431677BA870084E1073B4223FC5A655D"
+  },
+  "repository_hygiene": {
+    "suspicious_count": 0,
+    "suspicious_tracked_files": []
+  },
+  "schema_version": 1,
+  "stage": 15,
+  "step": "15/1C",
+  "summary": {
+    "portable_hygiene_ready": false,
+    "portable_packaging_ready": true,
+    "portable_runtime_valid": true
+  }
+}

@@ -16,6 +16,7 @@ from runtime_paths import CONFIG
 from arya_runtime import run as arya_run, safe_cwd
 from bran_cognitive import CognitiveMemory
 from cognitive_runtime import DanyEvaluator
+from dev_runtime import DevRuntime
 from filesystem_runtime import FilesystemRuntime
 from git_runtime import GitRuntime
 from knowledge_runtime import VisaoIngestor, status as knowledge_status
@@ -58,11 +59,7 @@ def _load_registry() -> dict[str, ToolSpec]:
     }
 
 
-def _require_text(
-    arguments: dict[str, Any],
-    key: str,
-    maximum: int = 50_000,
-) -> str:
+def _require_text(arguments: dict[str, Any], key: str, maximum: int = 50_000) -> str:
     value = arguments.get(key)
     if not isinstance(value, str) or not value.strip():
         raise ToolError(f"'{key}' must be a non-empty string")
@@ -72,10 +69,7 @@ def _require_text(
 
 
 def _optional_text(
-    arguments: dict[str, Any],
-    key: str,
-    default: str,
-    maximum: int = 5_000,
+    arguments: dict[str, Any], key: str, default: str, maximum: int = 5_000
 ) -> str:
     value = arguments.get(key, default)
     if not isinstance(value, str):
@@ -85,21 +79,14 @@ def _optional_text(
     return value.strip() or default
 
 
-def _optional_bool(
-    arguments: dict[str, Any],
-    key: str,
-    default: bool = False,
-) -> bool:
+def _optional_bool(arguments: dict[str, Any], key: str, default: bool = False) -> bool:
     value = arguments.get(key, default)
     if not isinstance(value, bool):
         raise ToolError(f"'{key}' must be a boolean")
     return value
 
 
-def _optional_string_list(
-    arguments: dict[str, Any],
-    key: str,
-) -> list[str] | None:
+def _optional_string_list(arguments: dict[str, Any], key: str) -> list[str] | None:
     value = arguments.get(key)
     if value is None:
         return None
@@ -108,10 +95,7 @@ def _optional_string_list(
     return value
 
 
-def _required_string_list(
-    arguments: dict[str, Any],
-    key: str,
-) -> list[str]:
+def _required_string_list(arguments: dict[str, Any], key: str) -> list[str]:
     value = _optional_string_list(arguments, key)
     if not value:
         raise ToolError(f"'{key}' must contain at least one string")
@@ -138,6 +122,7 @@ class ToolCoordinator:
         approvals: ApprovalStore | None = None,
         filesystem: FilesystemRuntime | None = None,
         git: GitRuntime | None = None,
+        dev: DevRuntime | None = None,
     ) -> None:
         self.registry = _load_registry()
         self.cyber = CyberPolicy()
@@ -147,6 +132,7 @@ class ToolCoordinator:
         self.approvals = approvals or ApprovalStore()
         self.filesystem = filesystem or FilesystemRuntime()
         self.git = git or GitRuntime(self.filesystem)
+        self.dev = dev or DevRuntime(self.filesystem)
 
     def list_tools(self) -> list[dict[str, Any]]:
         return [asdict(spec) for spec in self.registry.values()]
@@ -157,14 +143,13 @@ class ToolCoordinator:
             raise ToolError(f"Unknown tool: {name}")
         return asdict(spec)
 
-    def _effective_effect(
-        self,
-        spec: ToolSpec,
-        arguments: dict[str, Any],
-    ) -> str:
-        """Return the Cyber effect for the exact target of this invocation."""
-        scoped_family = spec.name.startswith("filesystem.") or spec.name.startswith("git.")
-        if scoped_family and spec.name != "filesystem.status":
+    def _effective_effect(self, spec: ToolSpec, arguments: dict[str, Any]) -> str:
+        scoped_family = (
+            spec.name.startswith("filesystem.")
+            or spec.name.startswith("git.")
+            or spec.name.startswith("dev.")
+        )
+        if scoped_family and spec.name not in {"filesystem.status", "dev.detect"}:
             scope = str(arguments.get("scope", "workspace")).strip().casefold()
             self.filesystem.root(scope)
             if scope != "workspace" and spec.effect in {
@@ -174,6 +159,11 @@ class ToolCoordinator:
                 "search",
                 "status",
             }:
+                return "external"
+        if spec.name == "dev.detect":
+            scope = str(arguments.get("scope", "workspace")).strip().casefold()
+            self.filesystem.root(scope)
+            if scope != "workspace":
                 return "external"
         return spec.effect
 
@@ -186,11 +176,9 @@ class ToolCoordinator:
         spec = self.registry.get(name)
         if spec is None:
             raise ToolError(f"Unknown tool: {name}")
-
         args = arguments or {}
         if not isinstance(args, dict):
             raise ToolError("Tool arguments must be a JSON object")
-
         try:
             effective_effect = self._effective_effect(spec, args)
         except Exception as error:
@@ -200,10 +188,7 @@ class ToolCoordinator:
         authorized = False
         if approval_id:
             consumed_approval = self.approvals.consume(
-                approval_id,
-                name,
-                effective_effect,
-                args,
+                approval_id, name, effective_effect, args
             )
             authorized = True
 
@@ -297,11 +282,7 @@ class ToolCoordinator:
         duration_ms = int((time.perf_counter() - started) * 1000)
         completion = self.king.publish(
             "tool.completed",
-            {
-                "tool": name,
-                "member": spec.member,
-                "duration_ms": duration_ms,
-            },
+            {"tool": name, "member": spec.member, "duration_ms": duration_ms},
             sender=spec.member,
             recipient="ned",
         )
@@ -445,6 +426,21 @@ class ToolCoordinator:
                 authorized,
             )
 
+        if name == "dev.detect":
+            return self.dev.detect(
+                _require_text(args, "scope", 50),
+                _optional_text(args, "path", ".", 1_000),
+            )
+        if name in {"dev.test", "dev.build", "dev.lint", "dev.typecheck"}:
+            operation = name.split(".", 1)[1]
+            return self.dev.run(
+                _require_text(args, "scope", 50),
+                _optional_text(args, "path", ".", 1_000),
+                operation,
+                authorized,
+                _bounded_int(args, "timeout_seconds", 300, 10, 900),
+            )
+
         if name == "arya.project.review":
             result = ProjectQuality().review(_require_text(args, "project", 80))
             result["dany"] = asdict(
@@ -453,24 +449,20 @@ class ToolCoordinator:
             return result
         if name == "arya.project.report":
             return ProjectQuality().write_report(
-                _require_text(args, "project", 80),
-                authorized,
+                _require_text(args, "project", 80), authorized
             )
         if name == "arya.project.status":
             return ProjectWorkspace().status()
         if name == "arya.project.create":
             return ProjectWorkspace().create_project(
-                _require_text(args, "project", 80),
-                authorized,
+                _require_text(args, "project", 80), authorized
             )
         if name == "arya.project.write":
             files = args.get("files")
             if not isinstance(files, list):
                 raise ToolError("'files' must be an array")
             return ProjectWorkspace().write_files(
-                _require_text(args, "project", 80),
-                files,
-                authorized,
+                _require_text(args, "project", 80), files, authorized
             )
         if name == "arya.project.inspect":
             return ProjectWorkspace().inspect(_require_text(args, "project", 80))
@@ -547,9 +539,7 @@ class ToolCoordinator:
                 raise ToolError("'cwd' must be a string or null")
             return arya_run(command, raw_arguments, cwd, authorized)
         if name == "king.recent":
-            return KingEventBus().recent(
-                _bounded_int(args, "limit", 20, 1, 200)
-            )
+            return KingEventBus().recent(_bounded_int(args, "limit", 20, 1, 200))
         if name == "dany.evaluate":
             return asdict(DanyEvaluator().evaluate(_require_text(args, "content")))
         if name == "cyber.check":
@@ -597,8 +587,7 @@ def main() -> int:
             if args.arguments_base64:
                 try:
                     raw_arguments = base64.b64decode(
-                        args.arguments_base64.encode("ascii"),
-                        validate=True,
+                        args.arguments_base64.encode("ascii"), validate=True
                     ).decode("utf-8")
                 except (ValueError, UnicodeDecodeError) as error:
                     raise ToolError("Invalid Base64 arguments") from error

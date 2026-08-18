@@ -17,6 +17,7 @@ from arya_runtime import run as arya_run, safe_cwd
 from bran_cognitive import CognitiveMemory
 from cognitive_runtime import DanyEvaluator
 from filesystem_runtime import FilesystemRuntime
+from git_runtime import GitRuntime
 from knowledge_runtime import VisaoIngestor, status as knowledge_status
 from project_generator import ProjectGenerator
 from project_quality import ProjectQuality
@@ -84,6 +85,39 @@ def _optional_text(
     return value.strip() or default
 
 
+def _optional_bool(
+    arguments: dict[str, Any],
+    key: str,
+    default: bool = False,
+) -> bool:
+    value = arguments.get(key, default)
+    if not isinstance(value, bool):
+        raise ToolError(f"'{key}' must be a boolean")
+    return value
+
+
+def _optional_string_list(
+    arguments: dict[str, Any],
+    key: str,
+) -> list[str] | None:
+    value = arguments.get(key)
+    if value is None:
+        return None
+    if not isinstance(value, list) or not all(isinstance(item, str) for item in value):
+        raise ToolError(f"'{key}' must be an array of strings or null")
+    return value
+
+
+def _required_string_list(
+    arguments: dict[str, Any],
+    key: str,
+) -> list[str]:
+    value = _optional_string_list(arguments, key)
+    if not value:
+        raise ToolError(f"'{key}' must contain at least one string")
+    return value
+
+
 def _bounded_int(
     arguments: dict[str, Any],
     key: str,
@@ -103,6 +137,7 @@ class ToolCoordinator:
         memory: CognitiveMemory | None = None,
         approvals: ApprovalStore | None = None,
         filesystem: FilesystemRuntime | None = None,
+        git: GitRuntime | None = None,
     ) -> None:
         self.registry = _load_registry()
         self.cyber = CyberPolicy()
@@ -111,6 +146,7 @@ class ToolCoordinator:
         self.bran = memory or CognitiveMemory()
         self.approvals = approvals or ApprovalStore()
         self.filesystem = filesystem or FilesystemRuntime()
+        self.git = git or GitRuntime(self.filesystem)
 
     def list_tools(self) -> list[dict[str, Any]]:
         return [asdict(spec) for spec in self.registry.values()]
@@ -126,15 +162,10 @@ class ToolCoordinator:
         spec: ToolSpec,
         arguments: dict[str, Any],
     ) -> str:
-        """Return the effect Cyber must authorize for this exact target.
-
-        Static tool effects remain the default. Read-like filesystem operations
-        outside the internal workspace are upgraded to `external`, preventing a
-        nominally read-only tool from silently inspecting personal user folders.
-        """
-        if spec.name.startswith("filesystem.") and spec.name != "filesystem.status":
+        """Return the Cyber effect for the exact target of this invocation."""
+        scoped_family = spec.name.startswith("filesystem.") or spec.name.startswith("git.")
+        if scoped_family and spec.name != "filesystem.status":
             scope = str(arguments.get("scope", "workspace")).strip().casefold()
-            # Validate the named scope before creating an approval request.
             self.filesystem.root(scope)
             if scope != "workspace" and spec.effect in {
                 "read",
@@ -361,6 +392,59 @@ class ToolCoordinator:
                 _require_text(args, "path", 1_000),
                 authorized,
             )
+
+        if name == "git.status":
+            return self.git.status(
+                _require_text(args, "scope", 50),
+                _optional_text(args, "path", ".", 1_000),
+            )
+        if name == "git.diff":
+            return self.git.diff(
+                _require_text(args, "scope", 50),
+                _optional_text(args, "path", ".", 1_000),
+                staged=_optional_bool(args, "staged", False),
+                files=_optional_string_list(args, "files"),
+            )
+        if name == "git.log":
+            return self.git.log(
+                _require_text(args, "scope", 50),
+                _optional_text(args, "path", ".", 1_000),
+                _bounded_int(args, "limit", 20, 1, 100),
+            )
+        if name == "git.branches":
+            return self.git.branches(
+                _require_text(args, "scope", 50),
+                _optional_text(args, "path", ".", 1_000),
+            )
+        if name == "git.stage":
+            return self.git.stage(
+                _require_text(args, "scope", 50),
+                _optional_text(args, "path", ".", 1_000),
+                _required_string_list(args, "files"),
+                authorized,
+            )
+        if name == "git.commit":
+            return self.git.commit(
+                _require_text(args, "scope", 50),
+                _optional_text(args, "path", ".", 1_000),
+                _require_text(args, "message", 500),
+                authorized,
+            )
+        if name == "git.branch.create":
+            return self.git.create_branch(
+                _require_text(args, "scope", 50),
+                _optional_text(args, "path", ".", 1_000),
+                _require_text(args, "branch", 200),
+                authorized,
+            )
+        if name == "git.checkout":
+            return self.git.checkout(
+                _require_text(args, "scope", 50),
+                _optional_text(args, "path", ".", 1_000),
+                _require_text(args, "branch", 200),
+                authorized,
+            )
+
         if name == "arya.project.review":
             result = ProjectQuality().review(_require_text(args, "project", 80))
             result["dany"] = asdict(

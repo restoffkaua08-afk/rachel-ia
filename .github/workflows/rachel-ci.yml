@@ -21,25 +21,21 @@ jobs:
     name: Python Core + Runtime contracts
     runs-on: windows-latest
     timeout-minutes: 25
-
     steps:
       - name: Checkout
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
           submodules: false
-
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
           python-version: '3.12'
-
       - name: Install Rachel Core
         shell: pwsh
         run: |
           python -m pip install --upgrade pip
           python -m pip install -e ./RACHEL_CORE
-
       - name: Compile Python sources
         shell: pwsh
         run: |
@@ -49,7 +45,6 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -m compileall -q APP/bridge
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
       - name: Validate JSON configuration
         shell: pwsh
         run: |
@@ -71,13 +66,11 @@ jobs:
           print(f"Validated {len(files)} JSON configuration files")
           '@ | python -
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
       - name: Rachel Core full unit suite
         shell: pwsh
         run: |
           python -m unittest discover -s RACHEL_CORE/tests -p "test_*.py"
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
-
       - name: Critical runtime regression suite
         shell: pwsh
         run: |
@@ -89,6 +82,7 @@ jobs:
             "test_desktop_streaming_runtime.py",
             "test_filesystem_runtime.py",
             "test_git_runtime.py",
+            "test_dev_runtime.py",
             "test_bran_cognitive.py",
             "test_security_contract.py",
             "test_security_runtime.py",

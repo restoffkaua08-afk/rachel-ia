@@ -1,6 +1,6 @@
 # RACHEL Professional Agent Evolution
 
-Status inicial: **AUTORIZADO — Lote 0 em implementação**
+Status inicial: **Lote 0 concluído e validado no CI**
 
 Base do ciclo: `main@69efdc5ce239b03098f02eb613e00cc02cd8c88d`
 
@@ -101,7 +101,14 @@ Objetivo: criar proteção antes das grandes mudanças.
 - [x] Build do frontend no CI.
 - [x] `cargo check` do Tauri no CI.
 - [x] Registrar este roadmap no repositório.
-- [ ] Confirmar primeira execução verde do workflow.
+- [x] Confirmar primeira execução verde do workflow.
+
+Validação do Lote 0:
+
+- Python Core + Runtime contracts: PASS
+- Desktop frontend build: PASS
+- Tauri Rust check: PASS
+- sidecar real não foi versionado; o CI usa placeholder efêmero somente para satisfazer o `externalBin` durante `cargo check`
 
 ### Lote 1 — Cérebro único e confiabilidade
 

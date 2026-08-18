@@ -166,7 +166,9 @@ class ToolCoordinator:
         if scoped_family and spec.name not in scope_free:
             scope = str(arguments.get("scope", "workspace")).strip().casefold()
             self.filesystem.root(scope)
-            if scope != "workspace" and spec.effect in {"read", "inspect", "list", "search", "status"}:
+            low_risk = spec.effect in {"read", "inspect", "list", "search", "status"}
+            already_granted = scope in self.filesystem.session_scopes
+            if scope != "workspace" and not already_granted and low_risk:
                 return "external"
         return spec.effect
 

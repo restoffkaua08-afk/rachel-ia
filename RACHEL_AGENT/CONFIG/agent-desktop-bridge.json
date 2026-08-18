@@ -1,0 +1,81 @@
+{
+  "bridge": {
+    "approval_consumption_action_available": false,
+    "approval_creation_action_available": false,
+    "browser_execution_action_available": false,
+    "budget_action": "agent_budgets",
+    "dashboard_key": "agent",
+    "execution_actions": [],
+    "execution_envelope_action": "agent_execution_envelope",
+    "goal_execution_action_available": false,
+    "path": "APP/bridge/rachel_bridge.py",
+    "read_actions": [
+      "agent_status",
+      "agent_dependencies",
+      "agent_authority",
+      "agent_readiness",
+      "agent_blockers",
+      "agent_budgets",
+      "agent_execution_envelope"
+    ],
+    "task_execution_action_available": false,
+    "tool_execution_action_available": false
+  },
+  "dashboard": {
+    "budget_summary_available": true,
+    "execution_envelope_summary_available": true,
+    "integrated": true,
+    "key": "agent",
+    "payload": "AgentRuntime.status",
+    "read_only_agent_payload": true
+  },
+  "execution": {
+    "approval_consumption": false,
+    "approval_creation": false,
+    "background_execution": false,
+    "browser_execution": false,
+    "credential_use": false,
+    "external_publish": false,
+    "goal_decomposition": false,
+    "goal_execution": false,
+    "self_modification": false,
+    "task_execution": false,
+    "task_plan_creation": false,
+    "tool_execution": false,
+    "training_execution": false,
+    "unattended_execution": false,
+    "weights_modified": false
+  },
+  "id": "rachel-agent-desktop-bridge-v1",
+  "next": {
+    "execution_required": false,
+    "goal": "Rebuild the frozen Portable Runtime and validate seven Agent read actions, dashboard, budgets and execution envelope.",
+    "step": "14/1G"
+  },
+  "owner": "rachel",
+  "packaging": {
+    "agent_config_bundled": true,
+    "frozen_rebuild_performed": false,
+    "frozen_validation_state": "stale-after-source-change",
+    "historical_frozen_validation": {
+      "sha256": "6CEDDF1EA2626AF2CED3E531883B4EAED50F31ED97F0C52954DAE1C6A1F866F1",
+      "source_commit": "9595d01c179745b1cd7aae07a8079abb8fd163fc",
+      "state": "historical"
+    },
+    "runtime_hidden_import_via_src_glob": true,
+    "runtime_source_bundled": true,
+    "spec": "APP/sidecar/rachel_backend.spec"
+  },
+  "runtime": {
+    "class": "AgentRuntime",
+    "database_access": false,
+    "mode": "inspection-only",
+    "model_access": false,
+    "module": "RACHEL_PLATFORM/RUNTIME/SRC/agent_runtime.py",
+    "operational_runtime_imports": false,
+    "read_only": true
+  },
+  "schema_version": 1,
+  "stage": 14,
+  "state": "integrated-read-only-source"
+}

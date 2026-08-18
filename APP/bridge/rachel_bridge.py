@@ -287,6 +287,9 @@ def dashboard() -> dict[str, Any]:
     from evaluation_plan_runtime import (
         EvaluationPlanRuntime,
     )
+    from agent_runtime import (
+        AgentRuntime,
+    )
 
     return {
         "runtime": NedCognitiveBridge().status(),
@@ -342,6 +345,10 @@ def dashboard() -> dict[str, Any]:
         ),
         "evaluation_plan": (
             EvaluationPlanRuntime()
+            .status()
+        ),
+        "agent": (
+            AgentRuntime()
             .status()
         ),
         "health": health_snapshot(),
@@ -1517,6 +1524,94 @@ def execute(
             .verify_manifest(
                 run_id
             )
+        )
+
+
+    if action == "agent_status":
+        from agent_runtime import (
+            AgentRuntime,
+        )
+
+        return (
+            AgentRuntime()
+            .status()
+        )
+
+
+    if action == "agent_dependencies":
+        from agent_runtime import (
+            AgentRuntime,
+        )
+
+        return (
+            AgentRuntime()
+            .dependencies()
+        )
+
+
+    if action == "agent_authority":
+        from agent_runtime import (
+            AgentRuntime,
+        )
+
+        return (
+            AgentRuntime()
+            .authority_map()
+        )
+
+
+    if action == "agent_readiness":
+        from agent_runtime import (
+            AgentRuntime,
+        )
+
+        return (
+            AgentRuntime()
+            .readiness()
+        )
+
+
+    if action == "agent_blockers":
+        from agent_runtime import (
+            AgentRuntime,
+        )
+
+        service = AgentRuntime()
+
+        items = (
+            service.blockers()
+        )
+
+        return {
+            "items": items,
+            "count": len(
+                items
+            ),
+            "ready": False,
+            "read_only": True,
+            "execution_enabled": False,
+        }
+
+
+    if action == "agent_budgets":
+        from agent_runtime import (
+            AgentRuntime,
+        )
+
+        return (
+            AgentRuntime()
+            .budgets()
+        )
+
+
+    if action == "agent_execution_envelope":
+        from agent_runtime import (
+            AgentRuntime,
+        )
+
+        return (
+            AgentRuntime()
+            .execution_envelope()
         )
 
 

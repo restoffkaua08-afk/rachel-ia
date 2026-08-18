@@ -1,0 +1,101 @@
+{
+  "agent": {
+    "authority_ready": true,
+    "default_tool_policy": "deny",
+    "dependencies_available": 5,
+    "dependencies_total": 5,
+    "effect_policies": 14,
+    "execution_actions": 0,
+    "forbidden_actions_accepted": 0,
+    "forbidden_actions_tested": 9,
+    "read_action_mutations": 0,
+    "read_actions": 7,
+    "registered_tools": 22
+  },
+  "budgets": {
+    "budget_enforcement_enabled": false,
+    "contract_ready": true,
+    "defaults": 0,
+    "dimensions": 4,
+    "goal_budget_materialized": false,
+    "goal_budget_resolved": false,
+    "runtime_accounting_enabled": false,
+    "strategy": "explicit-per-goal-no-default"
+  },
+  "bundle": {
+    "agent_desktop_bridge": true,
+    "agent_runtime_policy": true,
+    "autonomy_budget_policy": true,
+    "execution_envelope_policy": true,
+    "required_config_available": 4,
+    "required_config_count": 4
+  },
+  "evidence_policy": {
+    "final_frozen_sha_remains_authoritative": true,
+    "post_build_closure_files_bundled": false,
+    "runtime_or_bundle_mutated_after_final_build": false
+  },
+  "execution_envelope": {
+    "automatic_continue": false,
+    "automatic_replan": false,
+    "automatic_retry": false,
+    "checkpoint_required": true,
+    "contract_ready": true,
+    "execution_enabled": false,
+    "existing_executor": "ned-task-executor",
+    "existing_limit_parameter": "maximum_steps",
+    "maximum_completed_steps_per_slice": 1
+  },
+  "id": "rachel-stage-14-final-frozen-validation",
+  "portable_runtime": {
+    "historical_sha256": "6CEDDF1EA2626AF2CED3E531883B4EAED50F31ED97F0C52954DAE1C6A1F866F1",
+    "historical_sha_reused": false,
+    "huggingface_outbound_requests": 0,
+    "offline_build": true,
+    "self_contained": true,
+    "sha256": "D386A244E70C75F2486BCD0FC8406249431677BA870084E1073B4223FC5A655D",
+    "size_mb": 405.46
+  },
+  "readiness": {
+    "blocked_phase": "agent-execution",
+    "blocked_phase_count": 1,
+    "blocker_count": 5,
+    "blockers": [
+      "agent-loop-execution-disabled",
+      "agent-runtime-execution-disabled",
+      "goal-decomposition-disabled",
+      "task-execution-by-agent-disabled",
+      "tool-execution-by-agent-disabled"
+    ],
+    "phase_count": 5,
+    "ready": false,
+    "ready_phase_count": 4
+  },
+  "regression": {
+    "agent_bridge_tests": 10,
+    "all_passed": true,
+    "rachel_core_tests": 59,
+    "runtime_tests": 248,
+    "stage_13_closure_tests": 11,
+    "stage_14_tests": 41
+  },
+  "runtime_source_commit": "f4d5e4cd7944c2367e3f4fb017de5d9f9d53f60c",
+  "safety": {
+    "approval_mutation": false,
+    "background_execution": false,
+    "browser_execution": false,
+    "goal_decomposition": false,
+    "goal_execution": false,
+    "self_modification": false,
+    "task_execution": false,
+    "tool_execution": false,
+    "training_execution": false,
+    "unattended_execution": false,
+    "weights_modified": false
+  },
+  "schema_version": 1,
+  "stage": 14,
+  "state": "validated",
+  "step": "14/1G",
+  "validation_type": "final-frozen-self-contained"
+}

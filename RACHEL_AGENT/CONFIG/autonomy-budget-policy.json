@@ -1,0 +1,68 @@
+{
+  "accounting": {
+    "budget_consumption_enabled": false,
+    "budget_enforcement_enabled": false,
+    "budget_persistence_enabled": false,
+    "runtime_accounting_enabled": false
+  },
+  "admission": {
+    "agent_may_expand_own_budget": false,
+    "all_dimensions_required": true,
+    "automatic_budget_expansion": false,
+    "budget_expansion_requires_new_admission": true,
+    "budget_must_be_explicit": true,
+    "invalid_value_behavior": "deny",
+    "missing_dimension_behavior": "deny",
+    "model_may_choose_budget": false
+  },
+  "contract_ready": true,
+  "defaults_allowed": false,
+  "dimensions": [
+    {
+      "default": null,
+      "id": "maximum_iterations",
+      "required": true,
+      "unit": "agent-loop-iterations"
+    },
+    {
+      "default": null,
+      "id": "maximum_tool_calls",
+      "required": true,
+      "unit": "tool-calls"
+    },
+    {
+      "default": null,
+      "id": "wall_clock_limit_seconds",
+      "required": true,
+      "unit": "seconds"
+    },
+    {
+      "default": null,
+      "id": "maximum_consecutive_failures",
+      "required": true,
+      "unit": "failures"
+    }
+  ],
+  "execution": {
+    "agent_loop_enabled": false,
+    "background_execution_enabled": false,
+    "goal_execution_enabled": false,
+    "task_execution_enabled": false,
+    "tool_execution_enabled": false,
+    "unattended_execution_enabled": false
+  },
+  "goal_budget_materialized": false,
+  "goal_budget_required_before_execution": true,
+  "goal_budget_resolved": false,
+  "id": "rachel-agent-autonomy-budget-policy-v1",
+  "next": {
+    "goal": "Expose budget and execution-envelope inspection through the read-only bridge.",
+    "step": "14/1F"
+  },
+  "owner": "rachel",
+  "purpose": "Define the dimensions that every future Agent goal must budget before execution. The policy intentionally provides no implicit numerical defaults.",
+  "schema_version": 1,
+  "stage": 14,
+  "state": "contract-defined",
+  "strategy": "explicit-per-goal-no-default"
+}

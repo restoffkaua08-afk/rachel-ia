@@ -56,27 +56,18 @@ jobs:
           @'
           import json
           from pathlib import Path
-
-          roots = [
-              Path("RACHEL_PLATFORM/CONFIG"),
-              Path("RACHEL_AGENT/CONFIG"),
-              Path("RACHEL_EVALUATION/CONFIG"),
-          ]
-
+          roots = [Path("RACHEL_PLATFORM/CONFIG"), Path("RACHEL_AGENT/CONFIG"), Path("RACHEL_EVALUATION/CONFIG")]
           files = []
           for root in roots:
               if root.is_dir():
                   files.extend(sorted(root.rglob("*.json")))
-
           if not files:
               raise SystemExit("No JSON configuration files found")
-
           for path in files:
               with path.open("r", encoding="utf-8-sig") as handle:
                   value = json.load(handle)
               if value is None:
                   raise SystemExit(f"Invalid empty JSON root: {path}")
-
           print(f"Validated {len(files)} JSON configuration files")
           '@ | python -
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -97,6 +88,7 @@ jobs:
             "test_desktop_resident_runtime.py",
             "test_desktop_streaming_runtime.py",
             "test_filesystem_runtime.py",
+            "test_git_runtime.py",
             "test_bran_cognitive.py",
             "test_security_contract.py",
             "test_security_runtime.py",
@@ -113,7 +105,6 @@ jobs:
             "test_voice_session.py",
             "test_realtime_voice.py"
           )
-
           foreach ($pattern in $tests) {
             Write-Host "=== $pattern ==="
             python -m unittest discover -s RACHEL_PLATFORM/RUNTIME/TESTS -p $pattern
@@ -124,31 +115,26 @@ jobs:
     name: Desktop frontend build
     runs-on: windows-latest
     timeout-minutes: 20
-
     steps:
       - name: Checkout
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
           submodules: false
-
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
         with:
           version: 11.21.0
           run_install: false
-
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
           node-version: '25.9.0'
           cache: pnpm
           cache-dependency-path: APP/pnpm-lock.yaml
-
       - name: Install frontend dependencies
         working-directory: APP
         run: pnpm install --frozen-lockfile
-
       - name: Build frontend
         working-directory: APP
         run: pnpm build
@@ -157,17 +143,14 @@ jobs:
     name: Tauri Rust check
     runs-on: windows-latest
     timeout-minutes: 25
-
     steps:
       - name: Checkout
         uses: actions/checkout@v6
         with:
           fetch-depth: 1
           submodules: false
-
       - name: Setup Rust
         uses: dtolnay/rust-toolchain@stable
-
       - name: Create ephemeral sidecar placeholder
         shell: pwsh
         run: |
@@ -175,6 +158,5 @@ jobs:
           New-Item -ItemType Directory -Force -Path (Split-Path $target) | Out-Null
           [IO.File]::WriteAllBytes($target, [byte[]]@())
           Write-Host "Created CI-only placeholder: $target"
-
       - name: Cargo check
         run: cargo check --manifest-path APP/src-tauri/Cargo.toml --locked

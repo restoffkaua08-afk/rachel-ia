@@ -22,6 +22,7 @@ from git_runtime import GitRuntime
 from knowledge_runtime import VisaoIngestor, status as knowledge_status
 from process_runtime import ProcessRuntime
 from project_generator import ProjectGenerator
+from project_intelligence_runtime import ProjectIntelligenceRuntime
 from project_quality import ProjectQuality
 from project_workspace import ProjectWorkspace
 from research_runtime import ResearchEngine
@@ -45,9 +46,7 @@ class ToolSpec:
 
 
 def _load_registry() -> dict[str, ToolSpec]:
-    payload = json.loads(
-        (CONFIG / "tools.registry.json").read_text(encoding="utf-8-sig")
-    )
+    payload = json.loads((CONFIG / "tools.registry.json").read_text(encoding="utf-8-sig"))
     return {
         item["name"]: ToolSpec(
             name=item["name"],
@@ -76,6 +75,17 @@ def _optional_text(arguments: dict[str, Any], key: str, default: str, maximum: i
     if len(value) > maximum:
         raise ToolError(f"'{key}' exceeds {maximum} characters")
     return value.strip() or default
+
+
+def _optional_nullable_text(arguments: dict[str, Any], key: str, maximum: int = 5_000) -> str | None:
+    value = arguments.get(key)
+    if value is None:
+        return None
+    if not isinstance(value, str):
+        raise ToolError(f"'{key}' must be a string or null")
+    if len(value) > maximum:
+        raise ToolError(f"'{key}' exceeds {maximum} characters")
+    return value.strip() or None
 
 
 def _optional_bool(arguments: dict[str, Any], key: str, default: bool = False) -> bool:
@@ -117,6 +127,7 @@ class ToolCoordinator:
         git: GitRuntime | None = None,
         dev: DevRuntime | None = None,
         processes: ProcessRuntime | None = None,
+        projects: ProjectIntelligenceRuntime | None = None,
     ) -> None:
         self.registry = _load_registry()
         self.cyber = CyberPolicy()
@@ -128,6 +139,7 @@ class ToolCoordinator:
         self.git = git or GitRuntime(self.filesystem)
         self.dev = dev or DevRuntime(self.filesystem)
         self.processes = processes or ProcessRuntime(self.filesystem)
+        self.projects = projects or ProjectIntelligenceRuntime(self.filesystem, self.bran)
 
     def list_tools(self) -> list[dict[str, Any]]:
         return [asdict(spec) for spec in self.registry.values()]
@@ -143,17 +155,14 @@ class ToolCoordinator:
             spec.name.startswith("filesystem.")
             or spec.name.startswith("git.")
             or spec.name.startswith("dev.")
+            or spec.name.startswith("project.")
             or spec.name == "process.start"
         )
-        if scoped_family and spec.name not in {"filesystem.status", "dev.detect"}:
+        scope_free = {"filesystem.status"}
+        if scoped_family and spec.name not in scope_free:
             scope = str(arguments.get("scope", "workspace")).strip().casefold()
             self.filesystem.root(scope)
             if scope != "workspace" and spec.effect in {"read", "inspect", "list", "search", "status"}:
-                return "external"
-        if spec.name == "dev.detect":
-            scope = str(arguments.get("scope", "workspace")).strip().casefold()
-            self.filesystem.root(scope)
-            if scope != "workspace":
                 return "external"
         return spec.effect
 
@@ -182,7 +191,10 @@ class ToolCoordinator:
             sender="ned",
             recipient=spec.member,
         )
-        self.jhon.write("info", "tools", "tool.requested", tool=name, member=spec.member, effect=effective_effect, authorized=authorized)
+        self.jhon.write(
+            "info", "tools", "tool.requested",
+            tool=name, member=spec.member, effect=effective_effect, authorized=authorized,
+        )
 
         if not decision.allowed:
             self.jhon.write("warning", "cyber", "tool.blocked", tool=name, risk=decision.risk, effect=effective_effect)
@@ -243,86 +255,88 @@ class ToolCoordinator:
         }
 
     def _execute(self, name: str, args: dict[str, Any], authorized: bool) -> Any:
+        scope = lambda: _require_text(args, "scope", 50)
+        path = lambda: _optional_text(args, "path", ".", 1_000)
+
         if name == "filesystem.status":
             return self.filesystem.describe()
         if name == "filesystem.list":
-            return self.filesystem.list(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000))
+            return self.filesystem.list(scope(), path())
         if name == "filesystem.stat":
-            return self.filesystem.stat(_require_text(args, "scope", 50), _require_text(args, "path", 1_000))
+            return self.filesystem.stat(scope(), _require_text(args, "path", 1_000))
         if name == "filesystem.read":
-            return self.filesystem.read(_require_text(args, "scope", 50), _require_text(args, "path", 1_000))
+            return self.filesystem.read(scope(), _require_text(args, "path", 1_000))
         if name == "filesystem.search":
-            return self.filesystem.search(
-                _require_text(args, "scope", 50),
-                _require_text(args, "query", 2_000),
-                _optional_text(args, "path", ".", 1_000),
-                _bounded_int(args, "limit", 50, 1, 200),
-            )
+            return self.filesystem.search(scope(), _require_text(args, "query", 2_000), path(), _bounded_int(args, "limit", 50, 1, 200))
         if name == "filesystem.mkdir":
-            return self.filesystem.mkdir(_require_text(args, "scope", 50), _require_text(args, "path", 1_000), authorized)
+            return self.filesystem.mkdir(scope(), _require_text(args, "path", 1_000), authorized)
         if name == "filesystem.write":
-            return self.filesystem.write(_require_text(args, "scope", 50), _require_text(args, "path", 1_000), _require_text(args, "content", 1_000_000), authorized)
+            return self.filesystem.write(scope(), _require_text(args, "path", 1_000), _require_text(args, "content", 1_000_000), authorized)
         if name == "filesystem.patch":
-            return self.filesystem.patch(_require_text(args, "scope", 50), _require_text(args, "path", 1_000), _require_text(args, "old", 500_000), str(args.get("new", "")), authorized)
+            return self.filesystem.patch(scope(), _require_text(args, "path", 1_000), _require_text(args, "old", 500_000), str(args.get("new", "")), authorized)
         if name == "filesystem.copy":
-            return self.filesystem.copy(_require_text(args, "scope", 50), _require_text(args, "source", 1_000), _require_text(args, "destination", 1_000), authorized)
+            return self.filesystem.copy(scope(), _require_text(args, "source", 1_000), _require_text(args, "destination", 1_000), authorized)
         if name == "filesystem.move":
-            return self.filesystem.move(_require_text(args, "scope", 50), _require_text(args, "source", 1_000), _require_text(args, "destination", 1_000), authorized)
+            return self.filesystem.move(scope(), _require_text(args, "source", 1_000), _require_text(args, "destination", 1_000), authorized)
         if name == "filesystem.delete":
-            return self.filesystem.delete(_require_text(args, "scope", 50), _require_text(args, "path", 1_000), authorized)
+            return self.filesystem.delete(scope(), _require_text(args, "path", 1_000), authorized)
 
         if name == "git.status":
-            return self.git.status(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000))
+            return self.git.status(scope(), path())
         if name == "git.diff":
-            return self.git.diff(
-                _require_text(args, "scope", 50),
-                _optional_text(args, "path", ".", 1_000),
-                staged=_optional_bool(args, "staged", False),
-                files=_optional_string_list(args, "files"),
-            )
+            return self.git.diff(scope(), path(), staged=_optional_bool(args, "staged", False), files=_optional_string_list(args, "files"))
         if name == "git.log":
-            return self.git.log(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000), _bounded_int(args, "limit", 20, 1, 100))
+            return self.git.log(scope(), path(), _bounded_int(args, "limit", 20, 1, 100))
         if name == "git.branches":
-            return self.git.branches(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000))
+            return self.git.branches(scope(), path())
         if name == "git.stage":
-            return self.git.stage(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000), _required_string_list(args, "files"), authorized)
+            return self.git.stage(scope(), path(), _required_string_list(args, "files"), authorized)
         if name == "git.commit":
-            return self.git.commit(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000), _require_text(args, "message", 500), authorized)
+            return self.git.commit(scope(), path(), _require_text(args, "message", 500), authorized)
         if name == "git.branch.create":
-            return self.git.create_branch(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000), _require_text(args, "branch", 200), authorized)
+            return self.git.create_branch(scope(), path(), _require_text(args, "branch", 200), authorized)
         if name == "git.checkout":
-            return self.git.checkout(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000), _require_text(args, "branch", 200), authorized)
+            return self.git.checkout(scope(), path(), _require_text(args, "branch", 200), authorized)
 
         if name == "dev.detect":
-            return self.dev.detect(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000))
+            return self.dev.detect(scope(), path())
         if name in {"dev.test", "dev.build", "dev.lint", "dev.typecheck"}:
-            operation = name.split(".", 1)[1]
             return self.dev.run(
-                _require_text(args, "scope", 50),
-                _optional_text(args, "path", ".", 1_000),
-                operation,
-                authorized,
+                scope(), path(), name.split(".", 1)[1], authorized,
                 _bounded_int(args, "timeout_seconds", 300, 10, 900),
             )
 
         if name == "process.start":
-            return self.processes.start(
-                _require_text(args, "scope", 50),
-                _optional_text(args, "path", ".", 1_000),
-                _require_text(args, "profile", 100),
-                authorized,
-            )
+            return self.processes.start(scope(), path(), _require_text(args, "profile", 100), authorized)
         if name == "process.list":
             return self.processes.list()
         if name == "process.status":
             return self.processes.status(_require_text(args, "process_id", 200))
         if name == "process.logs":
-            return self.processes.logs(
-                _require_text(args, "process_id", 200),
-                _bounded_int(args, "maximum_bytes", 20_000, 1_000, 100_000),
-            )
+            return self.processes.logs(_require_text(args, "process_id", 200), _bounded_int(args, "maximum_bytes", 20_000, 1_000, 100_000))
         if name == "process.stop":
             return self.processes.stop(_require_text(args, "process_id", 200), authorized)
+
+        if name == "project.discover":
+            return self.projects.discover(scope(), path())
+        if name == "project.map":
+            return self.projects.repo_map(scope(), path(), _bounded_int(args, "maximum_files", 400, 20, 1_000))
+        if name == "project.dependencies":
+            return self.projects.dependencies(scope(), path())
+        if name == "project.symbols":
+            return self.projects.symbols(scope(), path(), _optional_nullable_text(args, "query", 500), _bounded_int(args, "limit", 500, 1, 5_000))
+        if name == "project.search":
+            return self.projects.search(scope(), path(), _require_text(args, "query", 2_000), _bounded_int(args, "limit", 30, 1, 100))
+        if name == "project.context":
+            return self.projects.working_set(scope(), path(), _require_text(args, "task", 8_000), _bounded_int(args, "limit", 12, 1, 30))
+        if name == "project.instructions.read":
+            return self.projects.read_instructions(scope(), path())
+        if name == "project.instructions.write":
+            return self.projects.write_instructions(scope(), path(), _require_text(args, "content", 50_000), authorized)
+        if name == "project.memory.remember":
+            return self.projects.remember_decision(scope(), path(), _require_text(args, "decision", 20_000), authorized)
+        if name == "project.memory.search":
+            return self.projects.search_decisions(scope(), path(), _require_text(args, "query", 5_000), _bounded_int(args, "limit", 10, 1, 50))
 
         if name == "arya.project.review":
             result = ProjectQuality().review(_require_text(args, "project", 80))
@@ -350,6 +364,7 @@ class ToolCoordinator:
                 project_type=str(args.get("project_type", "auto"))[:100],
                 approved=authorized,
             )
+
         if name == "web.fetch":
             evidence = WebClient().fetch(_require_text(args, "url", 4_000))
             include_content = args.get("include_content", True)
@@ -381,8 +396,7 @@ class ToolCoordinator:
         if name == "visao.status":
             return knowledge_status()["visao"]
         if name == "visao.ingest":
-            path = safe_cwd(_require_text(args, "path", 2_000))
-            return VisaoIngestor(self.bran).ingest(path)
+            return VisaoIngestor(self.bran).ingest(safe_cwd(_require_text(args, "path", 2_000)))
         if name == "arya.list":
             folder = safe_cwd(str(args.get("path", ".")))
             return [item.name for item in sorted(folder.iterdir())]

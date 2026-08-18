@@ -1,15 +1,42 @@
 use serde_json::{json, Value};
 
 use std::{
+    collections::HashMap,
     env, fs,
     path::{Path, PathBuf},
     process,
+    sync::Mutex,
     time::{SystemTime, UNIX_EPOCH},
 };
 
-use tauri::{AppHandle, Manager};
-
+use tauri::{AppHandle, Manager, State};
 use tauri_plugin_shell::ShellExt;
+
+#[derive(Default)]
+struct ResumeStore {
+    plans: Mutex<HashMap<String, Value>>,
+}
+
+impl ResumeStore {
+    fn remember(&self, approval_id: String, plan: Value) {
+        if let Ok(mut plans) = self.plans.lock() {
+            plans.insert(approval_id, plan);
+        }
+    }
+
+    fn take(&self, approval_id: &str) -> Option<Value> {
+        self.plans
+            .lock()
+            .ok()
+            .and_then(|mut plans| plans.remove(approval_id))
+    }
+
+    fn forget(&self, approval_id: &str) {
+        if let Ok(mut plans) = self.plans.lock() {
+            plans.remove(approval_id);
+        }
+    }
+}
 
 fn data_root(app: &AppHandle) -> Result<PathBuf, String> {
     let root = app
@@ -47,12 +74,15 @@ fn cleanup_request(path: &Path) {
     let _ = fs::remove_file(path);
 }
 
-async fn backend_bridge(app: &AppHandle, request: Value) -> Result<Value, String> {
+async fn backend_bridge(app: &AppHandle, mut request: Value) -> Result<Value, String> {
     let data = data_root(app)?;
-
     let state = state_root(app)?;
-
     let request_file = request_path(app)?;
+
+    let resume_plan = request
+        .as_object_mut()
+        .and_then(|object| object.remove("_resume_plan"))
+        .filter(|value| !value.is_null());
 
     let body = serde_json::to_vec(&request)
         .map_err(|error| format!("Falha serializando request: {error}"))?;
@@ -65,7 +95,6 @@ async fn backend_bridge(app: &AppHandle, request: Value) -> Result<Value, String
         .sidecar("rachel-backend")
         .map_err(|error| {
             cleanup_request(&request_file);
-
             format!("Sidecar RACHEL indisponivel: {error}")
         })?
         .arg("--request-file")
@@ -75,31 +104,33 @@ async fn backend_bridge(app: &AppHandle, request: Value) -> Result<Value, String
         .env("PYTHONIOENCODING", "utf-8")
         .current_dir(&data);
 
+    if let Some(plan) = resume_plan {
+        let encoded = serde_json::to_string(&plan).map_err(|error| {
+            cleanup_request(&request_file);
+            format!("Falha serializando plano de retomada: {error}")
+        })?;
+        command = command.env("RACHEL_APPROVED_RESUME_PLAN_JSON", encoded);
+    }
+
     if let Ok(provider) = env::var("RACHEL_MODEL_PROVIDER") {
         command = command.env("RACHEL_MODEL_PROVIDER", provider);
     }
 
     let output = command.output().await.map_err(|error| {
         cleanup_request(&request_file);
-
         format!("Falha executando sidecar RACHEL: {error}")
     })?;
 
     cleanup_request(&request_file);
 
     let stdout = String::from_utf8_lossy(&output.stdout).to_string();
-
     let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
 
     if !output.status.success() {
         return Err(format!(
             "Backend RACHEL encerrou com codigo {:?}: {}",
             output.status.code(),
-            if stderr.is_empty() {
-                stdout.trim()
-            } else {
-                &stderr
-            }
+            if stderr.is_empty() { stdout.trim() } else { &stderr }
         ));
     }
 
@@ -119,7 +150,6 @@ async fn backend_bridge(app: &AppHandle, request: Value) -> Result<Value, String
             .and_then(|error| error.get("message"))
             .and_then(Value::as_str)
             .unwrap_or("Falha desconhecida");
-
         return Err(message.to_string());
     }
 
@@ -131,24 +161,12 @@ async fn backend_bridge(app: &AppHandle, request: Value) -> Result<Value, String
 
 #[tauri::command]
 async fn rachel_dashboard(app: AppHandle) -> Result<Value, String> {
-    backend_bridge(
-        &app,
-        json!({
-            "action": "dashboard"
-        }),
-    )
-    .await
+    backend_bridge(&app, json!({ "action": "dashboard" })).await
 }
 
 #[tauri::command]
 async fn rachel_status(app: AppHandle) -> Result<Value, String> {
-    backend_bridge(
-        &app,
-        json!({
-            "action": "status"
-        }),
-    )
-    .await
+    backend_bridge(&app, json!({ "action": "status" })).await
 }
 
 #[tauri::command]
@@ -171,20 +189,45 @@ async fn rachel_chat(
 #[tauri::command]
 async fn rachel_assist(
     app: AppHandle,
+    resume_store: State<'_, ResumeStore>,
     content: String,
     conversation_id: Option<String>,
     approval_id: Option<String>,
 ) -> Result<Value, String> {
-    backend_bridge(
+    let resume_plan = approval_id
+        .as_deref()
+        .and_then(|id| resume_store.take(id));
+
+    let result = backend_bridge(
         &app,
         json!({
             "action": "assist",
             "content": content,
             "conversation_id": conversation_id,
             "approval_id": approval_id,
+            "_resume_plan": resume_plan,
         }),
     )
-    .await
+    .await?;
+
+    if approval_id.is_none()
+        && result.get("state").and_then(Value::as_str) == Some("approval_required")
+    {
+        let pending_id = result
+            .get("tool_result")
+            .and_then(|value| value.get("approval"))
+            .and_then(|value| value.get("id"))
+            .and_then(Value::as_str);
+        let plan = result.get("resume_plan");
+
+        if let (Some(id), Some(plan)) = (pending_id, plan) {
+            if plan.is_object() {
+                resume_store.remember(id.to_string(), plan.clone());
+            }
+        }
+    }
+
+    Ok(result)
 }
 
 #[tauri::command]
@@ -202,11 +245,12 @@ async fn rachel_security_snapshot(app: AppHandle, limit: Option<i64>) -> Result<
 #[tauri::command]
 async fn rachel_security_decide(
     app: AppHandle,
+    resume_store: State<'_, ResumeStore>,
     approval_id: String,
     allow: bool,
     confirmation: String,
 ) -> Result<Value, String> {
-    backend_bridge(
+    let result = backend_bridge(
         &app,
         json!({
             "action": "security_decide",
@@ -215,7 +259,13 @@ async fn rachel_security_decide(
             "confirmation": confirmation,
         }),
     )
-    .await
+    .await?;
+
+    if !allow {
+        resume_store.forget(&approval_id);
+    }
+
+    Ok(result)
 }
 
 #[tauri::command]
@@ -252,18 +302,13 @@ async fn rachel_voice_status(
 
 #[tauri::command]
 async fn rachel_health(app: AppHandle) -> Result<Value, String> {
-    backend_bridge(
-        &app,
-        json!({
-            "action": "health"
-        }),
-    )
-    .await
+    backend_bridge(&app, json!({ "action": "health" })).await
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
+        .manage(ResumeStore::default())
         .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![
             rachel_dashboard,

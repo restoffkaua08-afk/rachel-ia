@@ -1,14 +1,23 @@
 from __future__ import annotations
 
+import json
+import os
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "RACHEL_CORE" / "src"))
 sys.path.insert(0, str(ROOT / "RACHEL_PLATFORM" / "RUNTIME" / "SRC"))
 
-from cognitive_runtime import NedCognitiveBridge, NedToolPlanner, ToolPlan
+from cognitive_runtime import (
+    RESUME_PLAN_ENV,
+    NedCognitiveBridge,
+    NedToolPlanner,
+    ToolPlan,
+    resume_plan_from_environment,
+)
 
 
 class FakePlanner:
@@ -57,6 +66,16 @@ class CognitiveReliabilityTests(unittest.TestCase):
         }
         return bridge
 
+    def completed_tools(self) -> FakeTools:
+        return FakeTools({
+            "state": "completed",
+            "tool": "arya.project.create",
+            "result": {"created": True},
+            "request_event_id": "request-2",
+            "completion_event_id": "completion-2",
+            "approval": {"id": "approval-1"},
+        })
+
     def test_approval_required_exposes_exact_resume_plan_and_no_execution_claim(self) -> None:
         plan = ToolPlan(
             "tool",
@@ -89,14 +108,7 @@ class CognitiveReliabilityTests(unittest.TestCase):
             "Criar projeto solicitado.",
             "model",
         )
-        tools = FakeTools({
-            "state": "completed",
-            "tool": "arya.project.create",
-            "result": {"created": True},
-            "request_event_id": "request-2",
-            "completion_event_id": "completion-2",
-            "approval": {"id": "approval-1"},
-        })
+        tools = self.completed_tools()
         planner = FakePlanner()
         bridge = self.bridge(planner=planner, tools=tools)
 
@@ -122,6 +134,34 @@ class CognitiveReliabilityTests(unittest.TestCase):
         self.assertTrue(result["execution"]["verified"])
         self.assertTrue(result["execution"]["resumed"])
         self.assertIsNone(result["resume_plan"])
+
+    def test_process_environment_carries_exact_resume_plan_without_replanning(self) -> None:
+        plan = {
+            "action": "tool",
+            "tool": "arya.project.create",
+            "arguments": {"project": "faculdade"},
+            "reason": "Criar projeto solicitado.",
+            "source": "model",
+        }
+        tools = self.completed_tools()
+        planner = FakePlanner()
+        bridge = self.bridge(planner=planner, tools=tools)
+
+        with patch.dict(os.environ, {RESUME_PLAN_ENV: json.dumps(plan)}, clear=False):
+            self.assertEqual(resume_plan_from_environment(), plan)
+            result = bridge.assist("texto original", approval_id="approval-1")
+
+        self.assertEqual(planner.plan_calls, 0)
+        self.assertEqual(planner.heuristic_calls, 0)
+        self.assertEqual(tools.calls[0][0], "arya.project.create")
+        self.assertEqual(tools.calls[0][1], {"project": "faculdade"})
+        self.assertTrue(result["execution"]["resumed"])
+
+    def test_invalid_process_environment_fails_closed(self) -> None:
+        bridge = self.bridge(planner=FakePlanner(), tools=FakeTools({}))
+        with patch.dict(os.environ, {RESUME_PLAN_ENV: "not-json"}, clear=False):
+            with self.assertRaisesRegex(ValueError, "environment payload"):
+                bridge.assist("texto original", approval_id="approval-1")
 
     def test_legacy_approval_resume_uses_only_deterministic_route_never_model_planner(self) -> None:
         deterministic = ToolPlan(

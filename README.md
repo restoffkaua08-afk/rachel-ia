@@ -1,4 +1,4 @@
-﻿# Rachel IA
+# Rachel IA
 
 Plataforma experimental de inteligência artificial local, modular e evolutiva.
 
@@ -71,3 +71,28 @@ Kauã Restoff
 
 - GitHub: https://github.com/restoffkaua08-afk
 - LinkedIn: https://www.linkedin.com/in/kau%C3%A3-restoff-2821163a0
+
+<!-- RACHEL_STAGE15_STATUS_START -->
+## Status arquitetural
+
+**Arquitetura: 15/15 etapas fechadas.**
+
+A RACHEL atingiu **Architecture Closed**, mas **nao esta declarada
+Production Ready**.
+
+- Readiness: 12/20 READY
+- Non-ready: 8
+- Closure blockers: 0
+- Production blockers: 8
+- Agent execution: desativada
+- Browser execution: desativada
+- Training execution: desativada
+- Model promotion: nao decidida
+- Weights modified: nao
+- Portable Runtime SHA256:
+  `7CA02072E67E60871A2D6ED06BBEAEFE4637875B44A216362D44CFE97C6F7AA9`
+
+O fechamento preserva explicitamente os dominios BLOCKED, RESERVED,
+DEFERRED e UNAVAILABLE; nenhuma capacidade foi promovida artificialmente
+para READY.
+<!-- RACHEL_STAGE15_STATUS_END -->

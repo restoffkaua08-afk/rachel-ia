@@ -1,237 +1,50 @@
 {
-  "schema_version": "1.1",
+  "schema_version": "1.2",
   "default_policy": "deny",
   "tools": [
-    {
-      "name": "runtime.doctor",
-      "member": "jhon",
-      "effect": "status",
-      "description": "Verifica a integridade geral da RACHEL.",
-      "parameters": {}
-    },
-    {
-      "name": "tyrion.health",
-      "member": "tyrion",
-      "effect": "status",
-      "description": "Consulta a saúde dos órgãos.",
-      "parameters": {"organ_id": "string|null"}
-    },
-    {
-      "name": "bran.search",
-      "member": "bran",
-      "effect": "search",
-      "description": "Pesquisa memórias autorizadas.",
-      "parameters": {"query": "string", "limit": "integer"}
-    },
-    {
-      "name": "bran.remember",
-      "member": "bran",
-      "effect": "write",
-      "description": "Registra uma memória aprovada.",
-      "parameters": {"content": "string", "source": "string", "kind": "string"}
-    },
-    {
-      "name": "visao.status",
-      "member": "visao",
-      "effect": "status",
-      "description": "Consulta capacidades de percepção e documentos.",
-      "parameters": {}
-    },
-    {
-      "name": "visao.ingest",
-      "member": "visao",
-      "effect": "write",
-      "description": "Ingere um arquivo autorizado na memória.",
-      "parameters": {"path": "string"}
-    },
-    {
-      "name": "filesystem.status",
-      "member": "arya",
-      "effect": "status",
-      "description": "Consulta escopos e operações disponíveis do filesystem tipado.",
-      "parameters": {}
-    },
-    {
-      "name": "filesystem.list",
-      "member": "arya",
-      "effect": "list",
-      "description": "Lista arquivos e pastas dentro de um escopo autorizado sem usar shell.",
-      "parameters": {"scope": "workspace|desktop|documents|downloads", "path": "string"}
-    },
-    {
-      "name": "filesystem.stat",
-      "member": "arya",
-      "effect": "inspect",
-      "description": "Verifica existência, tipo e metadados de um caminho escopado.",
-      "parameters": {"scope": "workspace|desktop|documents|downloads", "path": "string"}
-    },
-    {
-      "name": "filesystem.read",
-      "member": "arya",
-      "effect": "read",
-      "description": "Lê um arquivo textual UTF-8 dentro de um escopo autorizado.",
-      "parameters": {"scope": "workspace|desktop|documents|downloads", "path": "string"}
-    },
-    {
-      "name": "filesystem.search",
-      "member": "arya",
-      "effect": "search",
-      "description": "Pesquisa texto em arquivos dentro de um escopo autorizado.",
-      "parameters": {"scope": "workspace|desktop|documents|downloads", "path": "string", "query": "string", "limit": "integer"}
-    },
-    {
-      "name": "filesystem.mkdir",
-      "member": "arya",
-      "effect": "create",
-      "description": "Cria uma pasta em um caminho relativo de um escopo autorizado e verifica o resultado.",
-      "parameters": {"scope": "workspace|desktop|documents|downloads", "path": "string"}
-    },
-    {
-      "name": "filesystem.write",
-      "member": "arya",
-      "effect": "write",
-      "description": "Grava arquivo textual de forma atômica, com backup quando sobrescreve e verificação final.",
-      "parameters": {"scope": "workspace|desktop|documents|downloads", "path": "string", "content": "string"}
-    },
-    {
-      "name": "filesystem.patch",
-      "member": "arya",
-      "effect": "edit",
-      "description": "Aplica uma substituição textual exata em um arquivo escopado, com backup e verificação.",
-      "parameters": {"scope": "workspace|desktop|documents|downloads", "path": "string", "old": "string", "new": "string"}
-    },
-    {
-      "name": "filesystem.copy",
-      "member": "arya",
-      "effect": "create",
-      "description": "Copia um arquivo dentro do mesmo escopo, preservando backup do destino existente.",
-      "parameters": {"scope": "workspace|desktop|documents|downloads", "source": "string", "destination": "string"}
-    },
-    {
-      "name": "filesystem.move",
-      "member": "arya",
-      "effect": "edit",
-      "description": "Move um caminho dentro do mesmo escopo e verifica origem e destino.",
-      "parameters": {"scope": "workspace|desktop|documents|downloads", "source": "string", "destination": "string"}
-    },
-    {
-      "name": "filesystem.delete",
-      "member": "arya",
-      "effect": "delete",
-      "description": "Exclui um arquivo ou diretório vazio dentro de um escopo autorizado; exclusão de diretório é não recursiva.",
-      "parameters": {"scope": "workspace|desktop|documents|downloads", "path": "string"}
-    },
-    {
-      "name": "arya.list",
-      "member": "arya",
-      "effect": "list",
-      "description": "Compatibilidade legada: lista uma pasta permitida no workspace interno.",
-      "parameters": {"path": "string"}
-    },
-    {
-      "name": "arya.run",
-      "member": "arya",
-      "effect": "execute",
-      "description": "Fallback controlado para executar um processo sem shell quando não houver ferramenta tipada apropriada.",
-      "parameters": {"command": "string", "arguments": "array", "cwd": "string|null"}
-    },
-    {
-      "name": "king.recent",
-      "member": "king",
-      "effect": "read",
-      "description": "Consulta eventos recentes da equipe.",
-      "parameters": {"limit": "integer"}
-    },
-    {
-      "name": "dany.evaluate",
-      "member": "dany",
-      "effect": "inspect",
-      "description": "Avalia deterministicamente a qualidade estrutural básica de um conteúdo.",
-      "parameters": {"content": "string"}
-    },
-    {
-      "name": "cyber.check",
-      "member": "cyber",
-      "effect": "inspect",
-      "description": "Simula uma decisão de segurança para um efeito declarado.",
-      "parameters": {"effect": "string", "approved": "boolean"}
-    },
-    {
-      "name": "web.fetch",
-      "member": "visao",
-      "effect": "external",
-      "description": "Acessa uma URL pública com proteção SSRF e evidência citável.",
-      "parameters": {"url": "string", "include_content": "boolean"}
-    },
-    {
-      "name": "web.search",
-      "member": "visao",
-      "effect": "external",
-      "description": "Pesquisa, deduplica e classifica fontes públicas.",
-      "parameters": {"query": "string", "limit": "integer"}
-    },
-    {
-      "name": "web.research",
-      "member": "ned",
-      "effect": "external",
-      "description": "Pesquisa profundamente e entrega evidências revisadas.",
-      "parameters": {"query": "string", "max_sources": "integer"}
-    },
-    {
-      "name": "arya.project.status",
-      "member": "arya",
-      "effect": "status",
-      "description": "Consulta o workspace de engenharia da Arya.",
-      "parameters": {}
-    },
-    {
-      "name": "arya.project.create",
-      "member": "arya",
-      "effect": "create",
-      "description": "Cria um projeto vazio no workspace autorizado.",
-      "parameters": {"project": "string"}
-    },
-    {
-      "name": "arya.project.write",
-      "member": "arya",
-      "effect": "write",
-      "description": "Grava arquivos textuais de forma atômica e com backup.",
-      "parameters": {"project": "string", "files": "array"}
-    },
-    {
-      "name": "arya.project.inspect",
-      "member": "arya",
-      "effect": "inspect",
-      "description": "Inspeciona arquivos e hashes de um projeto.",
-      "parameters": {"project": "string"}
-    },
-    {
-      "name": "arya.project.read",
-      "member": "arya",
-      "effect": "read",
-      "description": "Lê um arquivo permitido de um projeto.",
-      "parameters": {"project": "string", "path": "string"}
-    },
-    {
-      "name": "arya.project.generate",
-      "member": "arya",
-      "effect": "create",
-      "description": "Gera um projeto por IA dentro do workspace seguro.",
-      "parameters": {"project": "string", "goal": "string", "project_type": "string"}
-    },
-    {
-      "name": "arya.project.review",
-      "member": "dany",
-      "effect": "inspect",
-      "description": "Revisa qualidade, acessibilidade básica e referências do projeto.",
-      "parameters": {"project": "string"}
-    },
-    {
-      "name": "arya.project.report",
-      "member": "dany",
-      "effect": "write",
-      "description": "Gera relatório técnico persistente dentro do projeto.",
-      "parameters": {"project": "string"}
-    }
+    {"name":"runtime.doctor","member":"jhon","effect":"status","description":"Verifica a integridade geral da RACHEL.","parameters":{}},
+    {"name":"tyrion.health","member":"tyrion","effect":"status","description":"Consulta a saúde dos órgãos.","parameters":{"organ_id":"string|null"}},
+    {"name":"bran.search","member":"bran","effect":"search","description":"Pesquisa memórias autorizadas.","parameters":{"query":"string","limit":"integer"}},
+    {"name":"bran.remember","member":"bran","effect":"write","description":"Registra uma memória aprovada.","parameters":{"content":"string","source":"string","kind":"string"}},
+    {"name":"visao.status","member":"visao","effect":"status","description":"Consulta capacidades de percepção e documentos.","parameters":{}},
+    {"name":"visao.ingest","member":"visao","effect":"write","description":"Ingere um arquivo autorizado na memória.","parameters":{"path":"string"}},
+
+    {"name":"filesystem.status","member":"arya","effect":"status","description":"Consulta escopos e operações disponíveis do filesystem tipado.","parameters":{}},
+    {"name":"filesystem.list","member":"arya","effect":"list","description":"Lista arquivos e pastas dentro de um escopo autorizado sem usar shell.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string"}},
+    {"name":"filesystem.stat","member":"arya","effect":"inspect","description":"Verifica existência, tipo e metadados de um caminho escopado.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string"}},
+    {"name":"filesystem.read","member":"arya","effect":"read","description":"Lê um arquivo textual UTF-8 dentro de um escopo autorizado.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string"}},
+    {"name":"filesystem.search","member":"arya","effect":"search","description":"Pesquisa texto em arquivos dentro de um escopo autorizado.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string","query":"string","limit":"integer"}},
+    {"name":"filesystem.mkdir","member":"arya","effect":"create","description":"Cria uma pasta em um caminho relativo de um escopo autorizado e verifica o resultado.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string"}},
+    {"name":"filesystem.write","member":"arya","effect":"write","description":"Grava arquivo textual de forma atômica, com backup quando sobrescreve e verificação final.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string","content":"string"}},
+    {"name":"filesystem.patch","member":"arya","effect":"edit","description":"Aplica uma substituição textual exata em um arquivo escopado, com backup e verificação.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string","old":"string","new":"string"}},
+    {"name":"filesystem.copy","member":"arya","effect":"create","description":"Copia um arquivo dentro do mesmo escopo, preservando backup do destino existente.","parameters":{"scope":"workspace|desktop|documents|downloads","source":"string","destination":"string"}},
+    {"name":"filesystem.move","member":"arya","effect":"edit","description":"Move um caminho dentro do mesmo escopo e verifica origem e destino.","parameters":{"scope":"workspace|desktop|documents|downloads","source":"string","destination":"string"}},
+    {"name":"filesystem.delete","member":"arya","effect":"delete","description":"Exclui um arquivo ou diretório vazio dentro de um escopo autorizado; exclusão de diretório é não recursiva.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string"}},
+
+    {"name":"git.status","member":"arya","effect":"status","description":"Consulta branch e mudanças de um repositório Git em escopo autorizado.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string"}},
+    {"name":"git.diff","member":"arya","effect":"read","description":"Obtém diff Git sem executar shell, opcionalmente staged e limitado a arquivos específicos.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string","staged":"boolean","files":"array|null"}},
+    {"name":"git.log","member":"arya","effect":"read","description":"Consulta histórico Git recente de um repositório autorizado.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string","limit":"integer"}},
+    {"name":"git.branches","member":"arya","effect":"list","description":"Lista branches locais e identifica a branch atual.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string"}},
+    {"name":"git.stage","member":"arya","effect":"edit","description":"Adiciona arquivos relativos específicos ao staging do Git após autorização.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string","files":"array"}},
+    {"name":"git.commit","member":"arya","effect":"write","description":"Cria commit local somente com arquivos já staged; não publica para remoto.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string","message":"string"}},
+    {"name":"git.branch.create","member":"arya","effect":"create","description":"Cria uma branch local sem trocar automaticamente para ela.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string","branch":"string"}},
+    {"name":"git.checkout","member":"arya","effect":"edit","description":"Troca para uma branch local existente após autorização.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string","branch":"string"}},
+
+    {"name":"arya.list","member":"arya","effect":"list","description":"Compatibilidade legada: lista uma pasta permitida no workspace interno.","parameters":{"path":"string"}},
+    {"name":"arya.run","member":"arya","effect":"execute","description":"Fallback controlado para executar um processo sem shell quando não houver ferramenta tipada apropriada.","parameters":{"command":"string","arguments":"array","cwd":"string|null"}},
+    {"name":"king.recent","member":"king","effect":"read","description":"Consulta eventos recentes da equipe.","parameters":{"limit":"integer"}},
+    {"name":"dany.evaluate","member":"dany","effect":"inspect","description":"Avalia deterministicamente a qualidade estrutural básica de um conteúdo.","parameters":{"content":"string"}},
+    {"name":"cyber.check","member":"cyber","effect":"inspect","description":"Simula uma decisão de segurança para um efeito declarado.","parameters":{"effect":"string","approved":"boolean"}},
+    {"name":"web.fetch","member":"visao","effect":"external","description":"Acessa uma URL pública com proteção SSRF e evidência citável.","parameters":{"url":"string","include_content":"boolean"}},
+    {"name":"web.search","member":"visao","effect":"external","description":"Pesquisa, deduplica e classifica fontes públicas.","parameters":{"query":"string","limit":"integer"}},
+    {"name":"web.research","member":"ned","effect":"external","description":"Pesquisa profundamente e entrega evidências revisadas.","parameters":{"query":"string","max_sources":"integer"}},
+    {"name":"arya.project.status","member":"arya","effect":"status","description":"Consulta o workspace de engenharia da Arya.","parameters":{}},
+    {"name":"arya.project.create","member":"arya","effect":"create","description":"Cria um projeto vazio no workspace autorizado.","parameters":{"project":"string"}},
+    {"name":"arya.project.write","member":"arya","effect":"write","description":"Grava arquivos textuais de forma atômica e com backup.","parameters":{"project":"string","files":"array"}},
+    {"name":"arya.project.inspect","member":"arya","effect":"inspect","description":"Inspeciona arquivos e hashes de um projeto.","parameters":{"project":"string"}},
+    {"name":"arya.project.read","member":"arya","effect":"read","description":"Lê um arquivo permitido de um projeto.","parameters":{"project":"string","path":"string"}},
+    {"name":"arya.project.generate","member":"arya","effect":"create","description":"Gera um projeto por IA dentro do workspace seguro.","parameters":{"project":"string","goal":"string","project_type":"string"}},
+    {"name":"arya.project.review","member":"dany","effect":"inspect","description":"Revisa qualidade, acessibilidade básica e referências do projeto.","parameters":{"project":"string"}},
+    {"name":"arya.project.report","member":"dany","effect":"write","description":"Gera relatório técnico persistente dentro do projeto.","parameters":{"project":"string"}}
   ]
 }

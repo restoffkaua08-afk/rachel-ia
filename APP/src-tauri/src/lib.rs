@@ -46,6 +46,7 @@ impl ResumeStore {
 struct BackendInner {
     child: Mutex<Option<CommandChild>>,
     pending: Mutex<HashMap<String, async_runtime::Sender<Result<Value, String>>>>,
+    stdout_buffer: Mutex<String>,
     start_lock: async_runtime::Mutex<()>,
     started: AtomicBool,
     pid: AtomicU32,
@@ -57,6 +58,7 @@ impl Default for BackendInner {
         Self {
             child: Mutex::new(None),
             pending: Mutex::new(HashMap::new()),
+            stdout_buffer: Mutex::new(String::new()),
             start_lock: async_runtime::Mutex::new(()),
             started: AtomicBool::new(false),
             pid: AtomicU32::new(0),
@@ -88,6 +90,8 @@ impl BackendHost {
             "pending_requests": pending,
             "transport": "stdio-ndjson",
             "persistent_ipc": true,
+            "streaming_events": true,
+            "cancellable_generation": true,
         })
     }
 
@@ -97,7 +101,6 @@ impl BackendHost {
         }
 
         let _start_guard = self.inner.start_lock.lock().await;
-
         if self.inner.started.load(Ordering::Acquire) {
             return Ok(());
         }
@@ -133,7 +136,6 @@ impl BackendHost {
             .map_err(|error| format!("Falha iniciando backend residente RACHEL: {error}"))?;
 
         let pid = child.pid();
-
         {
             let mut slot = self
                 .inner
@@ -141,6 +143,9 @@ impl BackendHost {
                 .lock()
                 .map_err(|_| "Backend child lock poisoned".to_string())?;
             *slot = Some(child);
+        }
+        if let Ok(mut buffer) = self.inner.stdout_buffer.lock() {
+            buffer.clear();
         }
 
         self.inner.pid.store(pid, Ordering::Release);
@@ -153,26 +158,7 @@ impl BackendHost {
             while let Some(event) = receiver.recv().await {
                 match event {
                     CommandEvent::Stdout(bytes) => {
-                        let text = String::from_utf8_lossy(&bytes).trim().to_string();
-                        if text.is_empty() {
-                            continue;
-                        }
-
-                        match serde_json::from_str::<Value>(&text) {
-                            Ok(message) => {
-                                route_backend_message(&app_handle, &inner, message).await;
-                            }
-                            Err(error) => {
-                                let _ = app_handle.emit(
-                                    "rachel-runtime-event",
-                                    json!({
-                                        "kind": "diagnostic",
-                                        "level": "error",
-                                        "message": format!("JSON invalido do backend residente: {error}"),
-                                    }),
-                                );
-                            }
-                        }
+                        route_stdout_bytes(&app_handle, &inner, &bytes).await;
                     }
                     CommandEvent::Stderr(bytes) => {
                         let text = String::from_utf8_lossy(&bytes).trim().to_string();
@@ -200,9 +186,11 @@ impl BackendHost {
                     CommandEvent::Terminated(payload) => {
                         inner.started.store(false, Ordering::Release);
                         inner.pid.store(0, Ordering::Release);
-
                         if let Ok(mut child) = inner.child.lock() {
                             *child = None;
+                        }
+                        if let Ok(mut buffer) = inner.stdout_buffer.lock() {
+                            buffer.clear();
                         }
 
                         let pending = if let Ok(mut map) = inner.pending.lock() {
@@ -210,16 +198,13 @@ impl BackendHost {
                         } else {
                             Vec::new()
                         };
-
                         let reason = format!(
                             "Backend RACHEL encerrou inesperadamente: code={:?} signal={:?}",
                             payload.code, payload.signal
                         );
-
                         for sender in pending {
                             let _ = sender.send(Err(reason.clone())).await;
                         }
-
                         let _ = app_handle.emit(
                             "rachel-runtime-event",
                             json!({
@@ -252,7 +237,6 @@ impl BackendHost {
         line.push(b'\n');
 
         let (sender, mut receiver) = async_runtime::channel(1);
-
         {
             let mut pending = self
                 .inner
@@ -268,7 +252,6 @@ impl BackendHost {
                 .child
                 .lock()
                 .map_err(|_| "Backend child lock poisoned".to_string())?;
-
             match child.as_mut() {
                 Some(child) => child
                     .write(&line)
@@ -292,6 +275,46 @@ impl BackendHost {
     }
 }
 
+async fn route_stdout_bytes(
+    app: &AppHandle,
+    inner: &Arc<BackendInner>,
+    bytes: &[u8],
+) {
+    let incoming = String::from_utf8_lossy(bytes);
+    let lines = {
+        let mut completed = Vec::new();
+        let Ok(mut buffer) = inner.stdout_buffer.lock() else {
+            return;
+        };
+        buffer.push_str(&incoming);
+
+        while let Some(index) = buffer.find('\n') {
+            let drained = buffer.drain(..=index).collect::<String>();
+            let line = drained.trim().to_string();
+            if !line.is_empty() {
+                completed.push(line);
+            }
+        }
+        completed
+    };
+
+    for line in lines {
+        match serde_json::from_str::<Value>(&line) {
+            Ok(message) => route_backend_message(app, inner, message).await,
+            Err(error) => {
+                let _ = app.emit(
+                    "rachel-runtime-event",
+                    json!({
+                        "kind": "diagnostic",
+                        "level": "error",
+                        "message": format!("JSON invalido do backend residente: {error}"),
+                    }),
+                );
+            }
+        }
+    }
+}
+
 async fn route_backend_message(
     app: &AppHandle,
     inner: &Arc<BackendInner>,
@@ -306,7 +329,6 @@ async fn route_backend_message(
         let _ = app.emit("rachel-runtime-event", message);
         return;
     }
-
     if kind != "response" {
         let _ = app.emit("rachel-runtime-event", message);
         return;
@@ -326,21 +348,20 @@ async fn route_backend_message(
         .lock()
         .ok()
         .and_then(|mut pending| pending.remove(&request_id));
-
     let Some(sender) = sender else {
         return;
     };
 
     let ok = message.get("ok").and_then(Value::as_bool) == Some(true);
-
     let result = if ok {
         let metrics = message.get("metrics").cloned();
-        let mut payload = message.get_mut("payload").map(Value::take).unwrap_or(Value::Null);
-
+        let mut payload = message
+            .get_mut("payload")
+            .map(Value::take)
+            .unwrap_or(Value::Null);
         if let (Some(object), Some(metrics)) = (payload.as_object_mut(), metrics) {
             object.insert("runtime_metrics".to_string(), metrics);
         }
-
         Ok(payload)
     } else {
         let error = message
@@ -360,13 +381,15 @@ fn data_root(app: &AppHandle) -> Result<PathBuf, String> {
         .path()
         .app_local_data_dir()
         .map_err(|error| format!("Falha resolvendo AppLocalData: {error}"))?;
-    fs::create_dir_all(&root).map_err(|error| format!("Falha criando AppLocalData: {error}"))?;
+    fs::create_dir_all(&root)
+        .map_err(|error| format!("Falha criando AppLocalData: {error}"))?;
     Ok(root)
 }
 
 fn state_root(app: &AppHandle) -> Result<PathBuf, String> {
     let state = data_root(app)?.join("STATE");
-    fs::create_dir_all(&state).map_err(|error| format!("Falha criando STATE: {error}"))?;
+    fs::create_dir_all(&state)
+        .map_err(|error| format!("Falha criando STATE: {error}"))?;
     Ok(state)
 }
 
@@ -459,6 +482,16 @@ async fn rachel_assist(
 }
 
 #[tauri::command]
+async fn rachel_cancel(
+    app: AppHandle,
+    backend: State<'_, BackendHost>,
+) -> Result<Value, String> {
+    backend
+        .request(&app, json!({ "action": "cancel_all" }))
+        .await
+}
+
+#[tauri::command]
 async fn rachel_security_snapshot(
     app: AppHandle,
     backend: State<'_, BackendHost>,
@@ -499,7 +532,6 @@ async fn rachel_security_decide(
     if !allow {
         resume_store.forget(&approval_id);
     }
-
     Ok(result)
 }
 
@@ -556,7 +588,6 @@ pub fn run() {
         .setup(|app| {
             let handle = app.handle().clone();
             let backend = app.state::<BackendHost>().inner().clone();
-
             async_runtime::spawn(async move {
                 if let Err(error) = backend.ensure_started(&handle).await {
                     let _ = handle.emit(
@@ -568,7 +599,6 @@ pub fn run() {
                     );
                 }
             });
-
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
@@ -577,6 +607,7 @@ pub fn run() {
             rachel_runtime_host_status,
             rachel_chat,
             rachel_assist,
+            rachel_cancel,
             rachel_security_snapshot,
             rachel_security_decide,
             rachel_memory_search,

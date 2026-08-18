@@ -45,6 +45,8 @@ TASK_REQUEST_PATTERN = re.compile(
     re.I | re.S,
 )
 
+RESUME_PLAN_ENV = "RACHEL_APPROVED_RESUME_PLAN_JSON"
+
 
 def extract_task_goal(content: str) -> str | None:
     match = TASK_REQUEST_PATTERN.match(content.strip())
@@ -59,6 +61,19 @@ def should_propose_memory(content: str) -> bool:
     if len(text) < 8 or len(text) > 4_000:
         return False
     return any(pattern.search(text) for pattern in MEMORY_CANDIDATE_PATTERNS)
+
+
+def resume_plan_from_environment() -> dict[str, Any] | None:
+    raw = os.environ.get(RESUME_PLAN_ENV)
+    if raw is None or not raw.strip():
+        return None
+    try:
+        payload = json.loads(raw)
+    except json.JSONDecodeError as error:
+        raise ValueError("Invalid approved resume plan environment payload") from error
+    if not isinstance(payload, dict):
+        raise ValueError("Approved resume plan environment payload must be an object")
+    return payload
 
 
 @dataclass(frozen=True)
@@ -79,12 +94,7 @@ class ToolPlan:
 
 
 class DanyEvaluator:
-    """Structural response gate.
-
-    This evaluator checks response shape/safety only. It does not claim factual,
-    semantic or tool-grounding verification; those are represented separately by
-    the execution envelope produced by NedCognitiveBridge.
-    """
+    """Structural response gate, not a factual-verification claim."""
 
     def evaluate(self, content: str) -> QualityReport:
         text = content.strip()
@@ -352,6 +362,7 @@ class NedCognitiveBridge:
         status["quality_scope"] = "structural"
         status["execution_grounding"] = "tool-result-required"
         status["resume_contract"] = "exact-plan-envelope"
+        status["desktop_resume_transport"] = "process-environment"
         return status
 
     def chat(
@@ -419,6 +430,9 @@ class NedCognitiveBridge:
         approval_id: str | None = None,
         resume_plan: dict[str, Any] | None = None,
     ) -> dict[str, Any]:
+        if resume_plan is None and approval_id is not None:
+            resume_plan = resume_plan_from_environment()
+
         if resume_plan is not None and approval_id is None:
             raise ValueError("resume_plan requires approval_id")
 
@@ -428,9 +442,6 @@ class NedCognitiveBridge:
             if resume_plan is not None:
                 plan = self._resume_tool_plan(resume_plan)
             else:
-                # Transitional compatibility for the current desktop client: only
-                # deterministic plans may be reconstructed. Model planning is never
-                # repeated after approval because that could change the approved action.
                 plan = self.planner.heuristic_plan(content)
                 if plan is None:
                     raise ValueError(

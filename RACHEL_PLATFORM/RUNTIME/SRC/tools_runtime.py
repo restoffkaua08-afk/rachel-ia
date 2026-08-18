@@ -20,6 +20,7 @@ from dev_runtime import DevRuntime
 from filesystem_runtime import FilesystemRuntime
 from git_runtime import GitRuntime
 from knowledge_runtime import VisaoIngestor, status as knowledge_status
+from process_runtime import ProcessRuntime
 from project_generator import ProjectGenerator
 from project_quality import ProjectQuality
 from project_workspace import ProjectWorkspace
@@ -68,9 +69,7 @@ def _require_text(arguments: dict[str, Any], key: str, maximum: int = 50_000) ->
     return value.strip()
 
 
-def _optional_text(
-    arguments: dict[str, Any], key: str, default: str, maximum: int = 5_000
-) -> str:
+def _optional_text(arguments: dict[str, Any], key: str, default: str, maximum: int = 5_000) -> str:
     value = arguments.get(key, default)
     if not isinstance(value, str):
         raise ToolError(f"'{key}' must be a string")
@@ -102,13 +101,7 @@ def _required_string_list(arguments: dict[str, Any], key: str) -> list[str]:
     return value
 
 
-def _bounded_int(
-    arguments: dict[str, Any],
-    key: str,
-    default: int,
-    minimum: int,
-    maximum: int,
-) -> int:
+def _bounded_int(arguments: dict[str, Any], key: str, default: int, minimum: int, maximum: int) -> int:
     value = arguments.get(key, default)
     if isinstance(value, bool) or not isinstance(value, int):
         raise ToolError(f"'{key}' must be an integer")
@@ -123,6 +116,7 @@ class ToolCoordinator:
         filesystem: FilesystemRuntime | None = None,
         git: GitRuntime | None = None,
         dev: DevRuntime | None = None,
+        processes: ProcessRuntime | None = None,
     ) -> None:
         self.registry = _load_registry()
         self.cyber = CyberPolicy()
@@ -133,6 +127,7 @@ class ToolCoordinator:
         self.filesystem = filesystem or FilesystemRuntime()
         self.git = git or GitRuntime(self.filesystem)
         self.dev = dev or DevRuntime(self.filesystem)
+        self.processes = processes or ProcessRuntime(self.filesystem)
 
     def list_tools(self) -> list[dict[str, Any]]:
         return [asdict(spec) for spec in self.registry.values()]
@@ -148,17 +143,12 @@ class ToolCoordinator:
             spec.name.startswith("filesystem.")
             or spec.name.startswith("git.")
             or spec.name.startswith("dev.")
+            or spec.name == "process.start"
         )
         if scoped_family and spec.name not in {"filesystem.status", "dev.detect"}:
             scope = str(arguments.get("scope", "workspace")).strip().casefold()
             self.filesystem.root(scope)
-            if scope != "workspace" and spec.effect in {
-                "read",
-                "inspect",
-                "list",
-                "search",
-                "status",
-            }:
+            if scope != "workspace" and spec.effect in {"read", "inspect", "list", "search", "status"}:
                 return "external"
         if spec.name == "dev.detect":
             scope = str(arguments.get("scope", "workspace")).strip().casefold()
@@ -167,12 +157,7 @@ class ToolCoordinator:
                 return "external"
         return spec.effect
 
-    def invoke(
-        self,
-        name: str,
-        arguments: dict[str, Any] | None = None,
-        approval_id: str | None = None,
-    ) -> dict[str, Any]:
+    def invoke(self, name: str, arguments: dict[str, Any] | None = None, approval_id: str | None = None) -> dict[str, Any]:
         spec = self.registry.get(name)
         if spec is None:
             raise ToolError(f"Unknown tool: {name}")
@@ -187,59 +172,26 @@ class ToolCoordinator:
         consumed_approval = None
         authorized = False
         if approval_id:
-            consumed_approval = self.approvals.consume(
-                approval_id, name, effective_effect, args
-            )
+            consumed_approval = self.approvals.consume(approval_id, name, effective_effect, args)
             authorized = True
 
         decision = self.cyber.check(effective_effect, authorized)
         request_event = self.king.publish(
             "tool.requested",
-            {
-                "tool": name,
-                "member": spec.member,
-                "effect": effective_effect,
-                "declared_effect": spec.effect,
-            },
+            {"tool": name, "member": spec.member, "effect": effective_effect, "declared_effect": spec.effect},
             sender="ned",
             recipient=spec.member,
         )
-        self.jhon.write(
-            "info",
-            "tools",
-            "tool.requested",
-            tool=name,
-            member=spec.member,
-            effect=effective_effect,
-            authorized=authorized,
-        )
+        self.jhon.write("info", "tools", "tool.requested", tool=name, member=spec.member, effect=effective_effect, authorized=authorized)
 
         if not decision.allowed:
-            self.jhon.write(
-                "warning",
-                "cyber",
-                "tool.blocked",
-                tool=name,
-                risk=decision.risk,
-                effect=effective_effect,
-            )
+            self.jhon.write("warning", "cyber", "tool.blocked", tool=name, risk=decision.risk, effect=effective_effect)
             approval = None
             if decision.approval_required:
-                approval = self.approvals.request(
-                    name,
-                    effective_effect,
-                    decision.risk,
-                    args,
-                    decision.reason,
-                )
+                approval = self.approvals.request(name, effective_effect, decision.risk, args, decision.reason)
                 self.king.publish(
                     "approval.requested",
-                    {
-                        "approval_id": approval["id"],
-                        "tool": name,
-                        "risk": decision.risk,
-                        "effect": effective_effect,
-                    },
+                    {"approval_id": approval["id"], "tool": name, "risk": decision.risk, "effect": effective_effect},
                     sender="cyber",
                     recipient="user",
                 )
@@ -259,21 +211,10 @@ class ToolCoordinator:
             result = self._execute(name, args, authorized)
         except Exception as error:
             duration_ms = int((time.perf_counter() - started) * 1000)
-            self.jhon.write(
-                "error",
-                spec.member,
-                "tool.failed",
-                tool=name,
-                error_type=type(error).__name__,
-                duration_ms=duration_ms,
-            )
+            self.jhon.write("error", spec.member, "tool.failed", tool=name, error_type=type(error).__name__, duration_ms=duration_ms)
             self.king.publish(
                 "tool.failed",
-                {
-                    "tool": name,
-                    "error_type": type(error).__name__,
-                    "duration_ms": duration_ms,
-                },
+                {"tool": name, "error_type": type(error).__name__, "duration_ms": duration_ms},
                 sender=spec.member,
                 recipient="ned",
             )
@@ -286,13 +227,7 @@ class ToolCoordinator:
             sender=spec.member,
             recipient="ned",
         )
-        self.jhon.write(
-            "info",
-            spec.member,
-            "tool.completed",
-            tool=name,
-            duration_ms=duration_ms,
-        )
+        self.jhon.write("info", spec.member, "tool.completed", tool=name, duration_ms=duration_ms)
         return {
             "state": "completed",
             "tool": name,
@@ -311,20 +246,11 @@ class ToolCoordinator:
         if name == "filesystem.status":
             return self.filesystem.describe()
         if name == "filesystem.list":
-            return self.filesystem.list(
-                _require_text(args, "scope", 50),
-                _optional_text(args, "path", ".", 1_000),
-            )
+            return self.filesystem.list(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000))
         if name == "filesystem.stat":
-            return self.filesystem.stat(
-                _require_text(args, "scope", 50),
-                _require_text(args, "path", 1_000),
-            )
+            return self.filesystem.stat(_require_text(args, "scope", 50), _require_text(args, "path", 1_000))
         if name == "filesystem.read":
-            return self.filesystem.read(
-                _require_text(args, "scope", 50),
-                _require_text(args, "path", 1_000),
-            )
+            return self.filesystem.read(_require_text(args, "scope", 50), _require_text(args, "path", 1_000))
         if name == "filesystem.search":
             return self.filesystem.search(
                 _require_text(args, "scope", 50),
@@ -333,52 +259,20 @@ class ToolCoordinator:
                 _bounded_int(args, "limit", 50, 1, 200),
             )
         if name == "filesystem.mkdir":
-            return self.filesystem.mkdir(
-                _require_text(args, "scope", 50),
-                _require_text(args, "path", 1_000),
-                authorized,
-            )
+            return self.filesystem.mkdir(_require_text(args, "scope", 50), _require_text(args, "path", 1_000), authorized)
         if name == "filesystem.write":
-            return self.filesystem.write(
-                _require_text(args, "scope", 50),
-                _require_text(args, "path", 1_000),
-                _require_text(args, "content", 1_000_000),
-                authorized,
-            )
+            return self.filesystem.write(_require_text(args, "scope", 50), _require_text(args, "path", 1_000), _require_text(args, "content", 1_000_000), authorized)
         if name == "filesystem.patch":
-            return self.filesystem.patch(
-                _require_text(args, "scope", 50),
-                _require_text(args, "path", 1_000),
-                _require_text(args, "old", 500_000),
-                str(args.get("new", "")),
-                authorized,
-            )
+            return self.filesystem.patch(_require_text(args, "scope", 50), _require_text(args, "path", 1_000), _require_text(args, "old", 500_000), str(args.get("new", "")), authorized)
         if name == "filesystem.copy":
-            return self.filesystem.copy(
-                _require_text(args, "scope", 50),
-                _require_text(args, "source", 1_000),
-                _require_text(args, "destination", 1_000),
-                authorized,
-            )
+            return self.filesystem.copy(_require_text(args, "scope", 50), _require_text(args, "source", 1_000), _require_text(args, "destination", 1_000), authorized)
         if name == "filesystem.move":
-            return self.filesystem.move(
-                _require_text(args, "scope", 50),
-                _require_text(args, "source", 1_000),
-                _require_text(args, "destination", 1_000),
-                authorized,
-            )
+            return self.filesystem.move(_require_text(args, "scope", 50), _require_text(args, "source", 1_000), _require_text(args, "destination", 1_000), authorized)
         if name == "filesystem.delete":
-            return self.filesystem.delete(
-                _require_text(args, "scope", 50),
-                _require_text(args, "path", 1_000),
-                authorized,
-            )
+            return self.filesystem.delete(_require_text(args, "scope", 50), _require_text(args, "path", 1_000), authorized)
 
         if name == "git.status":
-            return self.git.status(
-                _require_text(args, "scope", 50),
-                _optional_text(args, "path", ".", 1_000),
-            )
+            return self.git.status(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000))
         if name == "git.diff":
             return self.git.diff(
                 _require_text(args, "scope", 50),
@@ -387,50 +281,20 @@ class ToolCoordinator:
                 files=_optional_string_list(args, "files"),
             )
         if name == "git.log":
-            return self.git.log(
-                _require_text(args, "scope", 50),
-                _optional_text(args, "path", ".", 1_000),
-                _bounded_int(args, "limit", 20, 1, 100),
-            )
+            return self.git.log(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000), _bounded_int(args, "limit", 20, 1, 100))
         if name == "git.branches":
-            return self.git.branches(
-                _require_text(args, "scope", 50),
-                _optional_text(args, "path", ".", 1_000),
-            )
+            return self.git.branches(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000))
         if name == "git.stage":
-            return self.git.stage(
-                _require_text(args, "scope", 50),
-                _optional_text(args, "path", ".", 1_000),
-                _required_string_list(args, "files"),
-                authorized,
-            )
+            return self.git.stage(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000), _required_string_list(args, "files"), authorized)
         if name == "git.commit":
-            return self.git.commit(
-                _require_text(args, "scope", 50),
-                _optional_text(args, "path", ".", 1_000),
-                _require_text(args, "message", 500),
-                authorized,
-            )
+            return self.git.commit(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000), _require_text(args, "message", 500), authorized)
         if name == "git.branch.create":
-            return self.git.create_branch(
-                _require_text(args, "scope", 50),
-                _optional_text(args, "path", ".", 1_000),
-                _require_text(args, "branch", 200),
-                authorized,
-            )
+            return self.git.create_branch(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000), _require_text(args, "branch", 200), authorized)
         if name == "git.checkout":
-            return self.git.checkout(
-                _require_text(args, "scope", 50),
-                _optional_text(args, "path", ".", 1_000),
-                _require_text(args, "branch", 200),
-                authorized,
-            )
+            return self.git.checkout(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000), _require_text(args, "branch", 200), authorized)
 
         if name == "dev.detect":
-            return self.dev.detect(
-                _require_text(args, "scope", 50),
-                _optional_text(args, "path", ".", 1_000),
-            )
+            return self.dev.detect(_require_text(args, "scope", 50), _optional_text(args, "path", ".", 1_000))
         if name in {"dev.test", "dev.build", "dev.lint", "dev.typecheck"}:
             operation = name.split(".", 1)[1]
             return self.dev.run(
@@ -441,36 +305,44 @@ class ToolCoordinator:
                 _bounded_int(args, "timeout_seconds", 300, 10, 900),
             )
 
+        if name == "process.start":
+            return self.processes.start(
+                _require_text(args, "scope", 50),
+                _optional_text(args, "path", ".", 1_000),
+                _require_text(args, "profile", 100),
+                authorized,
+            )
+        if name == "process.list":
+            return self.processes.list()
+        if name == "process.status":
+            return self.processes.status(_require_text(args, "process_id", 200))
+        if name == "process.logs":
+            return self.processes.logs(
+                _require_text(args, "process_id", 200),
+                _bounded_int(args, "maximum_bytes", 20_000, 1_000, 100_000),
+            )
+        if name == "process.stop":
+            return self.processes.stop(_require_text(args, "process_id", 200), authorized)
+
         if name == "arya.project.review":
             result = ProjectQuality().review(_require_text(args, "project", 80))
-            result["dany"] = asdict(
-                DanyEvaluator().evaluate(json.dumps(result, ensure_ascii=False))
-            )
+            result["dany"] = asdict(DanyEvaluator().evaluate(json.dumps(result, ensure_ascii=False)))
             return result
         if name == "arya.project.report":
-            return ProjectQuality().write_report(
-                _require_text(args, "project", 80), authorized
-            )
+            return ProjectQuality().write_report(_require_text(args, "project", 80), authorized)
         if name == "arya.project.status":
             return ProjectWorkspace().status()
         if name == "arya.project.create":
-            return ProjectWorkspace().create_project(
-                _require_text(args, "project", 80), authorized
-            )
+            return ProjectWorkspace().create_project(_require_text(args, "project", 80), authorized)
         if name == "arya.project.write":
             files = args.get("files")
             if not isinstance(files, list):
                 raise ToolError("'files' must be an array")
-            return ProjectWorkspace().write_files(
-                _require_text(args, "project", 80), files, authorized
-            )
+            return ProjectWorkspace().write_files(_require_text(args, "project", 80), files, authorized)
         if name == "arya.project.inspect":
             return ProjectWorkspace().inspect(_require_text(args, "project", 80))
         if name == "arya.project.read":
-            return ProjectWorkspace().read_file(
-                _require_text(args, "project", 80),
-                _require_text(args, "path", 500),
-            )
+            return ProjectWorkspace().read_file(_require_text(args, "project", 80), _require_text(args, "path", 500))
         if name == "arya.project.generate":
             return ProjectGenerator().create(
                 project=_require_text(args, "project", 80),
@@ -485,15 +357,9 @@ class ToolCoordinator:
                 raise ToolError("'include_content' must be a boolean")
             return evidence_summary(evidence, include_content=include_content)
         if name == "web.search":
-            return SearchEngine().search(
-                _require_text(args, "query", 500),
-                _bounded_int(args, "limit", 8, 1, 20),
-            )
+            return SearchEngine().search(_require_text(args, "query", 500), _bounded_int(args, "limit", 8, 1, 20))
         if name == "web.research":
-            return ResearchEngine().research(
-                _require_text(args, "query", 500),
-                _bounded_int(args, "max_sources", 3, 1, 5),
-            )
+            return ResearchEngine().research(_require_text(args, "query", 500), _bounded_int(args, "max_sources", 3, 1, 5))
         if name == "runtime.doctor":
             return doctor()
         if name == "tyrion.health":
@@ -502,10 +368,7 @@ class ToolCoordinator:
                 raise ToolError("'organ_id' must be a string or null")
             return TyrionSupervisor().health(organ_id)
         if name == "bran.search":
-            return self.bran.search(
-                _require_text(args, "query", 5_000),
-                _bounded_int(args, "limit", 10, 1, 100),
-            )
+            return self.bran.search(_require_text(args, "query", 5_000), _bounded_int(args, "limit", 10, 1, 100))
         if name == "bran.remember":
             category = str(args.get("category", args.get("kind", "note")))[:100]
             return self.bran.remember(
@@ -513,11 +376,7 @@ class ToolCoordinator:
                 approved=authorized,
                 source=str(args.get("source", "user-approved"))[:200],
                 category=category,
-                metadata={
-                    "requested_by": "ned",
-                    "authorized_by": "cyber",
-                    "transport": "tool",
-                },
+                metadata={"requested_by": "ned", "authorized_by": "cyber", "transport": "tool"},
             )
         if name == "visao.status":
             return knowledge_status()["visao"]
@@ -530,9 +389,7 @@ class ToolCoordinator:
         if name == "arya.run":
             command = _require_text(args, "command", 500)
             raw_arguments = args.get("arguments", [])
-            if not isinstance(raw_arguments, list) or not all(
-                isinstance(item, str) for item in raw_arguments
-            ):
+            if not isinstance(raw_arguments, list) or not all(isinstance(item, str) for item in raw_arguments):
                 raise ToolError("'arguments' must be an array of strings")
             cwd = args.get("cwd")
             if cwd is not None and not isinstance(cwd, str):
@@ -574,7 +431,6 @@ def main() -> int:
     invoke_parser.add_argument("--approval-id")
     args = parser.parse_args()
     coordinator = ToolCoordinator()
-
     try:
         if args.action == "list":
             result = coordinator.list_tools()
@@ -586,25 +442,15 @@ def main() -> int:
             raw_arguments = args.arguments or "{}"
             if args.arguments_base64:
                 try:
-                    raw_arguments = base64.b64decode(
-                        args.arguments_base64.encode("ascii"), validate=True
-                    ).decode("utf-8")
+                    raw_arguments = base64.b64decode(args.arguments_base64.encode("ascii"), validate=True).decode("utf-8")
                 except (ValueError, UnicodeDecodeError) as error:
                     raise ToolError("Invalid Base64 arguments") from error
-            result = coordinator.invoke(
-                args.name,
-                parse_arguments(raw_arguments),
-                approval_id=args.approval_id,
-            )
+            result = coordinator.invoke(args.name, parse_arguments(raw_arguments), approval_id=args.approval_id)
     except (OSError, ValueError, ToolError, ApprovalError) as error:
         print(f"{type(error).__name__}: {error}", file=sys.stderr)
         return 2
-
     print(json.dumps(result, ensure_ascii=False, indent=2))
-    if isinstance(result, dict) and result.get("state") in {
-        "approval_required",
-        "denied",
-    }:
+    if isinstance(result, dict) and result.get("state") in {"approval_required", "denied"}:
         return 3
     return 0
 

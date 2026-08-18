@@ -4,27 +4,27 @@ import argparse
 import base64
 import json
 import sys
+import time
 from dataclasses import asdict, dataclass
-from pathlib import Path
-from typing import Any, Callable
+from typing import Any
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
 
-from runtime_paths import CONFIG, PLATFORM, ROOT
+from runtime_paths import CONFIG
 
 from arya_runtime import run as arya_run, safe_cwd
 from bran_cognitive import CognitiveMemory
 from cognitive_runtime import DanyEvaluator
-from knowledge_runtime import BranMemory, VisaoIngestor, status as knowledge_status
-from research_runtime import ResearchEngine
-from search_runtime import SearchEngine
-from web_runtime import WebClient, evidence_summary
-from project_workspace import ProjectWorkspace
+from knowledge_runtime import VisaoIngestor, status as knowledge_status
 from project_generator import ProjectGenerator
 from project_quality import ProjectQuality
-from team_runtime import CyberPolicy, JhonLogger, KingEventBus, TyrionSupervisor, doctor
+from project_workspace import ProjectWorkspace
+from research_runtime import ResearchEngine
+from search_runtime import SearchEngine
 from security_runtime import ApprovalError, ApprovalStore
+from team_runtime import CyberPolicy, JhonLogger, KingEventBus, TyrionSupervisor, doctor
+from web_runtime import WebClient, evidence_summary
 
 
 class ToolError(RuntimeError):
@@ -41,17 +41,26 @@ class ToolSpec:
 
 
 def _load_registry() -> dict[str, ToolSpec]:
-    payload = json.loads((CONFIG / "tools.registry.json").read_text(encoding="utf-8-sig"))
+    payload = json.loads(
+        (CONFIG / "tools.registry.json").read_text(encoding="utf-8-sig")
+    )
     return {
         item["name"]: ToolSpec(
-            name=item["name"], member=item["member"], effect=item["effect"],
-            description=item["description"], parameters=dict(item.get("parameters", {})),
+            name=item["name"],
+            member=item["member"],
+            effect=item["effect"],
+            description=item["description"],
+            parameters=dict(item.get("parameters", {})),
         )
         for item in payload["tools"]
     }
 
 
-def _require_text(arguments: dict[str, Any], key: str, maximum: int = 50_000) -> str:
+def _require_text(
+    arguments: dict[str, Any],
+    key: str,
+    maximum: int = 50_000,
+) -> str:
     value = arguments.get(key)
     if not isinstance(value, str) or not value.strip():
         raise ToolError(f"'{key}' must be a non-empty string")
@@ -60,7 +69,13 @@ def _require_text(arguments: dict[str, Any], key: str, maximum: int = 50_000) ->
     return value.strip()
 
 
-def _bounded_int(arguments: dict[str, Any], key: str, default: int, minimum: int, maximum: int) -> int:
+def _bounded_int(
+    arguments: dict[str, Any],
+    key: str,
+    default: int,
+    minimum: int,
+    maximum: int,
+) -> int:
     value = arguments.get(key, default)
     if isinstance(value, bool) or not isinstance(value, int):
         raise ToolError(f"'{key}' must be an integer")
@@ -89,13 +104,20 @@ class ToolCoordinator:
             raise ToolError(f"Unknown tool: {name}")
         return asdict(spec)
 
-    def invoke(self, name: str, arguments: dict[str, Any] | None = None, approval_id: str | None = None) -> dict[str, Any]:
+    def invoke(
+        self,
+        name: str,
+        arguments: dict[str, Any] | None = None,
+        approval_id: str | None = None,
+    ) -> dict[str, Any]:
         spec = self.registry.get(name)
         if spec is None:
             raise ToolError(f"Unknown tool: {name}")
+
         args = arguments or {}
         if not isinstance(args, dict):
             raise ToolError("Tool arguments must be a JSON object")
+
         consumed_approval = None
         authorized = False
         if approval_id:
@@ -106,68 +128,156 @@ class ToolCoordinator:
                 args,
             )
             authorized = True
-        decision = self.cyber.check(
-            spec.effect,
-            authorized,
-        )
+
+        decision = self.cyber.check(spec.effect, authorized)
         request_event = self.king.publish(
-            "tool.requested", {"tool": name, "member": spec.member, "effect": spec.effect},
-            sender="ned", recipient=spec.member,
+            "tool.requested",
+            {
+                "tool": name,
+                "member": spec.member,
+                "effect": spec.effect,
+            },
+            sender="ned",
+            recipient=spec.member,
         )
-        self.jhon.write("info", "tools", "tool.requested", tool=name, member=spec.member, authorized=authorized)
+        self.jhon.write(
+            "info",
+            "tools",
+            "tool.requested",
+            tool=name,
+            member=spec.member,
+            authorized=authorized,
+        )
+
         if not decision.allowed:
-            self.jhon.write("warning", "cyber", "tool.blocked", tool=name, risk=decision.risk)
+            self.jhon.write(
+                "warning",
+                "cyber",
+                "tool.blocked",
+                tool=name,
+                risk=decision.risk,
+            )
             approval = None
             if decision.approval_required:
-                approval = self.approvals.request(name, spec.effect, decision.risk, args, decision.reason)
-                self.king.publish("approval.requested", {"approval_id": approval["id"], "tool": name, "risk": decision.risk}, sender="cyber", recipient="user")
+                approval = self.approvals.request(
+                    name,
+                    spec.effect,
+                    decision.risk,
+                    args,
+                    decision.reason,
+                )
+                self.king.publish(
+                    "approval.requested",
+                    {
+                        "approval_id": approval["id"],
+                        "tool": name,
+                        "risk": decision.risk,
+                    },
+                    sender="cyber",
+                    recipient="user",
+                )
             return {
                 "state": "approval_required" if decision.approval_required else "denied",
-                "tool": name, "member": spec.member,
-                "policy": asdict(decision), "approval": approval,
+                "tool": name,
+                "member": spec.member,
+                "policy": asdict(decision),
+                "approval": approval,
                 "request_event_id": request_event["id"],
+                "duration_ms": None,
+                "duration_scope": "not-executed",
             }
+
+        started = time.perf_counter()
         try:
             result = self._execute(name, args, authorized)
         except Exception as error:
-            self.jhon.write("error", spec.member, "tool.failed", tool=name, error_type=type(error).__name__)
+            duration_ms = int((time.perf_counter() - started) * 1000)
+            self.jhon.write(
+                "error",
+                spec.member,
+                "tool.failed",
+                tool=name,
+                error_type=type(error).__name__,
+                duration_ms=duration_ms,
+            )
             self.king.publish(
-                "tool.failed", {"tool": name, "error_type": type(error).__name__},
-                sender=spec.member, recipient="ned",
+                "tool.failed",
+                {
+                    "tool": name,
+                    "error_type": type(error).__name__,
+                    "duration_ms": duration_ms,
+                },
+                sender=spec.member,
+                recipient="ned",
             )
             raise
+
+        duration_ms = int((time.perf_counter() - started) * 1000)
         completion = self.king.publish(
-            "tool.completed", {"tool": name, "member": spec.member},
-            sender=spec.member, recipient="ned",
+            "tool.completed",
+            {
+                "tool": name,
+                "member": spec.member,
+                "duration_ms": duration_ms,
+            },
+            sender=spec.member,
+            recipient="ned",
         )
-        self.jhon.write("info", spec.member, "tool.completed", tool=name)
+        self.jhon.write(
+            "info",
+            spec.member,
+            "tool.completed",
+            tool=name,
+            duration_ms=duration_ms,
+        )
         return {
-            "state": "completed", "tool": name, "member": spec.member,
-            "result": result, "policy": asdict(decision),
-            "request_event_id": request_event["id"], "completion_event_id": completion["id"],
+            "state": "completed",
+            "tool": name,
+            "member": spec.member,
+            "result": result,
+            "policy": asdict(decision),
+            "request_event_id": request_event["id"],
+            "completion_event_id": completion["id"],
             "approval": consumed_approval,
+            "duration_ms": duration_ms,
+            "duration_scope": "tool-execution-only",
         }
 
     def _execute(self, name: str, args: dict[str, Any], authorized: bool) -> Any:
         if name == "arya.project.review":
             result = ProjectQuality().review(_require_text(args, "project", 80))
-            result["dany"] = asdict(DanyEvaluator().evaluate(json.dumps(result, ensure_ascii=False)))
+            result["dany"] = asdict(
+                DanyEvaluator().evaluate(json.dumps(result, ensure_ascii=False))
+            )
             return result
         if name == "arya.project.report":
-            return ProjectQuality().write_report(_require_text(args, "project", 80), authorized)
+            return ProjectQuality().write_report(
+                _require_text(args, "project", 80),
+                authorized,
+            )
         if name == "arya.project.status":
             return ProjectWorkspace().status()
         if name == "arya.project.create":
-            return ProjectWorkspace().create_project(_require_text(args, "project", 80), authorized)
+            return ProjectWorkspace().create_project(
+                _require_text(args, "project", 80),
+                authorized,
+            )
         if name == "arya.project.write":
             files = args.get("files")
             if not isinstance(files, list):
                 raise ToolError("'files' must be an array")
-            return ProjectWorkspace().write_files(_require_text(args, "project", 80), files, authorized)
+            return ProjectWorkspace().write_files(
+                _require_text(args, "project", 80),
+                files,
+                authorized,
+            )
         if name == "arya.project.inspect":
             return ProjectWorkspace().inspect(_require_text(args, "project", 80))
         if name == "arya.project.read":
-            return ProjectWorkspace().read_file(_require_text(args, "project", 80), _require_text(args, "path", 500))
+            return ProjectWorkspace().read_file(
+                _require_text(args, "project", 80),
+                _require_text(args, "path", 500),
+            )
         if name == "arya.project.generate":
             return ProjectGenerator().create(
                 project=_require_text(args, "project", 80),
@@ -176,42 +286,20 @@ class ToolCoordinator:
                 approved=authorized,
             )
         if name == "web.fetch":
-            evidence = WebClient().fetch(
-                _require_text(args, "url", 4_000)
-            )
-            include_content = args.get(
-                "include_content",
-                True,
-            )
+            evidence = WebClient().fetch(_require_text(args, "url", 4_000))
+            include_content = args.get("include_content", True)
             if not isinstance(include_content, bool):
-                raise ToolError(
-                    "'include_content' must be a boolean"
-                )
-            return evidence_summary(
-                evidence,
-                include_content=include_content,
-            )
+                raise ToolError("'include_content' must be a boolean")
+            return evidence_summary(evidence, include_content=include_content)
         if name == "web.search":
             return SearchEngine().search(
                 _require_text(args, "query", 500),
-                _bounded_int(
-                    args,
-                    "limit",
-                    8,
-                    1,
-                    20,
-                ),
+                _bounded_int(args, "limit", 8, 1, 20),
             )
         if name == "web.research":
             return ResearchEngine().research(
                 _require_text(args, "query", 500),
-                _bounded_int(
-                    args,
-                    "max_sources",
-                    3,
-                    1,
-                    5,
-                ),
+                _bounded_int(args, "max_sources", 3, 1, 5),
             )
         if name == "runtime.doctor":
             return doctor()
@@ -226,9 +314,7 @@ class ToolCoordinator:
                 _bounded_int(args, "limit", 10, 1, 100),
             )
         if name == "bran.remember":
-            category = str(
-                args.get("category", args.get("kind", "note"))
-            )[:100]
+            category = str(args.get("category", args.get("kind", "note")))[:100]
             return self.bran.remember(
                 _require_text(args, "content"),
                 approved=authorized,
@@ -251,14 +337,18 @@ class ToolCoordinator:
         if name == "arya.run":
             command = _require_text(args, "command", 500)
             raw_arguments = args.get("arguments", [])
-            if not isinstance(raw_arguments, list) or not all(isinstance(item, str) for item in raw_arguments):
+            if not isinstance(raw_arguments, list) or not all(
+                isinstance(item, str) for item in raw_arguments
+            ):
                 raise ToolError("'arguments' must be an array of strings")
             cwd = args.get("cwd")
             if cwd is not None and not isinstance(cwd, str):
                 raise ToolError("'cwd' must be a string or null")
             return arya_run(command, raw_arguments, cwd, authorized)
         if name == "king.recent":
-            return KingEventBus().recent(_bounded_int(args, "limit", 20, 1, 200))
+            return KingEventBus().recent(
+                _bounded_int(args, "limit", 20, 1, 200)
+            )
         if name == "dany.evaluate":
             return asdict(DanyEvaluator().evaluate(_require_text(args, "content")))
         if name == "cyber.check":
@@ -284,7 +374,8 @@ def main() -> int:
     parser = argparse.ArgumentParser(prog="rachel-tools")
     sub = parser.add_subparsers(dest="action", required=True)
     sub.add_parser("list")
-    inspect_parser = sub.add_parser("inspect"); inspect_parser.add_argument("name")
+    inspect_parser = sub.add_parser("inspect")
+    inspect_parser.add_argument("name")
     invoke_parser = sub.add_parser("invoke")
     invoke_parser.add_argument("name")
     invoke_parser.add_argument("--arguments")
@@ -292,9 +383,12 @@ def main() -> int:
     invoke_parser.add_argument("--approval-id")
     args = parser.parse_args()
     coordinator = ToolCoordinator()
+
     try:
-        if args.action == "list": result = coordinator.list_tools()
-        elif args.action == "inspect": result = coordinator.inspect(args.name)
+        if args.action == "list":
+            result = coordinator.list_tools()
+        elif args.action == "inspect":
+            result = coordinator.inspect(args.name)
         else:
             if args.arguments and args.arguments_base64:
                 raise ToolError("Use only one arguments transport")
@@ -315,8 +409,12 @@ def main() -> int:
     except (OSError, ValueError, ToolError, ApprovalError) as error:
         print(f"{type(error).__name__}: {error}", file=sys.stderr)
         return 2
+
     print(json.dumps(result, ensure_ascii=False, indent=2))
-    if isinstance(result, dict) and result.get("state") in {"approval_required", "denied"}:
+    if isinstance(result, dict) and result.get("state") in {
+        "approval_required",
+        "denied",
+    }:
         return 3
     return 0
 

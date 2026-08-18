@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.3",
+  "schema_version": "1.4",
   "default_policy": "deny",
   "tools": [
     {"name":"runtime.doctor","member":"jhon","effect":"status","description":"Verifica a integridade geral da RACHEL.","parameters":{}},
@@ -35,6 +35,12 @@
     {"name":"dev.build","member":"samwell","effect":"execute","description":"Executa build/compilação por um comando tipado derivado dos metadados do projeto.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string","timeout_seconds":"integer"}},
     {"name":"dev.lint","member":"dany","effect":"execute","description":"Executa lint por ferramenta/script explicitamente detectado no projeto.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string","timeout_seconds":"integer"}},
     {"name":"dev.typecheck","member":"dany","effect":"execute","description":"Executa verificação de tipos por ferramenta/script explicitamente detectado no projeto.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string","timeout_seconds":"integer"}},
+
+    {"name":"process.start","member":"arya","effect":"execute","description":"Inicia um processo de desenvolvimento por perfil conhecido e registra posse pela RACHEL.","parameters":{"scope":"workspace|desktop|documents|downloads","path":"string","profile":"node.dev|node.start|rust.run|python.module"}},
+    {"name":"process.list","member":"arya","effect":"status","description":"Lista somente processos iniciados e rastreados pela RACHEL.","parameters":{}},
+    {"name":"process.status","member":"arya","effect":"status","description":"Consulta estado de um processo pertencente à RACHEL.","parameters":{"process_id":"string"}},
+    {"name":"process.logs","member":"arya","effect":"read","description":"Lê logs limitados de um processo pertencente à RACHEL.","parameters":{"process_id":"string","maximum_bytes":"integer"}},
+    {"name":"process.stop","member":"arya","effect":"execute","description":"Interrompe somente um processo pertencente à RACHEL e verifica o encerramento.","parameters":{"process_id":"string"}},
 
     {"name":"arya.list","member":"arya","effect":"list","description":"Compatibilidade legada: lista uma pasta permitida no workspace interno.","parameters":{"path":"string"}},
     {"name":"arya.run","member":"arya","effect":"execute","description":"Fallback controlado para executar um processo sem shell quando não houver ferramenta tipada apropriada.","parameters":{"command":"string","arguments":"array","cwd":"string|null"}},

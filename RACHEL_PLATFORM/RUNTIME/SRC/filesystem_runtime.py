@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import os
+import re
 import shutil
 import time
 import uuid
@@ -15,6 +16,7 @@ MAX_TEXT_BYTES = 1_000_000
 MAX_LIST_ENTRIES = 500
 MAX_SEARCH_FILES = 300
 BACKUP_ROOT = STATE / "filesystem-backups"
+SCOPE_NAME_PATTERN = re.compile(r"^[a-z0-9][a-z0-9._-]{2,63}$")
 
 
 class FilesystemError(RuntimeError):
@@ -28,9 +30,10 @@ def sha256_bytes(data: bytes) -> str:
 class FilesystemRuntime:
     """Typed filesystem operations constrained to explicit named scopes.
 
-    The model never receives an unrestricted filesystem root from this runtime.
-    It selects a named scope plus a relative path. Every resolved target is
-    checked against its scope and existing symbolic links are rejected.
+    Built-in scopes are local defaults. Additional project folders can be granted
+    only for the lifetime of this runtime process. Session grants are never
+    persisted by this class and require Cyber approval before being installed.
+    The model always uses a scope name plus a relative path after the grant.
     """
 
     def __init__(
@@ -45,19 +48,73 @@ class FilesystemRuntime:
             "documents": (home / "Documents").resolve(),
             "downloads": (home / "Downloads").resolve(),
         }
+        supplied = scopes or defaults
         self.scopes = {
             str(name).casefold(): Path(root).expanduser().resolve()
-            for name, root in (scopes or defaults).items()
+            for name, root in supplied.items()
         }
         if "workspace" not in self.scopes:
             raise FilesystemError("workspace scope is required")
-
+        self.builtin_scopes = frozenset(self.scopes)
+        self.session_scopes: set[str] = set()
         self.backup_root = Path(backup_root or BACKUP_ROOT).resolve()
         self.scopes["workspace"].mkdir(parents=True, exist_ok=True)
         self.backup_root.mkdir(parents=True, exist_ok=True)
 
+    @staticmethod
+    def _scope_name(name: str) -> str:
+        key = str(name).strip().casefold()
+        if not SCOPE_NAME_PATTERN.fullmatch(key):
+            raise FilesystemError(
+                "Scope name must contain 3-64 lowercase letters, numbers, '.', '_' or '-'"
+            )
+        return key
+
     def scope_names(self) -> list[str]:
         return sorted(self.scopes)
+
+    def grant_scope(self, name: str, root: str, approved: bool) -> dict[str, Any]:
+        if not approved:
+            raise PermissionError("Cyber approval is required to grant a filesystem scope")
+        key = self._scope_name(name)
+        if key in self.builtin_scopes:
+            raise FilesystemError("Built-in filesystem scopes cannot be replaced")
+        candidate = Path(str(root)).expanduser()
+        if not candidate.is_absolute():
+            raise FilesystemError("Granted folder must be an absolute path")
+        resolved = candidate.resolve(strict=True)
+        if not resolved.is_dir():
+            raise FilesystemError("Granted filesystem scope must be an existing directory")
+        if resolved.is_symlink():
+            raise FilesystemError("Symbolic links cannot be granted as filesystem scopes")
+        if resolved == self.backup_root or self.backup_root in resolved.parents:
+            raise FilesystemError("Rachel internal backup storage cannot become a user scope")
+        self.scopes[key] = resolved
+        self.session_scopes.add(key)
+        return {
+            "name": key,
+            "granted": True,
+            "session_only": True,
+            "persistent": False,
+            "available": True,
+        }
+
+    def revoke_scope(self, name: str, approved: bool) -> dict[str, Any]:
+        if not approved:
+            raise PermissionError("Cyber approval is required to revoke a filesystem scope")
+        key = str(name).strip().casefold()
+        if key in self.builtin_scopes:
+            raise FilesystemError("Built-in filesystem scopes cannot be revoked")
+        existed = key in self.session_scopes
+        self.session_scopes.discard(key)
+        if existed:
+            self.scopes.pop(key, None)
+        return {
+            "name": key,
+            "revoked": existed,
+            "session_only": True,
+            "persistent": False,
+        }
 
     def root(self, scope: str) -> Path:
         key = str(scope).strip().casefold()
@@ -99,7 +156,6 @@ class FilesystemRuntime:
             target.relative_to(root)
         except ValueError as error:
             raise FilesystemError("Path escaped the selected scope") from error
-
         current = target
         while True:
             if current.exists() and current.is_symlink():
@@ -119,72 +175,52 @@ class FilesystemRuntime:
                     "name": name,
                     "available": root.exists(),
                     "default": name == "workspace",
+                    "session_grant": name in self.session_scopes,
+                    "persistent": name not in self.session_scopes,
                 }
                 for name, root in sorted(self.scopes.items())
             ],
             "typed_operations": [
-                "list",
-                "stat",
-                "read",
-                "search",
-                "mkdir",
-                "write",
-                "patch",
-                "copy",
-                "move",
-                "delete",
+                "scope.grant", "scope.revoke", "list", "stat", "read", "search",
+                "mkdir", "write", "patch", "copy", "move", "delete",
             ],
             "shell_required": False,
             "symlinks": "blocked",
             "atomic_writes": True,
             "backups": True,
+            "session_grants_persisted": False,
         }
 
     def list(self, scope: str, path: str = ".") -> dict[str, Any]:
         directory = self.target(scope, path)
         if not directory.is_dir():
             raise FilesystemError("Directory not found")
-
         items = []
         for item in sorted(directory.iterdir(), key=lambda value: value.name.casefold()):
             if len(items) >= MAX_LIST_ENTRIES:
                 break
             if item.is_symlink():
-                kind = "symlink-blocked"
-                size = None
+                kind, size = "symlink-blocked", None
             elif item.is_dir():
-                kind = "directory"
-                size = None
+                kind, size = "directory", None
             elif item.is_file():
-                kind = "file"
-                size = item.stat().st_size
+                kind, size = "file", item.stat().st_size
             else:
-                kind = "other"
-                size = None
+                kind, size = "other", None
             items.append({"name": item.name, "type": kind, "size_bytes": size})
-
         return {
-            "scope": scope.casefold(),
-            "path": path,
-            "count": len(items),
-            "truncated": len(items) >= MAX_LIST_ENTRIES,
-            "items": items,
+            "scope": scope.casefold(), "path": path, "count": len(items),
+            "truncated": len(items) >= MAX_LIST_ENTRIES, "items": items,
         }
 
     def stat(self, scope: str, path: str) -> dict[str, Any]:
         target = self.target(scope, path, allow_root=False)
         if not target.exists():
-            return {
-                "scope": scope.casefold(),
-                "path": path,
-                "exists": False,
-            }
+            return {"scope": scope.casefold(), "path": path, "exists": False}
         if target.is_symlink():
             raise FilesystemError("Symbolic links are blocked")
         return {
-            "scope": scope.casefold(),
-            "path": path,
-            "exists": True,
+            "scope": scope.casefold(), "path": path, "exists": True,
             "type": "directory" if target.is_dir() else "file" if target.is_file() else "other",
             "size_bytes": target.stat().st_size if target.is_file() else None,
             "modified_ns": target.stat().st_mtime_ns,
@@ -202,32 +238,21 @@ class FilesystemRuntime:
         except UnicodeDecodeError as error:
             raise FilesystemError("File is not UTF-8 text") from error
         return {
-            "scope": scope.casefold(),
-            "path": path,
-            "content": content,
-            "size_bytes": len(data),
-            "sha256": sha256_bytes(data),
+            "scope": scope.casefold(), "path": path, "content": content,
+            "size_bytes": len(data), "sha256": sha256_bytes(data),
         }
 
-    def search(
-        self,
-        scope: str,
-        query: str,
-        path: str = ".",
-        limit: int = 50,
-    ) -> dict[str, Any]:
+    def search(self, scope: str, query: str, path: str = ".", limit: int = 50) -> dict[str, Any]:
         needle = str(query).strip()
         if not needle:
             raise FilesystemError("Search query is required")
         directory = self.target(scope, path)
         if not directory.is_dir():
             raise FilesystemError("Search directory not found")
-
         maximum = max(1, min(int(limit), 200))
         matches = []
         inspected = 0
         lowered = needle.casefold()
-
         for item in sorted(directory.rglob("*")):
             if inspected >= MAX_SEARCH_FILES or len(matches) >= maximum:
                 break
@@ -247,23 +272,16 @@ class FilesystemRuntime:
                 continue
             for number, line in enumerate(text.splitlines(), start=1):
                 if lowered in line.casefold():
-                    matches.append(
-                        {
-                            "path": item.relative_to(self.root(scope)).as_posix(),
-                            "line": number,
-                            "text": line[:500],
-                        }
-                    )
+                    matches.append({
+                        "path": item.relative_to(self.root(scope)).as_posix(),
+                        "line": number,
+                        "text": line[:500],
+                    })
                     if len(matches) >= maximum:
                         break
-
         return {
-            "scope": scope.casefold(),
-            "path": path,
-            "query": needle,
-            "inspected_files": inspected,
-            "count": len(matches),
-            "matches": matches,
+            "scope": scope.casefold(), "path": path, "query": needle,
+            "inspected_files": inspected, "count": len(matches), "matches": matches,
         }
 
     def mkdir(self, scope: str, path: str, approved: bool) -> dict[str, Any]:
@@ -276,11 +294,8 @@ class FilesystemRuntime:
         target.mkdir(parents=True, exist_ok=True)
         verified = target.is_dir()
         return {
-            "scope": scope.casefold(),
-            "path": path,
-            "created": not existed,
-            "exists": verified,
-            "verified": verified,
+            "scope": scope.casefold(), "path": path, "created": not existed,
+            "exists": verified, "verified": verified,
         }
 
     def _backup(self, target: Path, scope: str, relative_path: str) -> str | None:
@@ -294,13 +309,7 @@ class FilesystemRuntime:
         shutil.copy2(target, destination)
         return operation_id
 
-    def write(
-        self,
-        scope: str,
-        path: str,
-        content: str,
-        approved: bool,
-    ) -> dict[str, Any]:
+    def write(self, scope: str, path: str, content: str, approved: bool) -> dict[str, Any]:
         if not approved:
             raise PermissionError("Cyber approval is required to write a file")
         if not isinstance(content, str):
@@ -308,7 +317,6 @@ class FilesystemRuntime:
         data = content.encode("utf-8")
         if len(data) > MAX_TEXT_BYTES:
             raise FilesystemError("File exceeds text write limit")
-
         target = self.target(scope, path, allow_root=False)
         if target.exists() and not target.is_file():
             raise FilesystemError("Target exists and is not a file")
@@ -322,52 +330,26 @@ class FilesystemRuntime:
         finally:
             if temporary.exists():
                 temporary.unlink(missing_ok=True)
-
         verified_data = target.read_bytes()
-        verified = verified_data == data
         return {
-            "scope": scope.casefold(),
-            "path": path,
-            "created": created,
-            "overwritten": not created,
-            "size_bytes": len(data),
-            "sha256": sha256_bytes(data),
-            "backup_id": backup_id,
-            "verified": verified,
+            "scope": scope.casefold(), "path": path, "created": created,
+            "overwritten": not created, "size_bytes": len(data),
+            "sha256": sha256_bytes(data), "backup_id": backup_id,
+            "verified": verified_data == data,
         }
 
-    def patch(
-        self,
-        scope: str,
-        path: str,
-        old: str,
-        new: str,
-        approved: bool,
-    ) -> dict[str, Any]:
+    def patch(self, scope: str, path: str, old: str, new: str, approved: bool) -> dict[str, Any]:
         if not approved:
             raise PermissionError("Cyber approval is required to patch a file")
         current = self.read(scope, path)["content"]
         occurrences = current.count(old)
         if occurrences != 1:
-            raise FilesystemError(
-                f"Patch requires exactly one match; found {occurrences}"
-            )
-        result = self.write(
-            scope,
-            path,
-            current.replace(old, new, 1),
-            approved=True,
-        )
+            raise FilesystemError(f"Patch requires exactly one match; found {occurrences}")
+        result = self.write(scope, path, current.replace(old, new, 1), approved=True)
         result["patch_matches"] = occurrences
         return result
 
-    def copy(
-        self,
-        scope: str,
-        source: str,
-        destination: str,
-        approved: bool,
-    ) -> dict[str, Any]:
+    def copy(self, scope: str, source: str, destination: str, approved: bool) -> dict[str, Any]:
         if not approved:
             raise PermissionError("Cyber approval is required to copy a file")
         src = self.target(scope, source, allow_root=False)
@@ -381,20 +363,11 @@ class FilesystemRuntime:
         shutil.copy2(src, dst)
         verified = dst.is_file() and sha256_bytes(src.read_bytes()) == sha256_bytes(dst.read_bytes())
         return {
-            "scope": scope.casefold(),
-            "source": source,
-            "destination": destination,
-            "backup_id": backup_id,
-            "verified": verified,
+            "scope": scope.casefold(), "source": source, "destination": destination,
+            "backup_id": backup_id, "verified": verified,
         }
 
-    def move(
-        self,
-        scope: str,
-        source: str,
-        destination: str,
-        approved: bool,
-    ) -> dict[str, Any]:
+    def move(self, scope: str, source: str, destination: str, approved: bool) -> dict[str, Any]:
         if not approved:
             raise PermissionError("Cyber approval is required to move a path")
         src = self.target(scope, source, allow_root=False)
@@ -405,45 +378,30 @@ class FilesystemRuntime:
             raise FilesystemError("Destination already exists")
         dst.parent.mkdir(parents=True, exist_ok=True)
         shutil.move(str(src), str(dst))
-        verified = dst.exists() and not src.exists()
         return {
-            "scope": scope.casefold(),
-            "source": source,
-            "destination": destination,
-            "verified": verified,
+            "scope": scope.casefold(), "source": source, "destination": destination,
+            "verified": dst.exists() and not src.exists(),
         }
 
-    def delete(
-        self,
-        scope: str,
-        path: str,
-        approved: bool,
-    ) -> dict[str, Any]:
+    def delete(self, scope: str, path: str, approved: bool) -> dict[str, Any]:
         if not approved:
             raise PermissionError("Cyber approval is required to delete a path")
         target = self.target(scope, path, allow_root=False)
         if not target.exists():
             return {
-                "scope": scope.casefold(),
-                "path": path,
-                "deleted": False,
-                "verified": True,
-                "reason": "not-found",
+                "scope": scope.casefold(), "path": path, "deleted": False,
+                "verified": True, "reason": "not-found",
             }
         if target.is_dir():
             try:
                 target.rmdir()
             except OSError as error:
-                raise FilesystemError(
-                    "Directory deletion is non-recursive; directory must be empty"
-                ) from error
+                raise FilesystemError("Directory deletion is non-recursive; directory must be empty") from error
         elif target.is_file():
             target.unlink()
         else:
             raise FilesystemError("Unsupported path type")
         return {
-            "scope": scope.casefold(),
-            "path": path,
-            "deleted": True,
+            "scope": scope.casefold(), "path": path, "deleted": True,
             "verified": not target.exists(),
         }

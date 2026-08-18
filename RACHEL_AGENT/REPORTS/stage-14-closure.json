@@ -1,0 +1,101 @@
+{
+  "architecture": {
+    "authorization": "cyber",
+    "coordinator": "rachel",
+    "duplicate_authorization_layer_created": false,
+    "duplicate_executor_created": false,
+    "duplicate_tool_runtime_created": false,
+    "executor": "ned",
+    "planner": "ned",
+    "tools": "arya"
+  },
+  "closure_semantics": {
+    "cyber_authorization_still_required": true,
+    "execution_requires_future_explicit_stage": true,
+    "goal_budget_still_required_before_future_execution": true,
+    "remaining_execution_blockers_are_expected": true,
+    "technical_closure_means_execution_enabled": false
+  },
+  "commits": [
+    {
+      "sha": "8c52d453e1613f28aed37bd0a0e7ca27d0c8c0a0",
+      "step": "14/1A",
+      "type": "contract"
+    },
+    {
+      "sha": "aa61e6b894cc8216845ac60aa9abee097cc375b6",
+      "step": "14/1B",
+      "type": "read-only-runtime"
+    },
+    {
+      "sha": "9595d01c179745b1cd7aae07a8079abb8fd163fc",
+      "step": "14/1C",
+      "type": "desktop-bridge"
+    },
+    {
+      "sha": "49635f743fd7cd7fb99e9dbfc2383578cca048bd",
+      "step": "14/1E",
+      "type": "budgets-and-envelope"
+    },
+    {
+      "sha": "f4d5e4cd7944c2367e3f4fb017de5d9f9d53f60c",
+      "step": "14/1F",
+      "type": "desktop-budget-bridge"
+    }
+  ],
+  "contracts": {
+    "agent_runtime": "defined",
+    "autonomy_budgets": "defined",
+    "budget_strategy": "explicit-per-goal-no-default",
+    "desktop_bridge": "defined",
+    "execution_envelope": "defined",
+    "maximum_completed_steps_per_slice": 1
+  },
+  "execution_activation": false,
+  "frozen_validation": {
+    "execution_actions": 0,
+    "forbidden_actions_accepted": 0,
+    "read_actions": 7,
+    "sha256": "D386A244E70C75F2486BCD0FC8406249431677BA870084E1073B4223FC5A655D",
+    "source_commit": "f4d5e4cd7944c2367e3f4fb017de5d9f9d53f60c",
+    "state": "validated",
+    "state_mutations": 0
+  },
+  "id": "rachel-stage-14-agent-runtime-closure",
+  "intentional_non_activation": {
+    "approval_consumption": false,
+    "approval_creation": false,
+    "background_execution": false,
+    "browser_execution": false,
+    "goal_decomposition": false,
+    "goal_execution": false,
+    "self_modification": false,
+    "task_execution": false,
+    "tool_execution": false,
+    "training_execution": false,
+    "unattended_execution": false,
+    "weights_modified": false
+  },
+  "next": {
+    "goal": "Audit the complete Stage 14 diff, publish the branch through a pull request and integrate it without enabling Agent execution.",
+    "step": "14/1I"
+  },
+  "owner": "rachel",
+  "readiness": {
+    "blocked_phases": 1,
+    "blockers": 5,
+    "execution_phase": "blocked",
+    "ready": false,
+    "ready_phases": 4
+  },
+  "runtime_source_commit": "f4d5e4cd7944c2367e3f4fb017de5d9f9d53f60c",
+  "schema_version": 1,
+  "stage": 14,
+  "state": "technically-closed-execution-disabled",
+  "technical_completion": true,
+  "title": "Agent Runtime / Governed Autonomy",
+  "validation_only_steps": [
+    "14/1D",
+    "14/1G"
+  ]
+}

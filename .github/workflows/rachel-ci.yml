@@ -91,6 +91,7 @@ jobs:
           $tests = @(
             "test_cognitive.py",
             "test_lote1_reliability.py",
+            "test_lote1_natural_e2e.py",
             "test_bran_cognitive.py",
             "test_security_contract.py",
             "test_security_runtime.py",

@@ -4,6 +4,8 @@ import sys
 import unittest
 from pathlib import Path
 
+import pytest
+
 ROOT = Path(__file__).resolve().parents[3]
 CONTROLLER = ROOT / "RACHEL_PLATFORM" / "RUNTIME" / "SRC" / "member_control.py"
 
@@ -23,6 +25,8 @@ class MemberControlTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stderr)
         self.assertEqual(len([line for line in result.stdout.splitlines() if " | " in line]), 10)
 
+    @pytest.mark.requires_submodules
+    @pytest.mark.xfail(reason="Requer 23 submódulos Git inicializados em FONTES/REPOSITORIOS; CI usa submodules:false", strict=False)
     def test_tyrion_has_all_organs(self) -> None:
         result = self.run_cli("member", "status", "tyrion")
         self.assertEqual(result.returncode, 0, result.stderr)

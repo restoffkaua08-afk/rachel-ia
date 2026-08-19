@@ -1,0 +1,161 @@
+name: RACHEL CI
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+      - evolution/rachel-professional-agent
+
+permissions:
+  contents: read
+
+concurrency:
+  group: rachel-ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  python-core-runtime:
+    name: Python Core + Runtime contracts
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          submodules: false
+      - name: Setup Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: '3.12'
+      - name: Install Rachel Core
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -e ./RACHEL_CORE
+      - name: Compile Python sources
+        shell: pwsh
+        run: |
+          python -m compileall -q RACHEL_CORE/src
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m compileall -q RACHEL_PLATFORM/RUNTIME/SRC
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python -m compileall -q APP/bridge
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Validate JSON configuration
+        shell: pwsh
+        run: |
+          @'
+          import json
+          from pathlib import Path
+          roots = [Path("RACHEL_PLATFORM/CONFIG"), Path("RACHEL_AGENT/CONFIG"), Path("RACHEL_EVALUATION/CONFIG")]
+          files = []
+          for root in roots:
+              if root.is_dir():
+                  files.extend(sorted(root.rglob("*.json")))
+          if not files:
+              raise SystemExit("No JSON configuration files found")
+          for path in files:
+              with path.open("r", encoding="utf-8-sig") as handle:
+                  value = json.load(handle)
+              if value is None:
+                  raise SystemExit(f"Invalid empty JSON root: {path}")
+          print(f"Validated {len(files)} JSON configuration files")
+          '@ | python -
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Rachel Core full unit suite
+        shell: pwsh
+        run: |
+          python -m unittest discover -s RACHEL_CORE/tests -p "test_*.py"
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+      - name: Critical runtime regression suite
+        shell: pwsh
+        run: |
+          $tests = @(
+            "test_cognitive.py",
+            "test_lote1_reliability.py",
+            "test_lote1_natural_e2e.py",
+            "test_desktop_resident_runtime.py",
+            "test_desktop_streaming_runtime.py",
+            "test_filesystem_runtime.py",
+            "test_filesystem_scope_grants.py",
+            "test_git_runtime.py",
+            "test_dev_runtime.py",
+            "test_process_runtime.py",
+            "test_arya_fallback_security.py",
+            "test_agent_loop_runtime.py",
+            "test_project_intelligence_runtime.py",
+            "test_bran_cognitive.py",
+            "test_security_contract.py",
+            "test_security_runtime.py",
+            "test_task_planner.py",
+            "test_task_executor.py",
+            "test_task_runtime.py",
+            "test_tools_runtime.py",
+            "test_project_workspace.py",
+            "test_project_generator.py",
+            "test_project_quality.py",
+            "test_web_runtime.py",
+            "test_search_runtime.py",
+            "test_research_runtime.py",
+            "test_voice_session.py",
+            "test_realtime_voice.py"
+          )
+          foreach ($pattern in $tests) {
+            Write-Host "=== $pattern ==="
+            python -m unittest discover -s RACHEL_PLATFORM/RUNTIME/TESTS -p $pattern
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+
+  desktop-frontend:
+    name: Desktop frontend build
+    runs-on: windows-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          submodules: false
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: 11.21.0
+          run_install: false
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: '25.9.0'
+          cache: pnpm
+          cache-dependency-path: APP/pnpm-lock.yaml
+      - name: Install frontend dependencies
+        working-directory: APP
+        run: pnpm install --frozen-lockfile
+      - name: Build frontend
+        working-directory: APP
+        run: pnpm build
+
+  tauri-rust:
+    name: Tauri Rust check
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 1
+          submodules: false
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+      - name: Create ephemeral sidecar placeholder
+        shell: pwsh
+        run: |
+          $target = "APP/src-tauri/binaries/rachel-backend-x86_64-pc-windows-msvc.exe"
+          New-Item -ItemType Directory -Force -Path (Split-Path $target) | Out-Null
+          [IO.File]::WriteAllBytes($target, [byte[]]@())
+          Write-Host "Created CI-only placeholder: $target"
+      - name: Cargo check
+        run: cargo check --manifest-path APP/src-tauri/Cargo.toml --locked

@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "id": "rachel-professional-agent-policy-v1",
+  "owner": "rachel",
+  "state": "enabled-governed-foreground",
+  "purpose": "Governar o Agent Loop profissional reutilizando TaskOrchestrator, TaskExecutor, ToolCoordinator e Cyber sem duplicar executores.",
+  "execution": {
+    "enabled": true,
+    "foreground_only": true,
+    "background_execution": false,
+    "unattended_execution": false,
+    "single_step_slice": true,
+    "checkpoint_after_each_step": true,
+    "observe_after_each_step": true,
+    "verify_after_each_step": true,
+    "controlled_repair": true,
+    "automatic_publish": false,
+    "automatic_credential_use": false,
+    "self_modification": false,
+    "self_update": false
+  },
+  "authorization": {
+    "authority": "cyber",
+    "single_use": true,
+    "approval_inheritance": false,
+    "approval_reuse": false,
+    "self_approval": false,
+    "silent_scope_expansion": false,
+    "repair_requires_fresh_approval_for_effects": true
+  },
+  "budget_profiles": {
+    "quick": {
+      "maximum_iterations": 6,
+      "maximum_tool_calls": 8,
+      "wall_clock_limit_seconds": 120,
+      "maximum_consecutive_failures": 2
+    },
+    "standard": {
+      "maximum_iterations": 16,
+      "maximum_tool_calls": 24,
+      "wall_clock_limit_seconds": 600,
+      "maximum_consecutive_failures": 3
+    },
+    "project": {
+      "maximum_iterations": 40,
+      "maximum_tool_calls": 80,
+      "wall_clock_limit_seconds": 1800,
+      "maximum_consecutive_failures": 5
+    }
+  },
+  "hard_caps": {
+    "maximum_iterations": 60,
+    "maximum_tool_calls": 120,
+    "wall_clock_limit_seconds": 3600,
+    "maximum_consecutive_failures": 6
+  },
+  "profile_selection": {
+    "model_may_invent_budget": false,
+    "default_profile": "standard",
+    "project_profile_keywords": [
+      "projeto",
+      "repositorio",
+      "repositório",
+      "sistema",
+      "aplicacao",
+      "aplicação",
+      "refatore",
+      "corrija o projeto",
+      "implemente",
+      "desenvolva"
+    ],
+    "user_may_request_profile": true,
+    "user_may_reduce_limits": true,
+    "budget_expansion_beyond_hard_caps": false
+  },
+  "repair": {
+    "enabled": true,
+    "child_plan_instead_of_mutating_history": true,
+    "completed_effects_are_evidence_not_approval": true,
+    "approval_tokens_never_copied": true,
+    "stop_when_failure_budget_exhausted": true,
+    "stop_on_unknown_state": true
+  },
+  "completion": {
+    "tool_state_completed_required": true,
+    "post_action_verification_required_when_supported": true,
+    "failed_verification_is_not_success": true,
+    "final_summary_must_use_observed_evidence": true
+  }
+}

@@ -1,0 +1,4 @@
+# Dependências de desenvolvimento e CI
+# Usado por .github/workflows/test.yml
+pytest>=7.4.0
+pytest-timeout>=2.1.0

@@ -1,0 +1,36 @@
+[project]
+name = "rachel-ia"
+version = "0.1.0"
+description = "RACHEL IA - agente local-first"
+requires-python = ">=3.11"
+readme = "README.md"
+license = {text = "Proprietary"}
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.4.0",
+    "pytest-timeout>=2.1.0",
+]
+
+[tool.pytest.ini_options]
+minversion = "7.4"
+testpaths = [
+    "RACHEL_CORE/tests",
+    "RACHEL_PLATFORM/RUNTIME/TESTS",
+]
+python_files = ["test_*.py"]
+python_classes = ["*Tests", "Test*"]
+python_functions = ["test_*"]
+addopts = "-ra --strict-markers"
+markers = [
+    "slow: testes que levam mais de 30s",
+    "integration: testes que abrem processos ou dependem de Ollama",
+    "requires_submodules: testes que dependem de submódulos Git inicializados",
+    "requires_provider: testes que precisam de Ollama ou outro provider real",
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+]
+
+# Submódulos Git NÃO são necessários para CI de Core/Runtime.
+# O workflow usa `submodules: false` em actions/checkout.

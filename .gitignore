@@ -27,6 +27,14 @@ htmlcov/
 dist/
 build/
 *.egg-info/
+.pytest_state/
+
+# Diretório espelho usado apenas localmente para auditoria
+rachel-ia-mirror.git/
+
+# Artefatos de teste locais (vazamentos de testes antigos)
+CONFIG/
+STATE_TEST/
 
 # Node e frontend
 node_modules/

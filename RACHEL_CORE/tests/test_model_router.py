@@ -109,7 +109,7 @@ class ModelRouterTests(unittest.TestCase):
         self.assertEqual("reasoning", router.last_route.task_type)
         self.assertEqual(1, self.cloud.generate_calls)
 
-    def test_local_only_never_calls_cloud_even_for_reasoning(self):
+    def test_local_only_uses_exact_reasoning_fallback_and_never_calls_cloud(self):
         router = self.router("local-only")
 
         response = router.generate(
@@ -119,6 +119,8 @@ class ModelRouterTests(unittest.TestCase):
         health = router.health()
 
         self.assertEqual("local", response.provider)
+        self.assertEqual("local-fallback", router.last_route.profile)
+        self.assertEqual("reasoning", router.last_route.task_type)
         self.assertTrue(router.last_route.local)
         self.assertEqual(0, self.cloud.generate_calls)
         self.assertEqual(0, self.cloud.health_calls)
@@ -138,6 +140,7 @@ class ModelRouterTests(unittest.TestCase):
         )
 
         self.assertEqual("local", response.provider)
+        self.assertEqual("local-fallback", router.last_route.profile)
         self.assertTrue(router.last_route.sensitive)
         self.assertEqual(0, self.cloud.generate_calls)
 

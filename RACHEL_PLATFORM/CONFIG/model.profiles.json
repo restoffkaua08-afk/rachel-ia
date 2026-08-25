@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "profiles": [
+    {
+      "name": "fast",
+      "provider": "primary",
+      "task_types": ["fast"],
+      "local": true,
+      "enabled": true,
+      "priority": 10,
+      "max_tokens": 2048,
+      "context_window": 32768
+    },
+    {
+      "name": "general",
+      "provider": "primary",
+      "task_types": ["general"],
+      "local": true,
+      "enabled": true,
+      "priority": 20,
+      "max_tokens": 4096,
+      "context_window": 32768
+    },
+    {
+      "name": "reasoning",
+      "provider": "cloud",
+      "task_types": ["reasoning"],
+      "local": false,
+      "enabled": true,
+      "priority": 10,
+      "max_tokens": 8192,
+      "context_window": 131072
+    },
+    {
+      "name": "coding",
+      "provider": "cloud",
+      "task_types": ["coding"],
+      "local": false,
+      "enabled": true,
+      "priority": 10,
+      "max_tokens": 8192,
+      "context_window": 131072
+    },
+    {
+      "name": "reasoning-local-fallback",
+      "provider": "primary",
+      "task_types": ["reasoning", "coding", "vision"],
+      "local": true,
+      "enabled": true,
+      "priority": 100,
+      "max_tokens": 4096,
+      "context_window": 32768
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "mode": "local-only",
+  "protect_pii": true,
+  "allow_cloud_for_sensitive_data": false,
+  "notes": [
+    "local-only e o default seguro e nao consulta providers cloud para geracao ou health.",
+    "hybrid usa local para tarefas simples e pode usar cloud em tarefas pesadas quando configurado.",
+    "conteudo sensivel permanece local salvo politica explicitamente alterada pelo usuario.",
+    "cloud-enabled continua sujeito aos controles de sensibilidade e aos providers configurados."
+  ]
+}

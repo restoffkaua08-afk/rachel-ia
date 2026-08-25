@@ -248,7 +248,15 @@ class ModelRouter:
                 raise ModelError(
                     "A política de privacidade exige modelo local, mas nenhum perfil local está disponível."
                 )
-            return local_profiles
+            exact_local = [
+                profile for profile in local_profiles if task_type in profile.task_types
+            ]
+            fallback_local = [
+                profile for profile in local_profiles if profile not in exact_local
+            ]
+            exact_local.sort(key=lambda item: (item.priority, item.name))
+            fallback_local.sort(key=lambda item: (item.priority, item.name))
+            return exact_local + fallback_local
 
         exact = [profile for profile in available if task_type in profile.task_types]
         fallback = [profile for profile in available if profile not in exact]

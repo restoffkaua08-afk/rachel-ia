@@ -219,9 +219,22 @@ class DanyProfessional:
         if not response_terms:
             return True
         evidence_matches = sum(1 for term in response_terms if term in evidence_text)
-        # Grounding is intentionally permissive for connective prose, but requires
-        # at least one concrete overlap when evidence exists.
-        return evidence_matches >= 1 or any(term in response.casefold() for term in _UNCERTAINTY_WORDS)
+        if evidence_matches >= 1:
+            return True
+        if any(term in response.casefold() for term in _UNCERTAINTY_WORDS):
+            return True
+
+        # A neutral acknowledgement that makes no concrete factual/execution
+        # claim is allowed to pass this check. Request fulfillment remains an
+        # advisory score signal, while URLs/numbers/commands and explicit
+        # success claims are governed by the stricter checks below.
+        makes_concrete_claim = bool(
+            _URL_PATTERN.search(response)
+            or _NUMBER_PATTERN.search(response)
+            or _COMMAND_PATTERN.search(response)
+            or any(term in response.casefold() for term in _SUCCESS_WORDS)
+        )
+        return not makes_concrete_claim
 
     @staticmethod
     def _check_obvious_hallucination(response: str, ctx: EvalContext) -> bool:

@@ -16,12 +16,12 @@ from rachel_bridge import (
     required_text,
 )
 from cognitive_runtime import (
-    DanyEvaluator,
     NedCognitiveBridge,
     ToolPlan,
     extract_task_goal,
     should_use_tool_planner,
 )
+from dany_runtime import evaluate_runtime_response, quality_payload
 from rachel_core.domain.enums import RunState
 from rachel_core.domain.models import ChatRequest
 
@@ -186,9 +186,9 @@ class ResidentBridge:
         }
 
         if result.state == RunState.COMPLETED:
-            report = DanyEvaluator().evaluate(result.message.content)
-            payload["quality"] = asdict(report)
-            payload["quality_scope"] = "structural"
+            report = evaluate_runtime_response(result.message.content, content)
+            payload["quality"] = quality_payload(report)
+            payload["quality_scope"] = report.scope
             experience_id = result.message.metadata.get("learning_experience_id")
             if experience_id:
                 self.cognitive.container.learning.update_quality(

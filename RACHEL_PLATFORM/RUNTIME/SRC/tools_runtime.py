@@ -342,7 +342,12 @@ class ToolCoordinator:
         if name == "project.search":
             return self.projects.search(scope(), path(), _require_text(args, "query", 2_000), _bounded_int(args, "limit", 30, 1, 100))
         if name == "project.context":
-            return self.projects.working_set(scope(), path(), _require_text(args, "task", 8_000), _bounded_int(args, "limit", 12, 1, 30))
+            return self.projects.context_for(
+                scope(),
+                path(),
+                _require_text(args, "task", 8_000),
+                max_files=_bounded_int(args, "limit", 12, 1, 19),
+            )
         if name == "project.instructions.read":
             return self.projects.read_instructions(scope(), path())
         if name == "project.instructions.write":

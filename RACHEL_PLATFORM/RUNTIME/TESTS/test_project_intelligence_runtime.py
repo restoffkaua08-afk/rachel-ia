@@ -115,6 +115,34 @@ class ProjectIntelligenceRuntimeTests(unittest.TestCase):
             self.assertIn("src/auth.ts", working_paths)
             self.assertEqual("bounded-working-set", context["context_strategy"])
 
+    def test_large_repository_working_set_stays_below_twenty_files(self):
+        with tempfile.TemporaryDirectory() as temp:
+            runtime, _, _, workspace = self.build_runtime(Path(temp))
+            project = workspace / "large-demo"
+            source = project / "src"
+            source.mkdir(parents=True)
+
+            for index in range(500):
+                content = f"def helper_{index}():\n    return {index}\n"
+                if index in {137, 311, 499}:
+                    content += "\ndef refresh_access_token():\n    return 'auth token refresh'\n"
+                (source / f"module_{index:03d}.py").write_text(content, encoding="utf-8")
+
+            context = runtime.working_set(
+                "workspace",
+                "large-demo",
+                "corrija o refresh do token de autenticação",
+                limit=19,
+            )
+
+            self.assertLessEqual(context["count"], 19)
+            self.assertLess(context["count"], 20)
+            self.assertTrue(context["files"])
+            self.assertTrue(
+                any(item["path"] in {"src/module_137.py", "src/module_311.py", "src/module_499.py"} for item in context["files"])
+            )
+            self.assertEqual("bounded-working-set", context["context_strategy"])
+
     def test_project_instructions_use_typed_filesystem_and_require_approval(self):
         with tempfile.TemporaryDirectory() as temp:
             runtime, _, _, workspace = self.build_runtime(Path(temp))

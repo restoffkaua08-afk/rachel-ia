@@ -105,6 +105,9 @@ class DesktopStreamingRuntimeTests(unittest.TestCase):
         self.assertEqual("Olá mundo", payload["message"]["content"])
         self.assertTrue(payload["streaming"]["enabled"])
         self.assertIsNotNone(metrics["ttft_ms"])
+        self.assertTrue(payload["quality"]["accepted"])
+        self.assertEqual(payload["quality"]["validator"], "dany-professional")
+        self.assertEqual(payload["quality_scope"], "structural")
 
     def test_cancel_registry_signals_active_generation(self):
         registry = CancellationRegistry()

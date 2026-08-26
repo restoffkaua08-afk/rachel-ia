@@ -5,6 +5,7 @@ $memberControl = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\member_control.py"
 $teamRuntime = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\team_runtime.py"
 $knowledgeRuntime = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\knowledge_runtime.py"
 $cognitiveRuntime = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\cognitive_runtime.py"
+$danyCli = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\dany_cli.py"
 $aryaRuntime = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\arya_runtime.py"
 $stellaRuntime = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\stella_runtime.py"
 $toolsRuntime = Join-Path $root "RACHEL_PLATFORM\RUNTIME\SRC\tools_runtime.py"
@@ -33,7 +34,8 @@ $branDomains = @("bran")
 $toolsDomains = @("tools")
 $stellaDomains = @("stella")
 $aryaDomains = @("arya")
-$cognitiveDomains = @("cognitive", "evaluate")
+$cognitiveDomains = @("cognitive")
+$evaluateDomains = @("evaluate")
 $knowledgeDomains = @("memory", "vision")
 $runtimeDomains = @("runtime", "event", "policy", "organ-health", "route")
 if ($securityDomains -contains [string]$args[0]) {
@@ -74,6 +76,9 @@ elseif ($stellaDomains -contains [string]$args[0]) {
 }
 elseif ($aryaDomains -contains [string]$args[0]) {
     & $python $aryaRuntime @($args | Select-Object -Skip 1)
+}
+elseif ($evaluateDomains -contains [string]$args[0]) {
+    & $python $danyCli @($args | Select-Object -Skip 1)
 }
 elseif ($cognitiveDomains -contains [string]$args[0]) {
     & $python $cognitiveRuntime @args

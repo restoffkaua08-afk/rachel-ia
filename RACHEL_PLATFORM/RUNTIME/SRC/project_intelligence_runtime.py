@@ -9,6 +9,12 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from bran_cognitive import CognitiveMemory
+from context_budget import (
+    DEFAULT_MAX_CONTEXT_FILES,
+    DEFAULT_MAX_CONTEXT_TOKENS,
+    ContextBudget,
+    bound_context_items,
+)
 from filesystem_runtime import FilesystemRuntime
 
 
@@ -424,6 +430,52 @@ class ProjectIntelligenceRuntime:
             "count": len(selected),
             "files": selected,
             "context_strategy": "bounded-working-set",
+        }
+
+    def context_for(
+        self,
+        scope: str,
+        path: str,
+        task: str,
+        max_tokens: int = DEFAULT_MAX_CONTEXT_TOKENS,
+        max_files: int = DEFAULT_MAX_CONTEXT_FILES,
+    ) -> dict[str, Any]:
+        """Read the highest-ranked project files and fit their real contents into a strict context budget."""
+
+        token_limit = max(256, min(int(max_tokens), DEFAULT_MAX_CONTEXT_TOKENS))
+        file_limit = max(1, min(int(max_files), DEFAULT_MAX_CONTEXT_FILES))
+        root = self.root(scope, path)
+        working = self.working_set(scope, path, task, limit=file_limit)
+
+        items: list[dict[str, Any]] = []
+        for ranked in working["files"]:
+            relative = str(ranked["path"])
+            target = root / relative
+            if target.is_symlink() or not target.is_file():
+                continue
+            try:
+                content = target.read_text(encoding="utf-8")
+            except (OSError, UnicodeDecodeError):
+                continue
+            item = dict(ranked)
+            item["content"] = content
+            items.append(item)
+
+        bounded = bound_context_items(
+            items,
+            ContextBudget(max_tokens=token_limit, max_files=file_limit),
+        )
+        return {
+            "scope": scope.casefold(),
+            "path": path,
+            "task": task,
+            "count": bounded["file_count"],
+            "files": bounded["items"],
+            "estimated_tokens": bounded["estimated_tokens"],
+            "max_tokens": bounded["max_tokens"],
+            "max_files": bounded["max_files"],
+            "truncated": bounded["truncated"],
+            "context_strategy": bounded["strategy"],
         }
 
     def read_instructions(self, scope: str, path: str = ".") -> dict[str, Any]:

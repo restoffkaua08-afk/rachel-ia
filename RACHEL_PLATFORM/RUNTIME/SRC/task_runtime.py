@@ -21,6 +21,10 @@ from rachel_core.bootstrap import build_container
 from rachel_core.domain.enums import Role
 from rachel_core.domain.models import Message
 
+from project_planning_context import (
+    build_project_planning_context,
+    planning_message_content,
+)
 from task_executor import (
     TaskExecutor,
     parse_approval_bindings,
@@ -229,6 +233,7 @@ class TaskOrchestrator:
             "persistent_plans": True,
             "resumable_execution": True,
             "cyber_authorization": True,
+            "project_context_planning": True,
             "tool_count": len(
                 self.coordinator.list_tools()
             ),
@@ -375,10 +380,17 @@ class TaskOrchestrator:
             )
         )
 
+        project_context = build_project_planning_context(
+            self.coordinator,
+            goal,
+        )
         message = Message(
             conversation_id="task-planner",
             role=Role.USER,
-            content=goal,
+            content=planning_message_content(
+                goal,
+                project_context,
+            ),
         )
 
         response = self.model.generate(

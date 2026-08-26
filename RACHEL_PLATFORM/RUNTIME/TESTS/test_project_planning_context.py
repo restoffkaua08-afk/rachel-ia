@@ -11,6 +11,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "RACHEL_CORE" / "src"))
 sys.path.insert(0, str(ROOT / "RACHEL_PLATFORM" / "RUNTIME" / "SRC"))
 
+from agent_loop_runtime import AgentLoopRuntime, AgentRunStore
 from task_runtime import TaskOrchestrator
 
 
@@ -146,6 +147,31 @@ class ProjectPlanningContextTests(unittest.TestCase):
             self.assertIn("src/auth.py", content)
             self.assertIn("refresh_access_token", content)
             self.assertIn("project-intelligence", content)
+
+    def test_agent_loop_model_planning_receives_bounded_project_context(self):
+        with tempfile.TemporaryDirectory() as directory:
+            orchestrator, coordinator, model = self.build(directory)
+            runtime = AgentLoopRuntime(
+                orchestrator=orchestrator,
+                store=AgentRunStore(Path(directory) / "agent-runs.db"),
+                policy_path=(
+                    ROOT
+                    / "RACHEL_AGENT"
+                    / "CONFIG"
+                    / "professional-agent-policy.json"
+                ),
+            )
+
+            created = runtime.start(
+                "Corrija o bug no projeto de autenticacao",
+                execute=False,
+            )
+
+            self.assertEqual("ready", created["state"])
+            self.assertEqual(1, len(coordinator.projects.calls))
+            content = model.messages[0].content
+            self.assertIn("[PROJECT_CONTEXT_BOUNDED]", content)
+            self.assertIn("refresh_access_token", content)
 
     def test_non_project_goal_does_not_scan_project_context(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -14,6 +14,7 @@ from .adapters.model_router import ModelRouter
 from .adapters.policy import DenyByDefaultPolicy
 from .application import ChatService
 from .config import Settings
+from .knowledge_service import KnowledgeEnabledChatService
 from .ports import KnowledgePort, LearningPort, MemoryPort, ModelPort, PolicyPort
 
 
@@ -108,7 +109,7 @@ def build_container(settings: Settings | None = None) -> Container:
 
     return Container(
         settings=settings,
-        chat=ChatService(
+        chat=KnowledgeEnabledChatService(
             model=model,
             memory=memory,
             audit=audit,

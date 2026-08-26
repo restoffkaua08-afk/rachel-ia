@@ -24,6 +24,8 @@ from rachel_core.bootstrap import build_container
 from rachel_core.domain.enums import Role
 from rachel_core.domain.models import ChatRequest, Message
 from bran_cognitive import CognitiveMemory
+from dany_professional import DanyProfessional
+from dany_runtime import build_eval_context, evaluate_runtime_response, quality_payload
 
 
 MEMORY_CANDIDATE_PATTERNS = (
@@ -94,14 +96,6 @@ def resume_plan_from_environment() -> dict[str, Any] | None:
 
 
 @dataclass(frozen=True)
-class QualityReport:
-    accepted: bool
-    score: int
-    issues: tuple[str, ...]
-    checks: dict[str, bool]
-
-
-@dataclass(frozen=True)
 class ToolPlan:
     action: str
     tool: str | None
@@ -110,20 +104,7 @@ class ToolPlan:
     source: str
 
 
-class DanyEvaluator:
-    """Structural response gate, not a factual-verification claim."""
-
-    def evaluate(self, content: str) -> QualityReport:
-        text = content.strip()
-        checks = {
-            "not_empty": bool(text),
-            "valid_size": 0 < len(text) <= 100_000,
-            "no_null_character": "\x00" not in text,
-            "not_only_whitespace": bool(text.split()),
-        }
-        issues = tuple(name.upper() for name, passed in checks.items() if not passed)
-        score = round(100 * sum(checks.values()) / len(checks))
-        return QualityReport(not issues, score, issues, checks)
+DanyEvaluator = DanyProfessional
 
 
 class NedToolPlanner:
@@ -376,7 +357,7 @@ class NedCognitiveBridge:
         status["learning"] = self.container.learning.status()
         status["member"] = "ned"
         status["quality_member"] = "dany"
-        status["quality_scope"] = "structural"
+        status["quality_scope"] = "professional-contextual"
         status["execution_grounding"] = "tool-result-required"
         status["resume_contract"] = "exact-plan-envelope"
         status["desktop_resume_transport"] = "process-environment"
@@ -406,7 +387,7 @@ class NedCognitiveBridge:
                 system_prompt=effective_system or None,
             )
         )
-        report = DanyEvaluator().evaluate(result.message.content)
+        report = evaluate_runtime_response(result.message.content, content)
         experience_id = (
             result.message.metadata.get("learning_experience_id")
             if isinstance(result.message.metadata, dict)
@@ -424,8 +405,8 @@ class NedCognitiveBridge:
             raise RuntimeError(f"Dany rejected the response: {report.issues}")
 
         payload = result.to_dict()
-        payload["quality"] = asdict(report)
-        payload["quality_scope"] = "structural"
+        payload["quality"] = quality_payload(report)
+        payload["quality_scope"] = report.scope
         payload["memory"] = {
             "recalled_count": len(recalled),
             "recalled": [
@@ -636,15 +617,47 @@ class NedCognitiveBridge:
 
         completion_event_id = tool_result.get("completion_event_id")
         verified = isinstance(completion_event_id, str) and bool(completion_event_id.strip())
+        eval_context = build_eval_context(
+            content,
+            tool_name=plan.tool,
+            tool_result=tool_result,
+            factuality_verified=None,
+        )
         evidence = json.dumps(tool_result, ensure_ascii=False, indent=2)
         system = (
             "Você é Rachel. A ferramenta abaixo retornou state=completed. "
             "Responda em português usando SOMENTE o resultado abaixo como evidência da execução. "
             "Não invente campos, não esconda falhas e não alegue efeitos além dos dados presentes. "
-            "Se a evidência não comprovar um detalhe, diga que ele não foi verificado.\n\n"
-            "RESULTADO DA FERRAMENTA:\n" + evidence
+            "Se a evidência não comprovar um detalhe, diga que ele não foi verificado."
         )
+        if eval_context.research and eval_context.primary_source_count == 0:
+            system += (
+                " A pesquisa não retornou fonte primária; declare explicitamente baixa confiança "
+                "e não trate as conclusões como confirmação factual."
+            )
+        system += "\n\nRESULTADO DA FERRAMENTA:\n" + evidence
+
         response = self.chat(content, conversation_id, system)
+        message = response.get("message")
+        response_text = (
+            str(message.get("content", ""))
+            if isinstance(message, dict)
+            else ""
+        )
+        grounded_report = evaluate_runtime_response(
+            response_text,
+            content,
+            tool_name=plan.tool,
+            tool_result=tool_result,
+            factuality_verified=None,
+        )
+        response["quality"] = quality_payload(grounded_report)
+        response["quality_scope"] = grounded_report.scope
+        if not grounded_report.accepted:
+            raise RuntimeError(
+                f"Dany rejected the grounded tool response: {grounded_report.issues}"
+            )
+
         response["tool_plan"] = asdict(plan)
         response["tool_result"] = tool_result
         response["resume_plan"] = None

@@ -5,7 +5,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .adapters.audit_jsonl import JsonlAuditAdapter
-from .adapters.knowledge_null import NullKnowledgeAdapter
+from .adapters.knowledge_sqlite import SQLiteKnowledgeAdapter
 from .adapters.learning_sqlite import SQLiteLearningAdapter
 from .adapters.memory_sqlite import SQLiteMemoryAdapter
 from .adapters.model_mock import MockModelAdapter
@@ -14,7 +14,7 @@ from .adapters.model_router import ModelRouter
 from .adapters.policy import DenyByDefaultPolicy
 from .application import ChatService
 from .config import Settings
-from .ports import LearningPort, MemoryPort, ModelPort, PolicyPort
+from .ports import KnowledgePort, LearningPort, MemoryPort, ModelPort, PolicyPort
 
 
 @dataclass(slots=True)
@@ -22,6 +22,7 @@ class Container:
     settings: Settings
     chat: ChatService
     memory: MemoryPort
+    knowledge: KnowledgePort
     learning: LearningPort
     policy: PolicyPort
 
@@ -84,6 +85,16 @@ def _model_router(settings: Settings) -> ModelPort:
     return ModelRouter.with_primary(primary)
 
 
+def _knowledge_adapter(settings: Settings) -> SQLiteKnowledgeAdapter:
+    configured = os.getenv("RACHEL_KNOWLEDGE_DB_PATH", "").strip()
+    path = (
+        Path(configured).expanduser().resolve()
+        if configured
+        else (settings.home.parent / "bran-cognitive.db").resolve()
+    )
+    return SQLiteKnowledgeAdapter(path)
+
+
 def build_container(settings: Settings | None = None) -> Container:
     settings = settings or Settings.from_env()
     settings.ensure_directories()
@@ -92,8 +103,7 @@ def build_container(settings: Settings | None = None) -> Container:
     memory = SQLiteMemoryAdapter(settings.home / "rachel.db")
     learning = SQLiteLearningAdapter(settings.home / "learning.db")
     audit = JsonlAuditAdapter(settings.home / "audit.jsonl")
-
-    knowledge = NullKnowledgeAdapter()
+    knowledge = _knowledge_adapter(settings)
     policy = DenyByDefaultPolicy()
 
     return Container(
@@ -106,6 +116,7 @@ def build_container(settings: Settings | None = None) -> Container:
             learning=learning,
         ),
         memory=memory,
+        knowledge=knowledge,
         learning=learning,
         policy=policy,
     )

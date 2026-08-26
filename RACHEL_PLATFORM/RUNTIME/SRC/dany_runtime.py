@@ -65,6 +65,13 @@ def _code_checks(tool_result: dict[str, Any] | None) -> tuple[str, ...]:
     return tuple(dict.fromkeys(found))
 
 
+def tool_result_failed(tool_result: dict[str, Any] | None) -> bool:
+    """Public runtime helper for conservative fallback summaries."""
+    if not isinstance(tool_result, dict):
+        return False
+    return DanyProfessional._tool_failed(tool_result)
+
+
 def build_eval_context(
     request: str,
     *,

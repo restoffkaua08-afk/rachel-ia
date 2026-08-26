@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "RACHEL_CORE" / "src"))
 sys.path.insert(0, str(ROOT / "RACHEL_PLATFORM" / "RUNTIME" / "SRC"))
 from cognitive_runtime import DanyEvaluator, NedCognitiveBridge, NedToolPlanner, should_propose_memory
+from dany_professional import DanyProfessional
 
 
 class CognitiveTests(unittest.TestCase):
@@ -17,16 +18,23 @@ class CognitiveTests(unittest.TestCase):
     def test_dany_rejects_empty_content(self):
         self.assertFalse(DanyEvaluator().evaluate("   ").accepted)
 
+    def test_cognitive_runtime_uses_professional_dany_alias(self):
+        self.assertIs(DanyEvaluator, DanyProfessional)
+
     def test_ned_uses_core_pipeline(self):
         bridge = NedCognitiveBridge()
         result = bridge.chat("Teste cognitivo")
         self.assertEqual(result["state"], "completed")
         self.assertTrue(result["quality"]["accepted"])
+        self.assertEqual(result["quality"]["validator"], "dany-professional")
+        self.assertIn(result["quality_scope"], {"structural", "structural-and-evidence-consistency", "grounded"})
 
     def test_status_reports_tools(self):
         status = NedCognitiveBridge().status()
         self.assertTrue(status["capabilities"]["tools"])
         self.assertGreaterEqual(status["tool_count"], 11)
+        self.assertEqual(status["quality_member"], "dany")
+        self.assertEqual(status["quality_scope"], "professional-contextual")
 
     def test_health_request_routes_to_tyrion(self):
         plan = NedToolPlanner.heuristic_plan("Verifique a saúde dos órgãos")

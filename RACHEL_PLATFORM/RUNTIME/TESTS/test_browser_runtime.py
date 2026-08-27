@@ -89,6 +89,17 @@ class BrowserRuntimeTests(unittest.TestCase):
             result,
         )
 
+    def test_read_returns_text_projection(self):
+        runtime = BrowserRuntime(
+            backend=FakeBackend(),
+            policy=FakePolicy(),
+            resolver=self.resolver,
+        )
+        result = runtime.read("example.com")
+        self.assertEqual("Example Domain", result["title"])
+        self.assertEqual("Example body", result["text"])
+        self.assertEqual(12, result["text_characters"])
+
     def test_ssrf_policy_blocks_localhost_before_backend_navigation(self):
         runtime = BrowserRuntime(
             backend=FakeBackend(),
@@ -99,13 +110,13 @@ class BrowserRuntimeTests(unittest.TestCase):
             runtime.open("http://localhost")
 
     def test_effect_model_separates_read_from_effectful_actions(self):
-        self.assertEqual("external-read", BrowserRuntime.effect_for("open"))
-        self.assertEqual("external-read", BrowserRuntime.effect_for("read"))
-        self.assertEqual("external-effect", BrowserRuntime.effect_for("click"))
-        self.assertEqual("external-effect", BrowserRuntime.effect_for("form"))
-        self.assertEqual("external-effect", BrowserRuntime.effect_for("login"))
-        self.assertEqual("external-effect", BrowserRuntime.effect_for("upload"))
-        self.assertEqual("external-effect", BrowserRuntime.effect_for("download"))
+        self.assertEqual("read", BrowserRuntime.effect_for("open"))
+        self.assertEqual("read", BrowserRuntime.effect_for("read"))
+        self.assertEqual("external", BrowserRuntime.effect_for("click"))
+        self.assertEqual("external", BrowserRuntime.effect_for("form"))
+        self.assertEqual("external", BrowserRuntime.effect_for("login"))
+        self.assertEqual("external", BrowserRuntime.effect_for("upload"))
+        self.assertEqual("external", BrowserRuntime.effect_for("download"))
 
     def test_unknown_action_is_rejected(self):
         with self.assertRaises(BrowserError):
@@ -130,6 +141,8 @@ class BrowserRuntimeTests(unittest.TestCase):
         self.assertTrue(status["read_only_navigation"])
         self.assertFalse(status["effectful_actions_enabled"])
         self.assertEqual("web-policy-every-request", status["request_guard"])
+        self.assertEqual("read", status["actions"]["open"])
+        self.assertEqual("external", status["actions"]["form"])
 
 
 if __name__ == "__main__":

@@ -15,6 +15,7 @@ if hasattr(sys.stderr, "reconfigure"):
 
 from runtime_paths import ROOT
 
+from research_strategy import ResearchQueryPlan, plan_research_queries
 from search_runtime import SearchEngine
 from web_runtime import WebClient, WebEvidence
 
@@ -31,13 +32,19 @@ class ResearchQuality:
     source_count: int
     domain_count: int
     authoritative_sources: int
+    primary_sources: int
     citations_valid: bool
+    freshness_required: bool
+    freshness_verified: bool
 
 
 class ResearchQualityEvaluator:
     def evaluate(
         self,
         sources: list[dict[str, Any]],
+        *,
+        require_primary_source: bool = False,
+        freshness_required: bool = False,
     ) -> ResearchQuality:
         domains = {
             urllib.parse.urlsplit(
@@ -56,12 +63,25 @@ class ResearchQualityEvaluator:
                 "technical",
             }
         )
+        primary = sum(
+            1
+            for source in sources
+            if source.get("authority") == "primary"
+        )
 
         citations_valid = all(
             isinstance(source.get("citation"), dict)
             and bool(source["citation"].get("url"))
             and bool(source["citation"].get("title"))
             for source in sources
+        )
+
+        freshness_verified = (
+            not freshness_required
+            or any(
+                bool(source.get("published_at"))
+                for source in sources
+            )
         )
 
         checks = {
@@ -72,11 +92,17 @@ class ResearchQualityEvaluator:
                 else True
             ),
             "has_authoritative_source": authoritative >= 1,
+            "has_required_primary_source": (
+                primary >= 1
+                if require_primary_source
+                else True
+            ),
             "citations_valid": citations_valid,
             "content_available": all(
                 bool(str(source.get("content", "")).strip())
                 for source in sources
             ),
+            "freshness_verified": freshness_verified,
         }
 
         issues = tuple(
@@ -93,13 +119,17 @@ class ResearchQualityEvaluator:
                 checks["has_sources"]
                 and checks["citations_valid"]
                 and checks["content_available"]
+                and checks["has_required_primary_source"]
             ),
             score=score,
             issues=issues,
             source_count=len(sources),
             domain_count=len(domains),
             authoritative_sources=authoritative,
+            primary_sources=primary,
             citations_valid=citations_valid,
+            freshness_required=freshness_required,
+            freshness_verified=freshness_verified,
         )
 
 
@@ -114,6 +144,93 @@ class ResearchEngine:
         )
         self.web_client = web_client or WebClient()
         self.quality = ResearchQualityEvaluator()
+
+    @staticmethod
+    def _merge_candidates(
+        payloads: list[tuple[str, dict[str, Any]]],
+    ) -> list[dict[str, Any]]:
+        merged: dict[str, dict[str, Any]] = {}
+
+        for query, payload in payloads:
+            for item in payload.get("results", []):
+                url = str(item.get("url", "")).strip()
+                if not url:
+                    continue
+
+                candidate = dict(item)
+                candidate["matched_query"] = query
+                previous = merged.get(url)
+
+                if previous is None:
+                    merged[url] = candidate
+                    continue
+
+                current_key = (
+                    float(candidate.get("authority_score", 0.0)),
+                    float(candidate.get("score", 0.0)),
+                )
+                previous_key = (
+                    float(previous.get("authority_score", 0.0)),
+                    float(previous.get("score", 0.0)),
+                )
+                if current_key > previous_key:
+                    merged[url] = candidate
+
+        return sorted(
+            merged.values(),
+            key=lambda item: (
+                item.get("authority_score", 0.0),
+                item.get("score", 0.0),
+            ),
+            reverse=True,
+        )
+
+    def _search_plan(
+        self,
+        plan: ResearchQueryPlan,
+        selected_sources: int,
+    ) -> tuple[
+        list[dict[str, Any]],
+        list[str],
+        list[dict[str, str]],
+    ]:
+        payloads: list[tuple[str, dict[str, Any]]] = []
+        providers_used: list[str] = []
+        provider_errors: list[dict[str, str]] = []
+
+        for query in plan.queries:
+            try:
+                payload = self.search_engine.search(
+                    query,
+                    limit=max(selected_sources * 3, 8),
+                )
+            except Exception as error:
+                provider_errors.append(
+                    {
+                        "query": query,
+                        "provider": "search-engine",
+                        "error": f"{type(error).__name__}: {error}",
+                    }
+                )
+                continue
+
+            payloads.append((query, payload))
+            for provider in payload.get("providers_used", []):
+                if provider not in providers_used:
+                    providers_used.append(provider)
+            for item in payload.get("provider_errors", []):
+                normalized = dict(item)
+                normalized["query"] = query
+                provider_errors.append(normalized)
+
+        if not payloads:
+            raise ResearchError("All planned search queries failed")
+
+        return (
+            self._merge_candidates(payloads),
+            providers_used,
+            provider_errors,
+        )
 
     def research(
         self,
@@ -133,23 +250,15 @@ class ResearchEngine:
             ),
         )
 
-        search_payload = self.search_engine.search(
-            query,
-            limit=max(selected_sources * 3, 8),
+        plan = plan_research_queries(query)
+        candidates, providers_used, provider_errors = self._search_plan(
+            plan,
+            selected_sources,
         )
 
         sources: list[dict[str, Any]] = []
         errors: list[dict[str, str]] = []
         used_domains: set[str] = set()
-
-        candidates = sorted(
-            search_payload["results"],
-            key=lambda item: (
-                item["authority_score"],
-                item["score"],
-            ),
-            reverse=True,
-        )
 
         for result in candidates:
             if len(sources) >= selected_sources:
@@ -202,9 +311,14 @@ class ResearchEngine:
                         result["authority_score"]
                     ),
                     "search_score": result["score"],
+                    "matched_query": result.get(
+                        "matched_query",
+                        plan.original_query,
+                    ),
                     "retrieved_at_ms": (
                         evidence.retrieved_at_ms
                     ),
+                    "published_at": None,
                     "sha256": evidence.sha256,
                     "from_cache": evidence.from_cache,
                     "citation": {
@@ -226,34 +340,37 @@ class ResearchEngine:
                 "No search result could be retrieved"
             )
 
-        quality = self.quality.evaluate(sources)
+        quality = self.quality.evaluate(
+            sources,
+            require_primary_source=plan.require_primary_source,
+            freshness_required=plan.freshness_required,
+        )
 
         return {
-            "query": search_payload["query"],
+            "query": plan.original_query,
             "state": (
                 "completed"
-                if quality.accepted
+                if quality.accepted and not quality.issues
                 else "completed_with_warnings"
             ),
+            "research_plan": plan.to_dict(),
             "sources": sources,
             "source_errors": errors,
             "search": {
-                "providers_used": (
-                    search_payload["providers_used"]
-                ),
-                "provider_errors": (
-                    search_payload["provider_errors"]
-                ),
-                "candidate_count": (
-                    search_payload["result_count"]
-                ),
+                "queries": list(plan.queries),
+                "query_count": len(plan.queries),
+                "providers_used": providers_used,
+                "provider_errors": provider_errors,
+                "candidate_count": len(candidates),
             },
             "quality": asdict(quality),
             "instructions_for_model": [
                 "Use only claims supported by the supplied sources.",
                 "Cite the source URL near every factual claim.",
+                "Prefer primary sources over secondary summaries.",
                 "Distinguish confirmed facts from inference.",
                 "Mention disagreements or missing evidence.",
+                "Do not claim freshness when publication time was not verified.",
                 "Do not claim that a source was read if retrieval failed."
             ],
             "memory": {
@@ -267,9 +384,14 @@ def status() -> dict[str, Any]:
     return {
         "available": True,
         "search": True,
+        "multi_query": True,
+        "query_planning": True,
         "source_retrieval": True,
         "source_diversity": True,
         "authority_ranking": True,
+        "primary_source_gate": True,
+        "freshness_awareness": True,
+        "freshness_verification": False,
         "quality_review": True,
         "citations": True,
         "automatic_memory": False,

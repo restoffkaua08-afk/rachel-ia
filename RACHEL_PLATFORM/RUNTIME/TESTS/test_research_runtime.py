@@ -16,7 +16,11 @@ from web_runtime import WebEvidence
 
 
 class FakeSearchEngine:
+    def __init__(self):
+        self.calls = []
+
     def search(self, query, limit=8):
+        self.calls.append((query, limit))
         return {
             "query": query,
             "result_count": 2,
@@ -45,6 +49,27 @@ class FakeSearchEngine:
         }
 
 
+class FakeSearchWithoutPrimary:
+    def search(self, query, limit=8):
+        return {
+            "query": query,
+            "result_count": 1,
+            "providers_used": ["fixture"],
+            "provider_errors": [],
+            "results": [
+                {
+                    "title": "Community summary",
+                    "url": "https://example.com/summary",
+                    "description": "Secondary summary",
+                    "provider": "fixture",
+                    "authority": "general",
+                    "authority_score": 0.5,
+                    "score": 0.8,
+                }
+            ],
+        }
+
+
 class FakeWebClient:
     def fetch(self, url):
         return WebEvidence(
@@ -54,6 +79,8 @@ class FakeWebClient:
                 "Python Documentation"
                 if "docs." in url
                 else "PEP Index"
+                if "peps." in url
+                else "Community summary"
             ),
             content="Verified technical source content.",
             content_type="text/html",
@@ -90,6 +117,7 @@ class ResearchRuntimeTests(unittest.TestCase):
         )
         self.assertTrue(report.accepted)
         self.assertEqual(report.score, 100)
+        self.assertEqual(1, report.primary_sources)
 
     def test_quality_rejects_missing_content(self):
         report = ResearchQualityEvaluator().evaluate(
@@ -111,9 +139,28 @@ class ResearchRuntimeTests(unittest.TestCase):
             report.issues,
         )
 
-    def test_research_builds_cited_evidence(self):
+    def test_required_primary_source_is_a_real_gate(self):
+        report = ResearchQualityEvaluator().evaluate(
+            [
+                {
+                    "url": "https://example.com/",
+                    "content": "Secondary content",
+                    "authority": "general",
+                    "citation": {
+                        "title": "Example",
+                        "url": "https://example.com/",
+                    },
+                }
+            ],
+            require_primary_source=True,
+        )
+        self.assertFalse(report.accepted)
+        self.assertIn("HAS_REQUIRED_PRIMARY_SOURCE", report.issues)
+
+    def test_research_builds_cited_evidence_and_uses_multi_query(self):
+        search = FakeSearchEngine()
         engine = ResearchEngine(
-            search_engine=FakeSearchEngine(),
+            search_engine=search,
             web_client=FakeWebClient(),
         )
         result = engine.research(
@@ -123,9 +170,36 @@ class ResearchRuntimeTests(unittest.TestCase):
         self.assertEqual(result["state"], "completed")
         self.assertEqual(len(result["sources"]), 2)
         self.assertTrue(result["quality"]["accepted"])
+        self.assertGreaterEqual(result["search"]["query_count"], 2)
+        self.assertEqual(result["search"]["query_count"], len(search.calls))
+        self.assertTrue(result["research_plan"]["require_primary_source"])
         self.assertFalse(
             result["memory"]["stored_automatically"]
         )
+
+    def test_current_research_does_not_fake_freshness(self):
+        engine = ResearchEngine(
+            search_engine=FakeSearchEngine(),
+            web_client=FakeWebClient(),
+        )
+        result = engine.research(
+            "mudancas atuais da API Python",
+            max_sources=2,
+        )
+        self.assertTrue(result["research_plan"]["freshness_required"])
+        self.assertFalse(result["quality"]["freshness_verified"])
+        self.assertIn("FRESHNESS_VERIFIED", result["quality"]["issues"])
+        self.assertEqual("completed_with_warnings", result["state"])
+
+    def test_professional_query_without_primary_source_is_warning_not_fake_success(self):
+        engine = ResearchEngine(
+            search_engine=FakeSearchWithoutPrimary(),
+            web_client=FakeWebClient(),
+        )
+        result = engine.research("documentacao atual da API", max_sources=1)
+        self.assertFalse(result["quality"]["accepted"])
+        self.assertEqual(0, result["quality"]["primary_sources"])
+        self.assertEqual("completed_with_warnings", result["state"])
 
 
 if __name__ == "__main__":

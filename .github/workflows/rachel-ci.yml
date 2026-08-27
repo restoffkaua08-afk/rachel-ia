@@ -80,6 +80,7 @@ jobs:
             "test_lote1_natural_e2e.py",
             "test_desktop_resident_runtime.py",
             "test_desktop_streaming_runtime.py",
+            "test_infrastructure.py",
             "test_filesystem_runtime.py",
             "test_filesystem_scope_grants.py",
             "test_git_runtime.py",

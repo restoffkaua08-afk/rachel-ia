@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import asdict, dataclass
 from typing import Any, Callable
 
-from web_runtime import WebPolicy, WebSecurityError, validate_url
+from web_runtime import WebPolicy, validate_url
 
 
 class BrowserError(RuntimeError):
@@ -28,12 +28,7 @@ class BrowserPageEvidence:
 
 
 class PlaywrightBrowserBackend:
-    """Lazy Playwright backend.
-
-    Playwright is imported only when a real browser operation is requested so
-    the core/runtime test suite does not require browser binaries. Every HTTP(S)
-    request is checked by the same SSRF policy used by the governed WebClient.
-    """
+    """Lazy Playwright backend guarded by the same web SSRF policy."""
 
     def open_page(
         self,
@@ -95,11 +90,11 @@ class PlaywrightBrowserBackend:
 
 
 class BrowserRuntime:
-    """Governed browser boundary for read-only navigation.
+    """Governed browser boundary.
 
-    Stage 11 starts intentionally with navigation/read only. Clicks, forms,
-    authentication, uploads and downloads are not implemented here until they
-    have explicit Cyber effects and approval contracts.
+    Read-only navigation is enabled. Actions that mutate remote state are
+    classified as Cyber `external` effects and remain disabled until a later
+    sublot implements selectors/session state with explicit approval contracts.
     """
 
     READ_ONLY_ACTIONS = frozenset({"open", "title", "read"})
@@ -124,9 +119,9 @@ class BrowserRuntime:
     def effect_for(cls, action: str) -> str:
         normalized = str(action).strip().casefold()
         if normalized in cls.READ_ONLY_ACTIONS:
-            return "external-read"
+            return "read"
         if normalized in cls.EFFECTFUL_ACTIONS:
-            return "external-effect"
+            return "external"
         raise BrowserError(f"Unknown browser action: {action}")
 
     def open(self, url: str) -> dict[str, Any]:
@@ -146,6 +141,16 @@ class BrowserRuntime:
             "requested_url": page["requested_url"],
             "final_url": page["final_url"],
             "title": page["title"],
+        }
+
+    def read(self, url: str) -> dict[str, Any]:
+        page = self.open(url)
+        return {
+            "requested_url": page["requested_url"],
+            "final_url": page["final_url"],
+            "title": page["title"],
+            "text": page["text"],
+            "text_characters": page["text_characters"],
         }
 
     def status(self) -> dict[str, Any]:

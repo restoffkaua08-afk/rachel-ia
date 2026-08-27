@@ -99,6 +99,7 @@ jobs:
             "test_project_generator.py",
             "test_project_quality.py",
             "test_web_runtime.py",
+            "test_browser_runtime.py",
             "test_search_runtime.py",
             "test_research_strategy.py",
             "test_research_runtime.py",

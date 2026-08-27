@@ -313,7 +313,10 @@ class ResearchRuntimeTests(unittest.TestCase):
         self.assertTrue(
             disclosed_conflict.checks["research_conflicts_disclosed"]
         )
-        self.assertTrue(disclosed_conflict.accepted)
+        self.assertTrue(
+            disclosed_conflict.accepted,
+            msg=f"Dany checks: {disclosed_conflict.checks}; issues={disclosed_conflict.issues}",
+        )
 
     def test_professional_query_without_primary_source_is_warning_not_fake_success(self):
         engine = ResearchEngine(

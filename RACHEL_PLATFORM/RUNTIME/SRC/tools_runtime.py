@@ -15,6 +15,7 @@ from runtime_paths import CONFIG
 
 from arya_runtime import run as arya_run, safe_cwd
 from bran_cognitive import CognitiveMemory
+from browser_runtime import BrowserRuntime
 from cognitive_runtime import DanyEvaluator
 from dev_runtime import DevRuntime
 from filesystem_runtime import FilesystemRuntime
@@ -128,6 +129,7 @@ class ToolCoordinator:
         dev: DevRuntime | None = None,
         processes: ProcessRuntime | None = None,
         projects: ProjectIntelligenceRuntime | None = None,
+        browser: BrowserRuntime | None = None,
     ) -> None:
         self.registry = _load_registry()
         self.cyber = CyberPolicy()
@@ -140,6 +142,7 @@ class ToolCoordinator:
         self.dev = dev or DevRuntime(self.filesystem)
         self.processes = processes or ProcessRuntime(self.filesystem)
         self.projects = projects or ProjectIntelligenceRuntime(self.filesystem, self.bran)
+        self.browser = browser or BrowserRuntime()
 
     def list_tools(self) -> list[dict[str, Any]]:
         return [asdict(spec) for spec in self.registry.values()]
@@ -394,6 +397,20 @@ class ToolCoordinator:
             return SearchEngine().search(_require_text(args, "query", 500), _bounded_int(args, "limit", 8, 1, 20))
         if name == "web.research":
             return ResearchEngine().research(_require_text(args, "query", 500), _bounded_int(args, "max_sources", 3, 1, 5))
+
+        if name == "browser.status":
+            return self.browser.status()
+        if name == "browser.open":
+            return self.browser.open(_require_text(args, "url", 4_000))
+        if name == "browser.title":
+            return self.browser.title(_require_text(args, "url", 4_000))
+        if name == "browser.read":
+            return self.browser.read(_require_text(args, "url", 4_000))
+        if name in {"browser.click", "browser.form", "browser.login", "browser.upload", "browser.download"}:
+            raise ToolError(
+                f"{name} is governed and approval-capable, but its effectful executor is not enabled yet"
+            )
+
         if name == "runtime.doctor":
             return doctor()
         if name == "tyrion.health":

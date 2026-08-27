@@ -44,6 +44,26 @@ def _primary_source_count(tool_result: dict[str, Any] | None) -> int | None:
     )
 
 
+def _research_conflict_count(tool_result: dict[str, Any] | None) -> int:
+    if not isinstance(tool_result, dict):
+        return 0
+    evidence = tool_result.get("evidence")
+    if not isinstance(evidence, dict):
+        return 0
+    count = evidence.get("conflict_count", 0)
+    return int(count) if isinstance(count, (int, float)) else 0
+
+
+def _research_freshness(tool_result: dict[str, Any] | None) -> tuple[bool, bool | None]:
+    if not isinstance(tool_result, dict):
+        return False, None
+    plan = tool_result.get("research_plan")
+    quality = tool_result.get("quality")
+    required = bool(plan.get("freshness_required")) if isinstance(plan, dict) else False
+    verified = quality.get("freshness_verified") if isinstance(quality, dict) else None
+    return required, verified if isinstance(verified, bool) else None
+
+
 def _code_checks(tool_result: dict[str, Any] | None) -> tuple[str, ...]:
     if not isinstance(tool_result, dict):
         return ()
@@ -82,6 +102,10 @@ def build_eval_context(
     research = tool_name == "web.research"
     citations = _source_urls(tool_result) if research else ()
     primary_source_count = _primary_source_count(tool_result) if research else None
+    conflict_count = _research_conflict_count(tool_result) if research else 0
+    freshness_required, freshness_verified = (
+        _research_freshness(tool_result) if research else (False, None)
+    )
     checks = _code_checks(tool_result)
     code_validation_required = bool(
         tool_name in _CODE_VALIDATION_TOOLS
@@ -98,6 +122,9 @@ def build_eval_context(
         citations=citations,
         research=research,
         primary_source_count=primary_source_count,
+        research_conflict_count=conflict_count,
+        freshness_required=freshness_required,
+        freshness_verified=freshness_verified,
         code_validation_required=code_validation_required,
         code_checks_run=checks,
         factuality_verified=factuality_verified,

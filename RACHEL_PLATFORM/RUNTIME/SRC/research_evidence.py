@@ -81,10 +81,23 @@ _EN_MONTHS = {
     "december": 12,
 }
 
+# These markers are intentionally conservative: they only flag conflicts for
+# explicit, comparable factual values. Natural-language copulas are accepted
+# so phrases such as "version is 3.13" and "versão é 3.13" are not missed.
+_VALUE_LINK = r"(?:\s*(?::|=|is|was|é|e|era|foi)\s*|\s+)"
 _FACT_MARKERS = {
-    "version": re.compile(r"\b(?:version|vers[aã]o|v)\s*[:=]?\s*(\d+(?:\.\d+){0,3})\b", re.I),
-    "release": re.compile(r"\brelease\s*[:=]?\s*(\d+(?:\.\d+){0,3})\b", re.I),
-    "limit": re.compile(r"\b(?:limit|limite|maximum|m[aá]ximo)\s*[:=]?\s*(\d+(?:[.,]\d+)?)\b", re.I),
+    "version": re.compile(
+        rf"\b(?:version|vers[aã]o|v){_VALUE_LINK}(\d+(?:\.\d+){{0,3}})\b",
+        re.I,
+    ),
+    "release": re.compile(
+        rf"\brelease{_VALUE_LINK}(\d+(?:\.\d+){{0,3}})\b",
+        re.I,
+    ),
+    "limit": re.compile(
+        rf"\b(?:limit|limite|maximum|m[aá]ximo){_VALUE_LINK}(\d+(?:[.,]\d+)?)\b",
+        re.I,
+    ),
 }
 
 
@@ -185,7 +198,10 @@ def build_evidence_claims(
     authority = str(source.get("authority", "general"))
     published_at = source.get("published_at")
 
-    for index, sentence in enumerate(_sentences(str(source.get("content", "")))[:maximum], start=1):
+    for index, sentence in enumerate(
+        _sentences(str(source.get("content", "")))[:maximum],
+        start=1,
+    ):
         claims.append(
             EvidenceClaim(
                 id=f"source-{abs(hash(url)) % 10_000_000}-claim-{index}",
@@ -204,16 +220,33 @@ def detect_conflicts(sources: list[dict[str, Any]]) -> list[dict[str, Any]]:
 
     for source in sources:
         url = str(source.get("url", ""))
-        text = f"{source.get('title', '')}\n{source.get('description', '')}\n{str(source.get('content', ''))[:6000]}"
+        text = (
+            f"{source.get('title', '')}\n"
+            f"{source.get('description', '')}\n"
+            f"{str(source.get('content', ''))[:6000]}"
+        )
         for marker, pattern in _FACT_MARKERS.items():
-            values = {match.group(1).replace(",", ".") for match in pattern.finditer(text)}
+            values = {
+                match.group(1).replace(",", ".")
+                for match in pattern.finditer(text)
+            }
             for value in values:
-                observations.setdefault(marker, {}).setdefault(value, set()).add(url)
+                observations.setdefault(marker, {}).setdefault(
+                    value,
+                    set(),
+                ).add(url)
 
     conflicts: list[dict[str, Any]] = []
     for marker, value_sources in observations.items():
-        distinct = [value for value, urls in value_sources.items() if urls]
-        all_sources = {url for urls in value_sources.values() for url in urls if url}
+        distinct = [
+            value for value, urls in value_sources.items() if urls
+        ]
+        all_sources = {
+            url
+            for urls in value_sources.values()
+            for url in urls
+            if url
+        }
         if len(distinct) < 2 or len(all_sources) < 2:
             continue
         conflicts.append(

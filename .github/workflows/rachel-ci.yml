@@ -102,6 +102,7 @@ jobs:
             "test_browser_runtime.py",
             "test_search_runtime.py",
             "test_research_strategy.py",
+            "test_research_evidence.py",
             "test_research_runtime.py",
             "test_dany_professional.py",
             "test_voice_session.py",

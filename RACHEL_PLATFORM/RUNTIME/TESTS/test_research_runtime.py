@@ -8,6 +8,7 @@ sys.path.insert(
     str(ROOT / "RACHEL_PLATFORM" / "RUNTIME" / "SRC"),
 )
 
+from dany_runtime import evaluate_runtime_response
 from research_runtime import (
     ResearchEngine,
     ResearchQualityEvaluator,
@@ -214,6 +215,8 @@ class ResearchRuntimeTests(unittest.TestCase):
         self.assertGreaterEqual(result["search"]["query_count"], 2)
         self.assertEqual(result["search"]["query_count"], len(search.calls))
         self.assertTrue(result["research_plan"]["require_primary_source"])
+        self.assertEqual("claim-evidence", result["synthesis"]["mode"])
+        self.assertEqual("near-claim", result["synthesis"]["citation_policy"])
         self.assertFalse(
             result["memory"]["stored_automatically"]
         )
@@ -230,7 +233,29 @@ class ResearchRuntimeTests(unittest.TestCase):
         self.assertTrue(result["research_plan"]["freshness_required"])
         self.assertFalse(result["quality"]["freshness_verified"])
         self.assertIn("FRESHNESS_VERIFIED", result["quality"]["issues"])
+        self.assertIn(
+            "freshness_unverified",
+            result["synthesis"]["required_disclosures"],
+        )
         self.assertEqual("completed_with_warnings", result["state"])
+
+        bad = evaluate_runtime_response(
+            "A API Python está atualizada segundo https://docs.python.org/3/.",
+            "mudancas atuais da API Python",
+            tool_name="web.research",
+            tool_result=result,
+        )
+        self.assertFalse(bad.accepted)
+        self.assertFalse(bad.checks["freshness_consistent"])
+
+        good = evaluate_runtime_response(
+            "A atualidade não foi verificada; a evidência disponível está em "
+            "https://docs.python.org/3/.",
+            "mudancas atuais da API Python",
+            tool_name="web.research",
+            tool_result=result,
+        )
+        self.assertTrue(good.checks["freshness_consistent"])
 
     def test_current_research_verifies_recent_publication_signal(self):
         engine = ResearchEngine(
@@ -245,6 +270,10 @@ class ResearchRuntimeTests(unittest.TestCase):
         self.assertEqual("2026-08-20", result["sources"][0]["published_at"])
         self.assertTrue(result["sources"][0]["freshness_verified"])
         self.assertGreater(result["evidence"]["claim_count"], 0)
+        self.assertNotIn(
+            "freshness_unverified",
+            result["synthesis"]["required_disclosures"],
+        )
         self.assertEqual("completed", result["state"])
 
     def test_conflicting_factual_markers_are_exposed_as_warning(self):
@@ -255,7 +284,36 @@ class ResearchRuntimeTests(unittest.TestCase):
         result = engine.research("Python documentation", max_sources=2)
         self.assertGreater(result["evidence"]["conflict_count"], 0)
         self.assertEqual("version", result["evidence"]["conflicts"][0]["marker"])
+        self.assertIn(
+            "source_conflicts",
+            result["synthesis"]["required_disclosures"],
+        )
+        self.assertGreater(result["synthesis"]["supported_claim_count"], 0)
         self.assertEqual("completed_with_warnings", result["state"])
+
+        hidden_conflict = evaluate_runtime_response(
+            "Python está na versão 3.13 segundo https://docs.python.org/3/.",
+            "Python documentation",
+            tool_name="web.research",
+            tool_result=result,
+        )
+        self.assertFalse(hidden_conflict.accepted)
+        self.assertFalse(
+            hidden_conflict.checks["research_conflicts_disclosed"]
+        )
+
+        disclosed_conflict = evaluate_runtime_response(
+            "As fontes divergem: a documentação registra versão 3.13 em "
+            "https://docs.python.org/3/, enquanto a proposta registra versão "
+            "3.14 em https://peps.python.org/.",
+            "Python documentation",
+            tool_name="web.research",
+            tool_result=result,
+        )
+        self.assertTrue(
+            disclosed_conflict.checks["research_conflicts_disclosed"]
+        )
+        self.assertTrue(disclosed_conflict.accepted)
 
     def test_professional_query_without_primary_source_is_warning_not_fake_success(self):
         engine = ResearchEngine(
@@ -265,6 +323,10 @@ class ResearchRuntimeTests(unittest.TestCase):
         result = engine.research("documentacao atual da API", max_sources=1)
         self.assertFalse(result["quality"]["accepted"])
         self.assertEqual(0, result["quality"]["primary_sources"])
+        self.assertIn(
+            "primary_source_missing",
+            result["synthesis"]["required_disclosures"],
+        )
         self.assertEqual("completed_with_warnings", result["state"])
 
 

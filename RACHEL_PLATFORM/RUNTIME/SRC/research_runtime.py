@@ -15,6 +15,12 @@ if hasattr(sys.stderr, "reconfigure"):
 
 from runtime_paths import ROOT
 
+from research_evidence import (
+    build_evidence_claims,
+    detect_conflicts,
+    extract_publication_signal,
+    publication_is_fresh,
+)
 from research_strategy import ResearchQueryPlan, plan_research_queries
 from search_runtime import SearchEngine
 from web_runtime import WebClient, WebEvidence
@@ -79,7 +85,7 @@ class ResearchQualityEvaluator:
         freshness_verified = (
             not freshness_required
             or any(
-                bool(source.get("published_at"))
+                source.get("freshness_verified") is True
                 for source in sources
             )
         )
@@ -289,13 +295,22 @@ class ResearchEngine:
                 continue
 
             used_domains.add(domain)
+            title = evidence.title or result["title"]
+            publication = extract_publication_signal(
+                content=evidence.content,
+                title=title,
+                url=evidence.final_url,
+                retrieved_at_ms=evidence.retrieved_at_ms,
+            )
+            freshness_verified = publication_is_fresh(
+                publication.published_at,
+                retrieved_at_ms=evidence.retrieved_at_ms,
+                window_days=plan.freshness_window_days,
+            )
 
             sources.append(
                 {
-                    "title": (
-                        evidence.title
-                        or result["title"]
-                    ),
+                    "title": title,
                     "url": evidence.final_url,
                     "description": result["description"],
                     "content": evidence.content[
@@ -318,18 +333,19 @@ class ResearchEngine:
                     "retrieved_at_ms": (
                         evidence.retrieved_at_ms
                     ),
-                    "published_at": None,
+                    "published_at": publication.published_at,
+                    "publication_source": publication.source,
+                    "publication_confidence": publication.confidence,
+                    "freshness_verified": freshness_verified,
                     "sha256": evidence.sha256,
                     "from_cache": evidence.from_cache,
                     "citation": {
-                        "title": (
-                            evidence.title
-                            or result["title"]
-                        ),
+                        "title": title,
                         "url": evidence.final_url,
                         "retrieved_at_ms": (
                             evidence.retrieved_at_ms
                         ),
+                        "published_at": publication.published_at,
                         "sha256": evidence.sha256,
                     },
                 }
@@ -339,6 +355,13 @@ class ResearchEngine:
             raise ResearchError(
                 "No search result could be retrieved"
             )
+
+        claims = [
+            claim
+            for source in sources
+            for claim in build_evidence_claims(source)
+        ]
+        conflicts = detect_conflicts(sources)
 
         quality = self.quality.evaluate(
             sources,
@@ -350,12 +373,18 @@ class ResearchEngine:
             "query": plan.original_query,
             "state": (
                 "completed"
-                if quality.accepted and not quality.issues
+                if quality.accepted and not quality.issues and not conflicts
                 else "completed_with_warnings"
             ),
             "research_plan": plan.to_dict(),
             "sources": sources,
             "source_errors": errors,
+            "evidence": {
+                "claims": claims,
+                "claim_count": len(claims),
+                "conflicts": conflicts,
+                "conflict_count": len(conflicts),
+            },
             "search": {
                 "queries": list(plan.queries),
                 "query_count": len(plan.queries),
@@ -370,7 +399,8 @@ class ResearchEngine:
                 "Prefer primary sources over secondary summaries.",
                 "Distinguish confirmed facts from inference.",
                 "Mention disagreements or missing evidence.",
-                "Do not claim freshness when publication time was not verified.",
+                "Treat evidence.conflicts as unresolved until reconciled.",
+                "Do not claim freshness unless freshness_verified is true.",
                 "Do not claim that a source was read if retrieval failed."
             ],
             "memory": {
@@ -391,7 +421,10 @@ def status() -> dict[str, Any]:
         "authority_ranking": True,
         "primary_source_gate": True,
         "freshness_awareness": True,
-        "freshness_verification": False,
+        "freshness_verification": True,
+        "publication_signal_extraction": True,
+        "claim_evidence": True,
+        "conflict_detection": True,
         "quality_review": True,
         "citations": True,
         "automatic_memory": False,

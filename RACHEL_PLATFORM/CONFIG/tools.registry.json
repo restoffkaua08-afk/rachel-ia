@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.6",
+  "schema_version": "1.7",
   "default_policy": "deny",
   "tools": [
     {"name":"runtime.doctor","member":"jhon","effect":"status","description":"Verifica a integridade geral da RACHEL.","parameters":{}},
@@ -60,9 +60,21 @@
     {"name":"king.recent","member":"king","effect":"read","description":"Consulta eventos recentes da equipe.","parameters":{"limit":"integer"}},
     {"name":"dany.evaluate","member":"dany","effect":"inspect","description":"Avalia deterministicamente a qualidade estrutural básica de um conteúdo.","parameters":{"content":"string"}},
     {"name":"cyber.check","member":"cyber","effect":"inspect","description":"Simula uma decisão de segurança para um efeito declarado.","parameters":{"effect":"string","approved":"boolean"}},
+
     {"name":"web.fetch","member":"visao","effect":"external","description":"Acessa uma URL pública com proteção SSRF e evidência citável.","parameters":{"url":"string","include_content":"boolean"}},
     {"name":"web.search","member":"visao","effect":"external","description":"Pesquisa, deduplica e classifica fontes públicas.","parameters":{"query":"string","limit":"integer"}},
     {"name":"web.research","member":"ned","effect":"external","description":"Pesquisa profundamente e entrega evidências revisadas.","parameters":{"query":"string","max_sources":"integer"}},
+
+    {"name":"browser.status","member":"visao","effect":"status","description":"Consulta o estado do browser Playwright governado e os efeitos disponíveis.","parameters":{}},
+    {"name":"browser.open","member":"visao","effect":"read","description":"Abre uma página pública no browser governado e retorna evidência textual da navegação.","parameters":{"url":"string"}},
+    {"name":"browser.title","member":"visao","effect":"read","description":"Abre uma página pública no browser governado e retorna apenas título e URLs verificadas.","parameters":{"url":"string"}},
+    {"name":"browser.read","member":"visao","effect":"read","description":"Abre uma página pública no browser governado e retorna o texto visível limitado.","parameters":{"url":"string"}},
+    {"name":"browser.click","member":"visao","effect":"external","description":"Ação reservada de clique; exige autorização Cyber e permanece desabilitada até o executor de efeitos ser concluído.","parameters":{"selector":"string"}},
+    {"name":"browser.form","member":"visao","effect":"external","description":"Ação reservada de formulário; exige autorização Cyber e permanece desabilitada até o executor de efeitos ser concluído.","parameters":{"fields":"object"}},
+    {"name":"browser.login","member":"visao","effect":"external","description":"Ação reservada de login; exige autorização Cyber e permanece desabilitada até o executor de efeitos ser concluído.","parameters":{"strategy":"string"}},
+    {"name":"browser.upload","member":"visao","effect":"external","description":"Ação reservada de upload; exige autorização Cyber e permanece desabilitada até o executor de efeitos ser concluído.","parameters":{"path":"string","selector":"string"}},
+    {"name":"browser.download","member":"visao","effect":"external","description":"Ação reservada de download; exige autorização Cyber e permanece desabilitada até o executor de efeitos ser concluído.","parameters":{"url":"string|null","selector":"string|null"}},
+
     {"name":"arya.project.status","member":"arya","effect":"status","description":"Consulta o workspace de engenharia da Arya.","parameters":{}},
     {"name":"arya.project.create","member":"arya","effect":"create","description":"Cria um projeto vazio no workspace autorizado.","parameters":{"project":"string"}},
     {"name":"arya.project.write","member":"arya","effect":"write","description":"Grava arquivos textuais de forma atômica e com backup.","parameters":{"project":"string","files":"array"}},

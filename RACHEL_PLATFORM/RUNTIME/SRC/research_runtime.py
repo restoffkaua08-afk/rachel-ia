@@ -191,6 +191,46 @@ class ResearchEngine:
             reverse=True,
         )
 
+    @staticmethod
+    def _synthesis_contract(
+        *,
+        plan: ResearchQueryPlan,
+        quality: ResearchQuality,
+        claims: list[dict[str, Any]],
+        conflicts: list[dict[str, Any]],
+    ) -> dict[str, Any]:
+        disclosures: list[str] = []
+        if conflicts:
+            disclosures.append("source_conflicts")
+        if plan.freshness_required and not quality.freshness_verified:
+            disclosures.append("freshness_unverified")
+        if plan.require_primary_source and quality.primary_sources == 0:
+            disclosures.append("primary_source_missing")
+
+        supported_claims = [
+            {
+                "claim_id": str(claim.get("id", "")),
+                "text": str(claim.get("text", "")),
+                "citation": str(claim.get("source_url", "")),
+                "authority": str(claim.get("authority", "general")),
+                "published_at": claim.get("published_at"),
+            }
+            for claim in claims
+            if claim.get("id") and claim.get("source_url")
+        ]
+
+        return {
+            "mode": "claim-evidence",
+            "citation_policy": "near-claim",
+            "supported_claims": supported_claims,
+            "supported_claim_count": len(supported_claims),
+            "conflicts": conflicts,
+            "required_disclosures": disclosures,
+            "must_not_invent_claims": True,
+            "must_not_hide_conflicts": True,
+            "must_not_fake_freshness": True,
+        }
+
     def _search_plan(
         self,
         plan: ResearchQueryPlan,
@@ -368,6 +408,12 @@ class ResearchEngine:
             require_primary_source=plan.require_primary_source,
             freshness_required=plan.freshness_required,
         )
+        synthesis = self._synthesis_contract(
+            plan=plan,
+            quality=quality,
+            claims=claims,
+            conflicts=conflicts,
+        )
 
         return {
             "query": plan.original_query,
@@ -385,6 +431,7 @@ class ResearchEngine:
                 "conflicts": conflicts,
                 "conflict_count": len(conflicts),
             },
+            "synthesis": synthesis,
             "search": {
                 "queries": list(plan.queries),
                 "query_count": len(plan.queries),
@@ -394,12 +441,15 @@ class ResearchEngine:
             },
             "quality": asdict(quality),
             "instructions_for_model": [
+                "Synthesize only from synthesis.supported_claims.",
+                "Keep each factual claim linked to its source URL.",
                 "Use only claims supported by the supplied sources.",
                 "Cite the source URL near every factual claim.",
                 "Prefer primary sources over secondary summaries.",
                 "Distinguish confirmed facts from inference.",
                 "Mention disagreements or missing evidence.",
                 "Treat evidence.conflicts as unresolved until reconciled.",
+                "Respect synthesis.required_disclosures.",
                 "Do not claim freshness unless freshness_verified is true.",
                 "Do not claim that a source was read if retrieval failed."
             ],
@@ -425,6 +475,7 @@ def status() -> dict[str, Any]:
         "publication_signal_extraction": True,
         "claim_evidence": True,
         "conflict_detection": True,
+        "structured_synthesis_contract": True,
         "quality_review": True,
         "citations": True,
         "automatic_memory": False,

@@ -91,6 +91,47 @@ class FakeWebClient:
         )
 
 
+class FreshWebClient:
+    def fetch(self, url):
+        return WebEvidence(
+            url=url,
+            final_url=url,
+            title="Python Documentation",
+            content=(
+                "Published 2026-08-20. This official technical source describes "
+                "the current Python API behavior and supported interfaces."
+            ),
+            content_type="text/html",
+            status_code=200,
+            retrieved_at_ms=1787788800000,
+            sha256="b" * 64,
+            from_cache=False,
+        )
+
+
+class ConflictingWebClient:
+    def fetch(self, url):
+        content = (
+            "Published 2026-08-20. The documented version is 3.13 and this "
+            "statement is part of the official technical reference."
+            if "docs." in url
+            else
+            "Published 2026-08-21. The documented version is 3.14 and this "
+            "statement is part of the technical proposal index."
+        )
+        return WebEvidence(
+            url=url,
+            final_url=url,
+            title="Technical source",
+            content=content,
+            content_type="text/html",
+            status_code=200,
+            retrieved_at_ms=1787788800000,
+            sha256="c" * 64,
+            from_cache=False,
+        )
+
+
 class ResearchRuntimeTests(unittest.TestCase):
     def test_quality_accepts_cited_sources(self):
         report = ResearchQualityEvaluator().evaluate(
@@ -189,6 +230,31 @@ class ResearchRuntimeTests(unittest.TestCase):
         self.assertTrue(result["research_plan"]["freshness_required"])
         self.assertFalse(result["quality"]["freshness_verified"])
         self.assertIn("FRESHNESS_VERIFIED", result["quality"]["issues"])
+        self.assertEqual("completed_with_warnings", result["state"])
+
+    def test_current_research_verifies_recent_publication_signal(self):
+        engine = ResearchEngine(
+            search_engine=FakeSearchEngine(),
+            web_client=FreshWebClient(),
+        )
+        result = engine.research(
+            "mudancas atuais da API Python",
+            max_sources=2,
+        )
+        self.assertTrue(result["quality"]["freshness_verified"])
+        self.assertEqual("2026-08-20", result["sources"][0]["published_at"])
+        self.assertTrue(result["sources"][0]["freshness_verified"])
+        self.assertGreater(result["evidence"]["claim_count"], 0)
+        self.assertEqual("completed", result["state"])
+
+    def test_conflicting_factual_markers_are_exposed_as_warning(self):
+        engine = ResearchEngine(
+            search_engine=FakeSearchEngine(),
+            web_client=ConflictingWebClient(),
+        )
+        result = engine.research("Python documentation", max_sources=2)
+        self.assertGreater(result["evidence"]["conflict_count"], 0)
+        self.assertEqual("version", result["evidence"]["conflicts"][0]["marker"])
         self.assertEqual("completed_with_warnings", result["state"])
 
     def test_professional_query_without_primary_source_is_warning_not_fake_success(self):

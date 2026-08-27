@@ -54,6 +54,23 @@ _UNCERTAINTY_WORDS = (
     "validei so",
     "estrutura, não factualidade",
     "estrutura, nao factualidade",
+    "data de publicação não foi verificada",
+    "data de publicacao nao foi verificada",
+    "atualidade não foi verificada",
+    "atualidade nao foi verificada",
+)
+
+_CONFLICT_WORDS = (
+    "conflito",
+    "conflitos",
+    "divergência",
+    "divergencia",
+    "divergências",
+    "divergencias",
+    "fontes diferem",
+    "fontes discordam",
+    "inconsistência",
+    "inconsistencia",
 )
 
 _URL_PATTERN = re.compile(r"https?://[^\s)\]>]+", re.I)
@@ -73,6 +90,9 @@ class EvalContext:
     citations: tuple[str, ...] = ()
     research: bool = False
     primary_source_count: int | None = None
+    research_conflict_count: int = 0
+    freshness_required: bool = False
+    freshness_verified: bool | None = None
     code_validation_required: bool = False
     code_checks_run: tuple[str, ...] = ()
     factuality_verified: bool | None = None
@@ -109,6 +129,8 @@ class DanyProfessional:
             "grounded_in_evidence": self._check_grounding(text, ctx),
             "no_obvious_hallucination": self._check_obvious_hallucination(text, ctx),
             "admits_uncertainty": self._check_uncertainty(text, ctx),
+            "research_conflicts_disclosed": self._check_research_conflicts(text, ctx),
+            "freshness_consistent": self._check_freshness(text, ctx),
             "code_validation_consistent": self._check_code_validation(text, ctx),
         }
 
@@ -123,6 +145,8 @@ class DanyProfessional:
             "citations_present",
             "grounded_in_evidence",
             "no_obvious_hallucination",
+            "research_conflicts_disclosed",
+            "freshness_consistent",
             "code_validation_consistent",
         }
         accepted = all(checks[name] for name in critical)
@@ -224,10 +248,6 @@ class DanyProfessional:
         if any(term in response.casefold() for term in _UNCERTAINTY_WORDS):
             return True
 
-        # A neutral acknowledgement that makes no concrete factual/execution
-        # claim is allowed to pass this check. Request fulfillment remains an
-        # advisory score signal, while URLs/numbers/commands and explicit
-        # success claims are governed by the stricter checks below.
         makes_concrete_claim = bool(
             _URL_PATTERN.search(response)
             or _NUMBER_PATTERN.search(response)
@@ -267,8 +287,25 @@ class DanyProfessional:
         needs_admission = (
             ctx.factuality_verified is False
             or (ctx.research and ctx.primary_source_count == 0)
+            or (ctx.research and ctx.freshness_required and ctx.freshness_verified is not True)
         )
         if not needs_admission:
+            return True
+        folded = response.casefold()
+        return any(term in folded for term in _UNCERTAINTY_WORDS + _LOW_CONFIDENCE_WORDS)
+
+    @staticmethod
+    def _check_research_conflicts(response: str, ctx: EvalContext) -> bool:
+        if not ctx.research or ctx.research_conflict_count <= 0:
+            return True
+        folded = response.casefold()
+        return any(term in folded for term in _CONFLICT_WORDS)
+
+    @staticmethod
+    def _check_freshness(response: str, ctx: EvalContext) -> bool:
+        if not ctx.research or not ctx.freshness_required:
+            return True
+        if ctx.freshness_verified is True:
             return True
         folded = response.casefold()
         return any(term in folded for term in _UNCERTAINTY_WORDS + _LOW_CONFIDENCE_WORDS)

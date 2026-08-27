@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import hashlib
 import re
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
@@ -109,6 +110,11 @@ def _iso_date(year: int, month: int, day: int) -> str | None:
     return value.date().isoformat()
 
 
+def _stable_source_id(url: str) -> str:
+    normalized = url.strip().encode("utf-8")
+    return hashlib.sha256(normalized).hexdigest()[:16]
+
+
 def extract_publication_signal(
     *,
     content: str,
@@ -197,6 +203,7 @@ def build_evidence_claims(
     title = str(source.get("title", ""))
     authority = str(source.get("authority", "general"))
     published_at = source.get("published_at")
+    source_id = _stable_source_id(url)
 
     for index, sentence in enumerate(
         _sentences(str(source.get("content", "")))[:maximum],
@@ -204,7 +211,7 @@ def build_evidence_claims(
     ):
         claims.append(
             EvidenceClaim(
-                id=f"source-{abs(hash(url)) % 10_000_000}-claim-{index}",
+                id=f"source-{source_id}-claim-{index}",
                 text=sentence,
                 source_url=url,
                 source_title=title,

@@ -25,6 +25,7 @@ _TECHNICAL_TERMS = (
     "sdk",
     "documentacao",
     "documentação",
+    "documentation",
     "docs",
     "framework",
     "biblioteca",

@@ -100,7 +100,9 @@ jobs:
             "test_project_quality.py",
             "test_web_runtime.py",
             "test_search_runtime.py",
+            "test_research_strategy.py",
             "test_research_runtime.py",
+            "test_dany_professional.py",
             "test_voice_session.py",
             "test_realtime_voice.py"
           )

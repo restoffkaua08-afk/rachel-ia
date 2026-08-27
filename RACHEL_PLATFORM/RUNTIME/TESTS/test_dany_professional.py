@@ -109,6 +109,71 @@ class DanyProfessionalTests(unittest.TestCase):
         )
         self.assertTrue(with_citation.checks["citations_present"])
 
+    def test_research_conflicts_must_be_disclosed(self):
+        context = EvalContext(
+            request="Compare as fontes",
+            research=True,
+            primary_source_count=1,
+            research_conflict_count=1,
+            citations=("https://docs.example/source",),
+            evidence={
+                "sources": [{"url": "https://docs.example/source", "authority": "primary"}],
+                "evidence": {"conflict_count": 1},
+            },
+        )
+        bad = self.dany.evaluate(
+            "A conclusão está confirmada em https://docs.example/source.",
+            context,
+        )
+        self.assertFalse(bad.accepted)
+        self.assertFalse(bad.checks["research_conflicts_disclosed"])
+
+        good = self.dany.evaluate(
+            "Há divergência entre as fontes; a evidência disponível inclui https://docs.example/source.",
+            context,
+        )
+        self.assertTrue(good.checks["research_conflicts_disclosed"])
+
+    def test_unverified_freshness_requires_explicit_uncertainty(self):
+        context = EvalContext(
+            request="Pesquise a informação atual",
+            research=True,
+            primary_source_count=1,
+            citations=("https://docs.example/current",),
+            freshness_required=True,
+            freshness_verified=False,
+            evidence={"sources": [{"url": "https://docs.example/current", "authority": "primary"}]},
+        )
+        bad = self.dany.evaluate(
+            "A informação atual está em https://docs.example/current.",
+            context,
+        )
+        self.assertFalse(bad.accepted)
+        self.assertFalse(bad.checks["freshness_consistent"])
+
+        good = self.dany.evaluate(
+            "A data de publicação não foi verificada; a fonte consultada é https://docs.example/current.",
+            context,
+        )
+        self.assertTrue(good.checks["freshness_consistent"])
+        self.assertTrue(good.checks["admits_uncertainty"])
+
+    def test_verified_freshness_does_not_require_uncertainty(self):
+        context = EvalContext(
+            request="Pesquise a informação atual",
+            research=True,
+            primary_source_count=1,
+            citations=("https://docs.example/current",),
+            freshness_required=True,
+            freshness_verified=True,
+            evidence={"sources": [{"url": "https://docs.example/current", "authority": "primary"}]},
+        )
+        report = self.dany.evaluate(
+            "A fonte atual consultada é https://docs.example/current.",
+            context,
+        )
+        self.assertTrue(report.checks["freshness_consistent"])
+
     def test_url_not_present_in_evidence_is_rejected(self):
         context = EvalContext(
             request="Mostre a fonte",

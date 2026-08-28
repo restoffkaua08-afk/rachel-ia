@@ -769,6 +769,101 @@ class SamwellRuntime:
     def status(
         self,
     ) -> dict[str, Any]:
+        """Return a dashboard-safe status projection without deep dependency probes."""
+
+        dependencies = list(
+            self.catalog.get(
+                "dependencies",
+                [],
+            )
+        )
+
+        modes = {
+            str(mode_id): {
+                "mode": str(mode_id),
+                "evaluated": False,
+                "ready": None,
+                "required": [
+                    str(item)
+                    for item
+                    in record.get(
+                        "required",
+                        [],
+                    )
+                ],
+                "optional": [
+                    str(item)
+                    for item
+                    in record.get(
+                        "optional",
+                        [],
+                    )
+                ],
+                "missing": None,
+            }
+            for mode_id, record
+            in self.catalog.get(
+                "modes",
+                {},
+            ).items()
+            if isinstance(record, dict)
+        }
+
+        return {
+            "member": {
+                "id": "samwell",
+                "name": "Samwell",
+                "sector": (
+                    "Dependencias, Ambientes "
+                    "e Portabilidade"
+                ),
+                "state": "operational",
+            },
+
+            "status_mode": "lightweight",
+            "deep_audit_performed": False,
+
+            "portable_runtime": {
+                "internal_term": "frozen",
+                "display_name": "Portable Runtime",
+                "managed_by": "samwell",
+                "external_python_required": False,
+                **self._portable_probe(),
+            },
+
+            "audit": {
+                "member_id": "samwell",
+                "status": "not-run",
+                "performed": False,
+                "total": len(dependencies),
+                "available": None,
+                "missing": None,
+                "items": [],
+                "system_mutation": False,
+            },
+            "modes": modes,
+
+            "environment_isolation": {
+                "packaging_torch_available": None,
+                "training_torch_available": None,
+                "availability_evaluated": False,
+                "packaging_torch_does_not_enable_training": True,
+            },
+
+            "requires_cyber_for_mutation": True,
+            "execution_enabled": False,
+            "automatic_install": False,
+            "automatic_update": False,
+            "automatic_remove": False,
+            "automatic_repair": False,
+            "training_execution_enabled": False,
+            "weights_modified": False,
+        }
+
+    def deep_status(
+        self,
+    ) -> dict[str, Any]:
+        """Run the explicit deep dependency audit and return evaluated readiness."""
 
         audit = self.audit()
 
@@ -804,6 +899,9 @@ class SamwellRuntime:
                 "state": "operational",
             },
 
+            "status_mode": "deep",
+            "deep_audit_performed": True,
+
             "portable_runtime": {
                 "internal_term": "frozen",
                 "display_name": "Portable Runtime",
@@ -833,7 +931,7 @@ class SamwellRuntime:
                         "available"
                     )
                 ),
-
+                "availability_evaluated": True,
                 "packaging_torch_does_not_enable_training": True,
             },
 

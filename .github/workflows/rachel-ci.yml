@@ -108,6 +108,9 @@ jobs:
             "test_research_evidence.py",
             "test_research_runtime.py",
             "test_dany_professional.py",
+            "test_samwell_runtime.py",
+            "test_samwell_dashboard.py",
+            "test_dashboard_runtime.py",
             "test_voice_session.py",
             "test_realtime_voice.py"
           )

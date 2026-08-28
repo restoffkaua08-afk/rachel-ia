@@ -108,6 +108,154 @@ class SamwellRuntimeTests(
             ]
         )
 
+    def test_status_is_lightweight_and_does_not_call_audit(self):
+
+        service = self.service()
+
+        def forbidden_audit():
+            raise AssertionError(
+                "status() must not execute deep audit"
+            )
+
+        service.audit = forbidden_audit
+
+        status = service.status()
+
+        self.assertEqual(
+            "lightweight",
+            status[
+                "status_mode"
+            ],
+        )
+
+        self.assertFalse(
+            status[
+                "deep_audit_performed"
+            ]
+        )
+
+        self.assertFalse(
+            status[
+                "audit"
+            ][
+                "performed"
+            ]
+        )
+
+        self.assertEqual(
+            "not-run",
+            status[
+                "audit"
+            ][
+                "status"
+            ],
+        )
+
+        self.assertFalse(
+            status[
+                "environment_isolation"
+            ][
+                "availability_evaluated"
+            ]
+        )
+
+        for mode in status[
+            "modes"
+        ].values():
+            self.assertFalse(
+                mode[
+                    "evaluated"
+                ]
+            )
+            self.assertIsNone(
+                mode[
+                    "ready"
+                ]
+            )
+
+    def test_deep_status_evaluates_modes_from_explicit_audit(self):
+
+        service = self.service()
+
+        records = [
+            {
+                "id": str(record["id"]),
+                "type": str(record["type"]),
+                "informational_only": bool(
+                    record.get(
+                        "informational_only"
+                    )
+                ),
+                "available": True,
+            }
+            for record in service.catalog[
+                "dependencies"
+            ]
+        ]
+
+        deterministic_audit = {
+            "member_id": "samwell",
+            "status": "ok",
+            "items": records,
+            "total": len(records),
+            "available": len(records),
+            "missing": 0,
+            "system_mutation": False,
+            "automatic_install": False,
+            "automatic_update": False,
+            "automatic_remove": False,
+            "automatic_repair": False,
+        }
+
+        service.audit = lambda: deterministic_audit
+
+        status = service.deep_status()
+
+        self.assertEqual(
+            "deep",
+            status[
+                "status_mode"
+            ],
+        )
+
+        self.assertTrue(
+            status[
+                "deep_audit_performed"
+            ]
+        )
+
+        self.assertTrue(
+            status[
+                "environment_isolation"
+            ][
+                "availability_evaluated"
+            ]
+        )
+
+        self.assertEqual(
+            0,
+            status[
+                "audit"
+            ][
+                "missing"
+            ]
+        )
+
+        for mode in status[
+            "modes"
+        ].values():
+            self.assertTrue(
+                mode[
+                    "ready"
+                ]
+            )
+            self.assertEqual(
+                [],
+                mode[
+                    "missing"
+                ]
+            )
+
     def test_packaging_and_training_are_isolated(self):
 
         status = (
@@ -125,18 +273,23 @@ class SamwellRuntimeTests(
             ]
         )
 
-        if isolation[
-            "packaging_torch_available"
-        ]:
-            self.assertFalse(
-                status[
-                    "modes"
-                ][
-                    "training"
-                ][
-                    "ready"
-                ]
-            )
+        self.assertFalse(
+            isolation[
+                "availability_evaluated"
+            ]
+        )
+
+        self.assertIsNone(
+            isolation[
+                "packaging_torch_available"
+            ]
+        )
+
+        self.assertIsNone(
+            isolation[
+                "training_torch_available"
+            ]
+        )
 
     def test_training_uses_dedicated_environment(self):
 

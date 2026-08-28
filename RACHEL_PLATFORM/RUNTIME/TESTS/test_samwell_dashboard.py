@@ -23,7 +23,9 @@ class SamwellDashboardTests(unittest.TestCase):
         self.assertEqual(status["member"]["id"], "samwell")
         self.assertEqual(status["status_mode"], "lightweight")
         self.assertFalse(status["deep_audit_performed"])
-        self.assertGreater(status["dependency_catalog"]["total"], 0)
+        self.assertFalse(status["audit"]["performed"])
+        self.assertEqual(status["audit"]["status"], "not-run")
+        self.assertGreater(status["audit"]["total"], 0)
 
     def test_lightweight_status_preserves_safety_contract(self):
         status = lightweight_status(SamwellRuntime())
@@ -35,6 +37,13 @@ class SamwellDashboardTests(unittest.TestCase):
         self.assertFalse(status["automatic_repair"])
         self.assertFalse(status["training_execution_enabled"])
         self.assertFalse(status["weights_modified"])
+
+    def test_dashboard_projection_matches_runtime_status_contract(self):
+        service = SamwellRuntime()
+        self.assertEqual(
+            lightweight_status(service),
+            service.status(),
+        )
 
 
 if __name__ == "__main__":

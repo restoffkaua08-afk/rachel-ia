@@ -90,6 +90,7 @@ jobs:
             "test_agent_loop_runtime.py",
             "test_project_intelligence_runtime.py",
             "test_bran_cognitive.py",
+            "test_knowledge_port_integration.py",
             "test_security_contract.py",
             "test_security_runtime.py",
             "test_task_planner.py",

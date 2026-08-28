@@ -1,10 +1,8 @@
-import json
+import os
 import tempfile
 import unittest
 from pathlib import Path
 import sys
-
-import pytest
 
 ROOT = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(ROOT / "RACHEL_PLATFORM" / "RUNTIME" / "SRC"))
@@ -53,8 +51,10 @@ class InfrastructureTests(unittest.TestCase):
     def test_ned_does_not_invent_browser_intent_without_context(self):
         self.assertIsNone(NedRouter().browser_intent("me diga o titulo do projeto"))
 
-    @pytest.mark.requires_submodules
-    @pytest.mark.xfail(reason="Requer 23 submódulos Git inicializados em FONTES/REPOSITORIOS; CI usa submodules:false", strict=False)
+    @unittest.skipUnless(
+        os.environ.get("RACHEL_TEST_SUBMODULES") == "1",
+        "Requer os 23 submodulos Git inicializados; defina RACHEL_TEST_SUBMODULES=1 para validar esse gate.",
+    )
     def test_tyrion_sees_all_organs(self):
         health = TyrionSupervisor().health()
         self.assertEqual(health["total"], 23)

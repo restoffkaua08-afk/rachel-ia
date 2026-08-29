@@ -104,6 +104,7 @@ jobs:
             "test_browser_runtime.py",
             "test_browser_tools.py",
             "test_browser_session_runtime.py",
+            "test_browser_effect_contract.py",
             "test_search_runtime.py",
             "test_research_strategy.py",
             "test_research_evidence.py",

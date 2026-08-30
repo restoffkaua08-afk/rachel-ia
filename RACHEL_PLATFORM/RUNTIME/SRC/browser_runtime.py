@@ -46,16 +46,14 @@ class PlaywrightBrowserBackend:
             ) from error
 
         requested = validate_request(url)
-
         with sync_playwright() as playwright:
             browser = playwright.chromium.launch(headless=True)
             context = browser.new_context()
             page = context.new_page()
 
             def guard(route: Any) -> None:
-                request_url = str(route.request.url)
                 try:
-                    validate_request(request_url)
+                    validate_request(str(route.request.url))
                 except Exception:
                     route.abort("blockedbyclient")
                     return
@@ -63,11 +61,7 @@ class PlaywrightBrowserBackend:
 
             page.route("**/*", guard)
             try:
-                page.goto(
-                    requested,
-                    wait_until="domcontentloaded",
-                    timeout=max(1, int(timeout_seconds)) * 1000,
-                )
+                page.goto(requested, wait_until="domcontentloaded", timeout=max(1, int(timeout_seconds)) * 1000)
                 final_url = validate_request(str(page.url))
                 title = str(page.title() or "").strip()
                 html = str(page.content() or "")
@@ -76,25 +70,18 @@ class PlaywrightBrowserBackend:
                 except Exception:
                     text = ""
                 text = text[:maximum_text_characters]
-                return BrowserPageEvidence(
-                    requested_url=requested,
-                    final_url=final_url,
-                    title=title,
-                    text=text,
-                    html_characters=len(html),
-                    text_characters=len(text),
-                )
+                return BrowserPageEvidence(requested, final_url, title, text, len(html), len(text))
             finally:
                 context.close()
                 browser.close()
 
 
 class BrowserRuntime:
-    """Governed browser boundary.
+    """Canonical governed browser boundary.
 
-    Read-only navigation is enabled. Actions that mutate remote state are
-    classified as Cyber `external` effects and remain disabled until a later
-    sublot implements selectors/session state with explicit approval contracts.
+    Stateless read-only calls remain available for compatibility. Persistent read-only
+    sessions are now part of the official runtime contract and are created lazily.
+    Remote-state effects remain disabled until their Cyber-bound executors are enabled.
     """
 
     READ_ONLY_ACTIONS = frozenset({"open", "title", "read"})
@@ -105,15 +92,27 @@ class BrowserRuntime:
         backend: Any | None = None,
         policy: WebPolicy | None = None,
         resolver: Any | None = None,
+        live_sessions: Any | None = None,
     ) -> None:
         self.backend = backend or PlaywrightBrowserBackend()
         self.policy = policy or WebPolicy()
         self.resolver = resolver
+        self._live_sessions = live_sessions
 
     def _validate(self, url: str) -> str:
         if self.resolver is None:
             return validate_url(url, self.policy)
         return validate_url(url, self.policy, resolver=self.resolver)
+
+    def _sessions(self) -> Any:
+        if self._live_sessions is None:
+            from browser_live_session_runtime import BrowserLiveSessionRuntime
+            self._live_sessions = BrowserLiveSessionRuntime(
+                validate_url=self._validate,
+                timeout_seconds=self.policy.timeout_seconds,
+                maximum_text_characters=self.policy.maximum_text_characters,
+            )
+        return self._live_sessions
 
     @classmethod
     def effect_for(cls, action: str) -> str:
@@ -137,37 +136,47 @@ class BrowserRuntime:
 
     def title(self, url: str) -> dict[str, Any]:
         page = self.open(url)
-        return {
-            "requested_url": page["requested_url"],
-            "final_url": page["final_url"],
-            "title": page["title"],
-        }
+        return {"requested_url": page["requested_url"], "final_url": page["final_url"], "title": page["title"]}
 
     def read(self, url: str) -> dict[str, Any]:
         page = self.open(url)
         return {
-            "requested_url": page["requested_url"],
-            "final_url": page["final_url"],
-            "title": page["title"],
-            "text": page["text"],
-            "text_characters": page["text_characters"],
+            "requested_url": page["requested_url"], "final_url": page["final_url"],
+            "title": page["title"], "text": page["text"], "text_characters": page["text_characters"],
         }
 
+    def session_open(self, url: str | None = None) -> dict[str, Any]:
+        return self._sessions().create(url)
+
+    def session_navigate(self, session_id: str, url: str) -> dict[str, Any]:
+        return self._sessions().navigate(session_id, url)
+
+    def session_get(self, session_id: str) -> dict[str, Any]:
+        return self._sessions().get(session_id)
+
+    def session_close(self, session_id: str) -> dict[str, Any]:
+        return self._sessions().close(session_id)
+
+    def cleanup(self) -> dict[str, Any]:
+        if self._live_sessions is None:
+            return {"removed": [], "removed_count": 0, "active": 0, "live_contexts": 0}
+        return self._live_sessions.cleanup()
+
     def status(self) -> dict[str, Any]:
+        session_status = {
+            "live_playwright_context_persistence": self._live_sessions is not None,
+            "live_contexts": 0,
+            "mode": "stateless-read-only" if self._live_sessions is None else "persistent-read-only",
+        }
+        if self._live_sessions is not None:
+            session_status.update(self._live_sessions.status())
         return {
             "available": True,
             "backend": type(self.backend).__name__,
             "read_only_navigation": True,
+            "persistent_sessions_available": True,
             "request_guard": "web-policy-every-request",
             "effectful_actions_enabled": False,
-            "actions": {
-                "open": self.effect_for("open"),
-                "title": self.effect_for("title"),
-                "read": self.effect_for("read"),
-                "click": self.effect_for("click"),
-                "form": self.effect_for("form"),
-                "login": self.effect_for("login"),
-                "upload": self.effect_for("upload"),
-                "download": self.effect_for("download"),
-            },
+            "session": session_status,
+            "actions": {action: self.effect_for(action) for action in sorted(self.READ_ONLY_ACTIONS | self.EFFECTFUL_ACTIONS)},
         }
